@@ -1,5 +1,3 @@
-// http://jslancer.com/blog/2017/04/27/a-simple-login-flow-with-react-and-redux/
-
 export const LOGIN_PENDING = 'LOGIN_PENDING';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';

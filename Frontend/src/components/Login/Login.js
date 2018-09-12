@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { FormGroup, ControlLabel, FormControl, Button, Checkbox, Col } from 'react-bootstrap';
 import { login } from '../../actions/login';
+import './Login.css';
 
 class Login extends Component {
 
@@ -10,6 +12,9 @@ class Login extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
+      email: '',
+      password: '',
+      rememberMe: false,
     };
   }
 
@@ -20,38 +25,63 @@ class Login extends Component {
     this.setState({
       email: '',
       password: '',
+      rememberMe: false,
     });
   }
 
   render() {
-    let { email, password } = this.state;
-    let { loginPending, loginSuccess, loginError } = this.props;
     return (
-      <form name="loginForm" onSubmit={this.onSubmit}>
-        <div className="form-group-collection">
-          <div className="form-group">
-            <label>Email</label>
-            <input type="email" name="email"
-              onChange={e => this.setState({email: e.target.value})}
-              value={email}
+      <div id="Login" className="center-block">
+
+        <h1>Login</h1>
+
+        <form onSubmit={this.onSubmit}>
+
+          <FormGroup bsSize="large">
+            <ControlLabel>Email</ControlLabel>
+            <FormControl
+              autoFocus
+              type="email"
+              placeholder="Email"
+              value={this.state.email}
+              onChange={(e) => { this.setState({ email: e.target.value }) }}
             />
-          </div>
+          </FormGroup>
 
-          <div className="form-group">
-            <label>Password</label>
-            <input type="password" name="password"
-              onChange={e => this.setState({password: e.target.value})}
-              value={password}
+          <FormGroup bsSize="large">
+            <ControlLabel>Password</ControlLabel>
+            <FormControl
+              type="password"
+              placeholder="Password"
+              value={this.state.password}
+              onChange={(e) => { this.setState({ password: e.target.value }) }}
             />
-          </div>
-        </div>
+          </FormGroup>
 
-        <input type="submit" value="Login" />
+          <FormGroup>
+            <Col sm={6}>
+              <Checkbox
+                defaultChecked={this.state.rememberMe}
+                onChange={(e) => { this.setState({ rememberMe: e.target.checked }) }}
+              >
+                Remember me
+              </Checkbox>
+            </Col>
+            <Col sm={6}>
+              <Button bsStyle="link">Forgot Password</Button>
+            </Col>
+          </FormGroup>
 
-        { loginPending && <div>Please wait...</div> }
-        { loginSuccess && <div>Success</div> }
-        { loginError && <div>{loginError.message}</div> }
-      </form>
+          <Button
+            block
+            bsSize="large"
+            type="submit"
+            bsStyle="primary"
+          >
+            Login
+          </Button>
+        </form>
+      </div>
     );
   }
 }
