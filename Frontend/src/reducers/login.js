@@ -1,23 +1,29 @@
 import { LOGIN_PENDING, LOGIN_SUCCESS, LOGIN_ERROR } from '../actions/login';
 
 export default function reducer(state = {
-  loginPending: false,
-  loginSuccess: false,
-  loginError: null,
+  pending: false,
+  success: false,
+  error: null,
 }, action) {
   switch (action.type) {
     case LOGIN_PENDING:
-      return Object.assign({}, state, {
-        loginPending: action.loginPending,
-      });
+      return {
+        pending: true,
+        success: false,
+        error: null,
+      };
     case LOGIN_SUCCESS:
-      return Object.assign({}, state, {
-        loginSuccess: action.loginSuccess,
-      });
+      return {
+        pending: false,
+        success: true,
+        error: null,
+      };
     case LOGIN_ERROR:
-      return Object.assign({}, state, {
-        loginError: action.loginError,
-      });
+      return {
+        pending: false,
+        success: false,
+        error: action.error,
+      };
     default:
       return state;
   }

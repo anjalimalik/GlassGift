@@ -2,24 +2,24 @@ export const LOGIN_PENDING = 'LOGIN_PENDING';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 
-function setLoginPending(loginPending) {
+function setLoginPending(pending) {
   return {
     type: LOGIN_PENDING,
-    loginPending,
+    pending,
   };
 }
 
-function setLoginSuccess(loginSuccess) {
+function setLoginSuccess(success) {
   return {
     type: LOGIN_SUCCESS,
-    loginSuccess,
+    success,
   };
 }
 
-function setLoginError(loginError) {
+function setLoginError(error) {
   return {
     type: LOGIN_ERROR,
-    loginError,
+    error,
   }
 }
 
@@ -36,10 +36,6 @@ function callLoginApi(email, password, cb) {
 
 export function login(email, password) {
   return (dispatch) => {
-    dispatch(setLoginPending(true));
-    dispatch(setLoginSuccess(false));
-    dispatch(setLoginError(null));
-
     callLoginApi(email, password, (error) => {
       dispatch(setLoginPending(false));
       if (!error) {

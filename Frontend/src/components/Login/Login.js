@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormGroup, ControlLabel, FormControl, Button, Checkbox, Col } from 'react-bootstrap';
 import { login } from '../../actions/login';
@@ -21,6 +22,7 @@ class Login extends Component {
   onSubmit(e) {
     e.preventDefault();
     let { email, password } = this.state;
+    // TODO validate email and password
     this.props.login(email, password);
     this.setState({
       email: '',
@@ -77,6 +79,7 @@ class Login extends Component {
             bsSize="large"
             type="submit"
             bsStyle="primary"
+            disabled={this.props.pending}
           >
             Login
           </Button>
@@ -88,16 +91,16 @@ class Login extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    loginPending: state.loginPending,
-    loginSuccess: state.loginError,
-    loginError: state.loginError,
+    pending: state.pending,
+    loginSuccess: state.success,
+    error: state.error,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
+  return bindActionCreators({
     login,
-  };
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
