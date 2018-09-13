@@ -14,7 +14,11 @@ class ResetPassword extends Component {
 
     this.onSubmit = this.onSubmit.bind(this);
 
+    // Get token from query params
+    const params = new URLSearchParams(props.location.search);
+
     this.state = {
+      token: params.get('token'),
       password: '',
       confPassword: '',
     };

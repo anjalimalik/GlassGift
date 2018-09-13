@@ -13,7 +13,7 @@ class Header extends Component {
               <Link to="/">GlassGift</Link>
             </Navbar.Brand>
           </Navbar.Header>
-          <Nav>
+          <Nav pullRight>
             <LinkContainer to="/login">
               <NavItem>Login</NavItem>
             </LinkContainer>

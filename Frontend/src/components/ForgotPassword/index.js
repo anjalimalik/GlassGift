@@ -10,7 +10,7 @@ class ForgotPassword extends Component {
   render() {
     return (
       <div className="ForgotPassword center-block">
-        <PageHeader>ForgotPassword</PageHeader>
+        <PageHeader>Forgot Password</PageHeader>
       </div>
     );
   }
