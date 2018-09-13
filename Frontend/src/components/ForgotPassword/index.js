@@ -3,6 +3,10 @@ import { PageHeader } from 'react-bootstrap';
 import './ForgotPassword.css';
 
 class ForgotPassword extends Component {
+
+  componentWillUnmount() {
+  }
+
   render() {
     return (
       <div className="ForgotPassword center-block">

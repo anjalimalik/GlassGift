@@ -4,6 +4,8 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
@@ -14,6 +16,8 @@ import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword'
 
+// Font Awesome
+library.add(faSpinner);
 
 const store = createStore(
   rootReducer,

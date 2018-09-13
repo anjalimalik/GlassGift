@@ -43,6 +43,7 @@ function callLoginApi(email, password, cb) {
 
 export function login(email, password, rememberMe) {
   return (dispatch) => {
+    dispatch(loginPending(true));
     callLoginApi(email, password, (error) => {
       // TODO store in LocalStorage if rememberMe
       dispatch(loginPending(false));

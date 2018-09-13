@@ -43,8 +43,8 @@ function callSignupApi(state, cb) {
 
 export function signup(state, rememberMe) {
   return (dispatch) => {
+    dispatch(signupPending(true));
     callSignupApi(state, (error) => {
-      // TODO store in LocalStorage if rememberMe
       dispatch(signupPending(false));
       if (!error) {
         dispatch(signupSuccess(true));

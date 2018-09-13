@@ -1,3 +1,7 @@
 .Login {
   max-width: 50%;
 }
+
+.loginButtonSpinner {
+  padding-left: 10px;
+}

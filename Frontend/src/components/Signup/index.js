@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab,
 } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR } from '../../constants';
 import { signup, signupClear } from '../../actions/signup';
@@ -39,6 +40,10 @@ class Signup extends Component {
     };
   }
 
+  componentWillUnmount() {
+    this.props.signupClear();
+  }
+
   onSubmit(e) {
     e.preventDefault();
     this.props.signup(this.state);
@@ -56,7 +61,7 @@ class Signup extends Component {
     if (this.props.error) {
       return (
         <Alert bsStyle="danger" onDismiss={this.props.signupClear}>
-          <p>{this.props.error.messsage}</p>
+          <p>{this.props.error}</p>
         </Alert>
       );
     }
@@ -137,6 +142,8 @@ class Signup extends Component {
                 disabled={this.props.pending}
               >
                 Create Account
+                { this.props.pending ? <span className="loginButtonSpinner">
+                  <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
               </Button>
             </form>
           </Tab>
@@ -206,6 +213,8 @@ class Signup extends Component {
               disabled={this.props.pending}
             >
               Create Account
+              { this.props.pending ? <span className="loginButtonSpinner">
+                <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
             </Button>
           </Tab>
         </Tabs>

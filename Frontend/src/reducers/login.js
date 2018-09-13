@@ -22,7 +22,7 @@ export default function reducer(state = {
       return {
         pending: false,
         success: false,
-        error: action.error,
+        error: action.error.message,
       };
     case LOGIN_CLEAR:
       return {

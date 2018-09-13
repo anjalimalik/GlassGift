@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Button, ControlLabel, FormControl, FormGroup, PageHeader } from 'react-bootstrap';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { resetPassword, resetPasswordClear } from '../../actions/resetPassword';
 import './ResetPassword.css';
 
 
@@ -16,8 +20,26 @@ class ResetPassword extends Component {
     };
   }
 
+  componentWillUnmount() {
+    this.props.resetPasswordClear();
+  }
+
   onSubmit(e) {
     e.preventDefault();
+    const { password, confPassword } = this.state;
+    // TODO validation
+    this.props.resetPassword(password, confPassword);
+  }
+
+  renderAlert() {
+    if (this.props.error) {
+      return (
+        <Alert bsStyle="danger" onDismiss={this.props.resetPasswordClear}>
+          <p>{this.props.error}</p>
+        </Alert>
+      );
+    }
+    return null;
   }
 
   render() {
@@ -25,6 +47,8 @@ class ResetPassword extends Component {
       <div className="ResetPassword center-block">
 
         <PageHeader>Reset Password</PageHeader>
+
+        {this.renderAlert()}
 
         <form onSubmit={this.onSubmit}>
           <FormGroup bsSize="large">
@@ -52,6 +76,8 @@ class ResetPassword extends Component {
             disabled={this.props.pending}
           >
             Reset Password
+            { this.props.pending ? <span className="loginButtonSpinner">
+              <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
           </Button>
         </form>
       </div>
@@ -59,4 +85,19 @@ class ResetPassword extends Component {
   }
 }
 
-export default ResetPassword;
+function mapStateToProps({ resetPassword }) {
+  return {
+    pending: resetPassword.pending,
+    success: resetPassword.success,
+    error: resetPassword.error,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    resetPassword,
+    resetPasswordClear,
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);

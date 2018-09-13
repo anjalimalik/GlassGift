@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Alert, Button, Checkbox, Col, ControlLabel, FormControl, FormGroup, PageHeader } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { login, loginClear } from '../../actions/login';
 import './Login.css';
 
@@ -21,6 +22,10 @@ class Login extends Component {
     };
   }
 
+  componentWillUnmount() {
+    this.props.loginClear();
+  }
+
   onSubmit(e) {
     e.preventDefault();
     const { email, password, rememberMe } = this.state;
@@ -37,7 +42,7 @@ class Login extends Component {
     if (this.props.error) {
       return (
         <Alert bsStyle="danger" onDismiss={this.props.loginClear}>
-          <p>{this.props.error.message}</p>
+          <p>{this.props.error}</p>
         </Alert>
       );
     }
@@ -99,6 +104,8 @@ class Login extends Component {
             disabled={this.props.pending}
           >
             Login
+            { this.props.pending ? <span className="loginButtonSpinner">
+              <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
           </Button>
         </form>
       </div>
