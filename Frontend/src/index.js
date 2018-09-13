@@ -9,7 +9,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
-import Header from './components/Shared/Header/index';
+import Header from './components/Shared/Header';
 import App from './components/App';
 import Signup from './components/Signup';
 import Login from './components/Login';
@@ -28,7 +28,7 @@ const store = createStore(
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <div className="container">
+      <div className="container-fluid">
         <Header />
         <Route exact path="/" component={App} />
         <Route exact path="/signup" component={Signup} />

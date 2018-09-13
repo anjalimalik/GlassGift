@@ -7,7 +7,7 @@ class Header extends Component {
   render() {
     return (
       <div className="Header">
-        <Navbar>
+        <Navbar fluid>
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/">GlassGift</Link>
