@@ -46,7 +46,6 @@ export function login(email, password, rememberMe) {
     dispatch(loginPending(true));
     callLoginApi(email, password, (error) => {
       // TODO store in LocalStorage if rememberMe
-      dispatch(loginPending(false));
       if (!error) {
         dispatch(loginSuccess(true));
       } else {

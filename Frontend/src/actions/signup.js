@@ -45,7 +45,6 @@ export function signup(state, rememberMe) {
   return (dispatch) => {
     dispatch(signupPending(true));
     callSignupApi(state, (error) => {
-      dispatch(signupPending(false));
       if (!error) {
         dispatch(signupSuccess(true));
       } else {

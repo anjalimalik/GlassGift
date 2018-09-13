@@ -45,7 +45,6 @@ export function resetPassword(password, confPassword) {
   return (dispatch) => {
     dispatch(resetPasswordPending(true));
     callResetPasswordApi(password, confPassword, (error) => {
-      dispatch(resetPasswordPending(false));
       if (!error) {
         dispatch(resetPasswordSuccess(true));
       } else {
