@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Checkbox, Col, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
-
+import { Alert, Button, Checkbox, Col, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { login } from '../../actions/login';
+import { login, loginClear } from '../../actions/login';
 import './Login.css';
 
 class Login extends Component {
@@ -13,6 +12,7 @@ class Login extends Component {
     super(props);
 
     this.onSubmit = this.onSubmit.bind(this);
+    this.renderAlert = this.renderAlert.bind(this);
 
     this.state = {
       email: '',
@@ -23,9 +23,9 @@ class Login extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    let { email, password } = this.state;
+    const { email, password, rememberMe } = this.state;
     // TODO validate email and password
-    this.props.login(email, password);
+    this.props.login(email, password, rememberMe);
     this.setState({
       email: '',
       password: '',
@@ -33,11 +33,24 @@ class Login extends Component {
     });
   }
 
+  renderAlert() {
+    if (this.props.error) {
+      return (
+        <Alert bsStyle="danger" onDismiss={this.props.loginClear}>
+          <p>{this.props.error.message}</p>
+        </Alert>
+      );
+    }
+    return null;
+  }
+
   render() {
     return (
       <div className="Login center-block">
 
         <h1>Login</h1>
+
+        {this.renderAlert()}
 
         <form onSubmit={this.onSubmit}>
 
@@ -93,17 +106,18 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps({ login }) {
   return {
-    pending: state.pending,
-    loginSuccess: state.success,
-    error: state.error,
+    pending: login.pending,
+    loginSuccess: login.success,
+    error: login.error,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     login,
+    loginClear,
   }, dispatch);
 }
 

@@ -1,4 +1,4 @@
-import { LOGIN_PENDING, LOGIN_SUCCESS, LOGIN_ERROR } from '../actions/login';
+import { LOGIN_PENDING, LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_CLEAR } from '../actions/login';
 
 export default function reducer(state = {
   pending: false,
@@ -23,6 +23,12 @@ export default function reducer(state = {
         pending: false,
         success: false,
         error: action.error,
+      };
+    case LOGIN_CLEAR:
+      return {
+        pending: false,
+        success: false,
+        error: null
       };
     default:
       return state;
