@@ -12,7 +12,7 @@ import App from './components/App';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
-import PasswordReset from './components/PasswordReset'
+import ResetPassword from './components/ResetPassword'
 
 
 const store = createStore(
@@ -30,7 +30,7 @@ ReactDOM.render(
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />
-        <Route exact path="/passwordReset" component={PasswordReset} />
+        <Route exact path="/resetPassword" component={ResetPassword} />
       </div>
     </BrowserRouter>
   </Provider>,

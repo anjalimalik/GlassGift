@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, Button, Checkbox, Col, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
+import { Alert, Button, Checkbox, Col, ControlLabel, FormControl, FormGroup, PageHeader } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { login, loginClear } from '../../actions/login';
 import './Login.css';
@@ -48,7 +48,7 @@ class Login extends Component {
     return (
       <div className="Login center-block">
 
-        <h1>Login</h1>
+        <PageHeader>Login</PageHeader>
 
         {this.renderAlert()}
 
@@ -109,10 +109,10 @@ class Login extends Component {
 function mapStateToProps({ login }) {
   return {
     pending: login.pending,
-    loginSuccess: login.success,
+    success: login.success,
     error: login.error,
   };
-};
+}
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({

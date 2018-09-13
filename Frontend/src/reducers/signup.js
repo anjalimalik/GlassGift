@@ -1,4 +1,4 @@
-import { LOGIN_PENDING, LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_CLEAR } from '../actions/login';
+import { SIGNUP_PENDING, SIGNUP_SUCCESS, SIGNUP_ERROR, SIGNUP_CLEAR } from '../actions/signup';
 
 export default function reducer(state = {
   pending: false,
@@ -6,25 +6,25 @@ export default function reducer(state = {
   error: null,
 }, action) {
   switch (action.type) {
-    case LOGIN_PENDING:
+    case SIGNUP_PENDING:
       return {
         pending: true,
         success: false,
         error: null,
       };
-    case LOGIN_SUCCESS:
+    case SIGNUP_SUCCESS:
       return {
         pending: false,
         success: true,
         error: null,
       };
-    case LOGIN_ERROR:
+    case SIGNUP_ERROR:
       return {
         pending: false,
         success: false,
         error: action.error,
       };
-    case LOGIN_CLEAR:
+    case SIGNUP_CLEAR:
       return {
         pending: false,
         success: false,

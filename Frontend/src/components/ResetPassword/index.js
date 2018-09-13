@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
-import './PasswordReset.css';
+import { Button, ControlLabel, FormControl, FormGroup, PageHeader } from 'react-bootstrap';
+import './ResetPassword.css';
 
 
-class PasswordReset extends Component {
+class ResetPassword extends Component {
 
   constructor(props) {
     super(props);
@@ -22,9 +22,11 @@ class PasswordReset extends Component {
 
   render() {
     return (
-      <div className="PasswordReset center-block">
-        <form onSubmit={this.onSubmit}>
+      <div className="ResetPassword center-block">
 
+        <PageHeader>Reset Password</PageHeader>
+
+        <form onSubmit={this.onSubmit}>
           <FormGroup bsSize="large">
             <ControlLabel>New Password</ControlLabel>
             <FormControl
@@ -34,10 +36,6 @@ class PasswordReset extends Component {
               value={this.state.password}
               onChange={(e) => { this.setState({ password: e.target.value }) }}
             />
-          </FormGroup>
-
-          <FormGroup bsSize="large">
-            <ControlLabel>Confirm Password</ControlLabel>
             <FormControl
               type="password"
               placeholder="Confirm Password"
@@ -61,4 +59,4 @@ class PasswordReset extends Component {
   }
 }
 
-export default PasswordReset;
+export default ResetPassword;
