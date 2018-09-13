@@ -7,10 +7,12 @@ import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
-import Header from './components/Header';
-import App from './components/App/App';
-import Signup from './components/Signup/Signup';
-import Login from './components/Login/Login';
+import Header from './components/Shared/Header/index';
+import App from './components/App';
+import Signup from './components/Signup';
+import Login from './components/Login';
+import ForgotPassword from './components/ForgotPassword';
+import PasswordReset from './components/PasswordReset'
 
 
 const store = createStore(
@@ -27,6 +29,8 @@ ReactDOM.render(
         <Route exact path="/" component={App} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/login" component={Login} />
+        <Route exact path="/forgotPassword" component={ForgotPassword} />
+        <Route exact path="/passwordReset" component={PasswordReset} />
       </div>
     </BrowserRouter>
   </Provider>,

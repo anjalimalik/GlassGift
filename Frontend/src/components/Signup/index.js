@@ -11,7 +11,9 @@ class Signup extends Component {
 
   render() {
     return (
-      <h1>Signup</h1>
+      <div className="Signup">
+        <h1>Signup</h1>
+      </div>
     );
   }
 }

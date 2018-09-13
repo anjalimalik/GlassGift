@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { FormGroup, ControlLabel, FormControl, Button, Checkbox, Col } from 'react-bootstrap';
+import { Button, Checkbox, Col, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
+
+import { LinkContainer } from 'react-router-bootstrap';
 import { login } from '../../actions/login';
 import './Login.css';
 
@@ -33,7 +35,7 @@ class Login extends Component {
 
   render() {
     return (
-      <div id="Login" className="center-block">
+      <div className="Login center-block">
 
         <h1>Login</h1>
 
@@ -70,7 +72,9 @@ class Login extends Component {
               </Checkbox>
             </Col>
             <Col sm={6}>
-              <Button bsStyle="link">Forgot Password</Button>
+              <LinkContainer to="/forgotPassword">
+                <Button bsStyle="link">Forgot Password</Button>
+              </LinkContainer>
             </Col>
           </FormGroup>
 
