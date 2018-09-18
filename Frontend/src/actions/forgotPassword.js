@@ -6,21 +6,21 @@ export const FORGOT_PASSWORD_CLEAR = 'FORGOT_PASSWORD_CLEAR';
 export function forgotPasswordPending(pending) {
   return {
     type: FORGOT_PASSWORD_PENDING,
-    pending,
+    payload: pending,
   };
 }
 
 export function forgotPasswordSuccess(success) {
   return {
     type: FORGOT_PASSWORD_SUCCESS,
-    success,
+    payload: success,
   };
 }
 
 export function forgotPasswordError(error) {
   return {
     type: FORGOT_PASSWORD_ERROR,
-    error,
+    payload: error,
   }
 }
 

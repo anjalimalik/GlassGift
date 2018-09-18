@@ -6,21 +6,21 @@ export const SIGNUP_CLEAR = 'SIGNUP_CLEAR';
 export function signupPending(pending) {
   return {
     type: SIGNUP_PENDING,
-    pending,
+    payload: pending,
   };
 }
 
 export function signupSuccess(success) {
   return {
     type: SIGNUP_SUCCESS,
-    success,
+    payload: success,
   };
 }
 
 export function signupError(error) {
   return {
     type: SIGNUP_ERROR,
-    error,
+    payload: error,
   }
 }
 
