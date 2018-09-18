@@ -1,5 +1,4 @@
 import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {
   SIGNUP_PENDING, SIGNUP_SUCCESS, SIGNUP_ERROR, SIGNUP_CLEAR,
   signupPending, signupSuccess, signupError, signupClear,

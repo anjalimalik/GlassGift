@@ -21,7 +21,7 @@ export function resetPasswordError(error) {
   return {
     type: RESET_PASSWORD_ERROR,
     payload: error,
-  }
+  };
 }
 
 export function resetPasswordClear() {
@@ -51,5 +51,5 @@ export function resetPassword(password, confPassword) {
         dispatch(resetPasswordError(error));
       }
     });
-  }
+  };
 }

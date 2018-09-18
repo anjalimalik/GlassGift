@@ -1,5 +1,4 @@
 import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {
   LOGIN_PENDING, LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_CLEAR,
   loginPending, loginSuccess, loginError, loginClear,

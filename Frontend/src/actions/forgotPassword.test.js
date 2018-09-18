@@ -1,5 +1,4 @@
 import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {
   FORGOT_PASSWORD_PENDING, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_ERROR, FORGOT_PASSWORD_CLEAR,
   forgotPasswordPending, forgotPasswordSuccess, forgotPasswordError, forgotPasswordClear,

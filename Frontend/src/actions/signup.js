@@ -21,7 +21,7 @@ export function signupError(error) {
   return {
     type: SIGNUP_ERROR,
     payload: error,
-  }
+  };
 }
 
 export function signupClear() {
@@ -51,5 +51,5 @@ export function signup(state, rememberMe) {
         dispatch(signupError(error));
       }
     });
-  }
+  };
 }

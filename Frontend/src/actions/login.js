@@ -21,7 +21,7 @@ export function loginError(error) {
   return {
     type: LOGIN_ERROR,
     payload: error,
-  }
+  };
 }
 
 export function loginClear() {
@@ -52,5 +52,5 @@ export function login(email, password, rememberMe) {
         dispatch(loginError(error));
       }
     });
-  }
+  };
 }

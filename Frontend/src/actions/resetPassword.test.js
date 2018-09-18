@@ -1,5 +1,4 @@
 import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {
   RESET_PASSWORD_PENDING, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_ERROR, RESET_PASSWORD_CLEAR,
   resetPasswordPending, resetPasswordSuccess, resetPasswordError, resetPasswordClear,

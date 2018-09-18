@@ -14,7 +14,7 @@ import App from './components/App';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword'
+import ResetPassword from './components/ResetPassword';
 
 // Font Awesome
 library.add(faSpinner);

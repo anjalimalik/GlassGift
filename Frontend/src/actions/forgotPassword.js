@@ -21,7 +21,7 @@ export function forgotPasswordError(error) {
   return {
     type: FORGOT_PASSWORD_ERROR,
     payload: error,
-  }
+  };
 }
 
 export function forgotPasswordClear() {
@@ -48,5 +48,5 @@ export function forgotPassword() {
         dispatch(forgotPasswordError(error));
       }
     });
-  }
+  };
 }
