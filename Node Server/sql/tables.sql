@@ -3,6 +3,8 @@ create table User(
   email: varchar(30),
   password: varchar(30),
   location: varchar(30),
+  emailConfirmation: varchar(30),
+  confirmed: boolean,
   resetPasswordToken: varchar(30),
   resetPasswordExp: varchar(30),
   primary key(id)
@@ -19,6 +21,7 @@ create table NGO(
   foreign key(id) references User(id)
 );
 
+-- I figure we treat categories as just a number, 0..n, and on the frontend we translate the number
 create table NGOCategories(
   ngoId: varchar(30),
   category: smallint,
@@ -46,6 +49,7 @@ create table Subscriptions(
   foreign key(ngoId) references User(id)
 );
 
+-- Type will be like a category, just an integer, and will be handled on the frontend
 create table Donation(
   id: varchar(30),
   donorId: varchar(30),
