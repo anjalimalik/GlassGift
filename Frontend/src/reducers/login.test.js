@@ -96,4 +96,17 @@ describe('Login Reducer', () => {
     };
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
+
+  it('tests default case', () => {
+    const action = {
+      type: 'UNKNOWN_ACTION',
+      payload: 'test',
+    };
+    const expectedState = {
+      error: null,
+      pending: false,
+      success: false,
+    };
+    expect(reducer(undefined, action)).toEqual(expectedState);
+  });
 });
