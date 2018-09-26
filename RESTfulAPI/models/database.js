@@ -6,6 +6,4 @@ client.connect();
 const query = client.query(
     'CREATE TABLE items(id SERIAL PRIMARY KEY, text VARCHAR(40) not null, complete BOOLEAN)');
 
-query.on("end", (null) = {
-    client.end();};
-    ,)
+query.on("end", client.end());
