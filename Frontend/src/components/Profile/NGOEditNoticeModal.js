@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
 import { updateNGO, updateNGOClear } from '../../actions/updateNGO';
 
 
@@ -13,7 +13,9 @@ class NGOEditNoticeModal extends Component {
 
     this.onSaveChanges = this.onSaveChanges.bind(this);
 
-    this.state = {};
+    this.state = {
+      notice: '',
+    };
   }
 
   onSaveChanges() {
@@ -24,21 +26,31 @@ class NGOEditNoticeModal extends Component {
 
   render() {
     return (
-      <div className="ngoedit-modal">
+      <div className="ngoeditnotice-modal">
         <Modal
           show={this.props.visibility}
           onHide={() => this.props.onChangeVisibility(false)}
           >
           <Modal.Header closeButton>
-            <Modal.Title>Edit Profile</Modal.Title>
+            <Modal.Title>Edit Notice</Modal.Title>
           </Modal.Header>
 
-          <Modal.Body>Modal Body</Modal.Body>
+          <Modal.Body>
+            <FormGroup>
+              <ControlLabel>New Notice</ControlLabel>
+              <FormControl
+                autoFocus
+                placeholder="johnsmith@email.com..."
+                value={this.state.notice}
+                onChange={(e) => { this.setState({ notice: e.target.value }) }}
+              />
+            </FormGroup>
+          </Modal.Body>
 
           <Modal.Footer>
             <Button onClick={() => this.props.onChangeVisibility(false)}>Close</Button>
             <Button bsStyle="primary" onClick={this.onSaveChanges}>
-              Save Changes
+              Save Notice
             </Button>
           </Modal.Footer>
         </Modal>

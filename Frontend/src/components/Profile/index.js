@@ -3,7 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Alert, Button, PageHeader } from 'react-bootstrap';
 import { updateNGOClear } from '../../actions/updateNGO';
-import NGOEditModal from '../Profile/NGOEditModal';
+import NGOEditModal from './NGOEditModal';
+import NGOEditNoticeModal from './NGOEditNoticeModal';
 
 class Profile extends Component {
 
@@ -53,8 +54,15 @@ class Profile extends Component {
         {this.renderNGOUpdateAlert()}
         <PageHeader>Profile</PageHeader>
         <Button onClick={() => this.setState({ngoEditModalVis: true})}>Test Edit Modal</Button>
-        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Test Notice Modal</Button>
-        <NGOEditModal visibility={this.state.ngoEditModalVis} onChangeVisibility={this.onChangeNGOEditModalVisibility}/>
+        <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Test Notice Modal</Button>
+        <NGOEditModal
+          visibility={this.state.ngoEditModalVis}
+          onChangeVisibility={this.onChangeNGOEditModalVisibility}
+        />
+        <NGOEditNoticeModal
+          visibility={this.state.ngoEditNoticeModalVis}
+          onChangeVisibility={this.onChangeNGOEditNoticeModalVisibility}
+        />
       </div>
     );
   }
