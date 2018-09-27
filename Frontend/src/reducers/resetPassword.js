@@ -1,4 +1,6 @@
-import { RESET_PASSWORD_PENDING, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_ERROR, RESET_PASSWORD_CLEAR } from '../actions/resetPassword';
+import {
+  RESET_PASSWORD_PENDING, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_ERROR, RESET_PASSWORD_CLEAR,
+} from '../actions/resetPassword';
 
 export default function reducer(state = {
   pending: false,
@@ -8,21 +10,21 @@ export default function reducer(state = {
   switch (action.type) {
     case RESET_PASSWORD_PENDING:
       return {
-        pending: true,
+        pending: action.payload,
         success: false,
         error: null,
       };
     case RESET_PASSWORD_SUCCESS:
       return {
         pending: false,
-        success: true,
+        success: action.payload,
         error: null,
       };
     case RESET_PASSWORD_ERROR:
       return {
         pending: false,
         success: false,
-        error: action.error.message,
+        error: action.payload.message,
       };
     case RESET_PASSWORD_CLEAR:
       return {

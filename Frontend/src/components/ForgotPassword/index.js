@@ -30,7 +30,7 @@ class ForgotPassword extends Component {
             {this.props.error}Click <a onClick={() => this.props.forgotPassword()}>here</a> to try again
           </p>
         </Alert>
-      )
+      );
     }
 
     if (!this.props.success || this.props.pending) {

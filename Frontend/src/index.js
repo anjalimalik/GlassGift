@@ -14,7 +14,8 @@ import App from './components/App';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword'
+import ResetPassword from './components/ResetPassword';
+import Profile from './components/Profile';
 
 // Font Awesome
 library.add(faSpinner);
@@ -35,6 +36,7 @@ ReactDOM.render(
         <Route exact path="/login" component={Login} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />
         <Route exact path="/resetPassword" component={ResetPassword} />
+        <Route exact path="/profile" component={Profile} />
       </div>
     </BrowserRouter>
   </Provider>,

@@ -8,21 +8,21 @@ export default function reducer(state = {
   switch (action.type) {
     case LOGIN_PENDING:
       return {
-        pending: true,
+        pending: action.payload,
         success: false,
         error: null,
       };
     case LOGIN_SUCCESS:
       return {
         pending: false,
-        success: true,
+        success: action.payload,
         error: null,
       };
     case LOGIN_ERROR:
       return {
         pending: false,
         success: false,
-        error: action.error.message,
+        error: action.payload.message,
       };
     case LOGIN_CLEAR:
       return {

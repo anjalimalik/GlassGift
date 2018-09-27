@@ -6,22 +6,22 @@ export const LOGIN_CLEAR = 'LOGIN_CLEAR';
 export function loginPending(pending) {
   return {
     type: LOGIN_PENDING,
-    pending,
+    payload: pending,
   };
 }
 
 export function loginSuccess(success) {
   return {
     type: LOGIN_SUCCESS,
-    success,
+    payload: success,
   };
 }
 
 export function loginError(error) {
   return {
     type: LOGIN_ERROR,
-    error,
-  }
+    payload: error,
+  };
 }
 
 export function loginClear() {
@@ -36,7 +36,7 @@ function callLoginApi(email, password, cb) {
     if (email === 'admin@example.com' && password === 'admin') {
       return cb(null);
     }
-    return cb(new Error('Invalid email and/or password'));
+    return cb(new Error('Invalid email and/or password!'));
   }, 500);
 }
 
@@ -52,5 +52,5 @@ export function login(email, password, rememberMe) {
         dispatch(loginError(error));
       }
     });
-  }
+  };
 }

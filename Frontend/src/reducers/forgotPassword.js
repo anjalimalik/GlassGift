@@ -1,4 +1,6 @@
-import { FORGOT_PASSWORD_PENDING, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_ERROR, FORGOT_PASSWORD_CLEAR } from '../actions/forgotPassword';
+import {
+  FORGOT_PASSWORD_PENDING, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_ERROR, FORGOT_PASSWORD_CLEAR,
+} from '../actions/forgotPassword';
 
 export default function reducer(state = {
   pending: false,
@@ -8,21 +10,21 @@ export default function reducer(state = {
   switch (action.type) {
     case FORGOT_PASSWORD_PENDING:
       return {
-        pending: true,
+        pending: action.payload,
         success: false,
         error: null,
       };
     case FORGOT_PASSWORD_SUCCESS:
       return {
         pending: false,
-        success: true,
+        success: action.payload,
         error: null,
       };
     case FORGOT_PASSWORD_ERROR:
       return {
         pending: false,
         success: false,
-        error: action.error.message,
+        error: action.payload.message,
       };
     case FORGOT_PASSWORD_CLEAR:
       return {

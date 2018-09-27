@@ -6,22 +6,22 @@ export const RESET_PASSWORD_CLEAR = 'RESET_PASSWORD_CLEAR';
 export function resetPasswordPending(pending) {
   return {
     type: RESET_PASSWORD_PENDING,
-    pending,
+    payload: pending,
   };
 }
 
 export function resetPasswordSuccess(success) {
   return {
     type: RESET_PASSWORD_SUCCESS,
-    success,
+    payload: success,
   };
 }
 
 export function resetPasswordError(error) {
   return {
     type: RESET_PASSWORD_ERROR,
-    error,
-  }
+    payload: error,
+  };
 }
 
 export function resetPasswordClear() {
@@ -51,5 +51,5 @@ export function resetPassword(password, confPassword) {
         dispatch(resetPasswordError(error));
       }
     });
-  }
+  };
 }
