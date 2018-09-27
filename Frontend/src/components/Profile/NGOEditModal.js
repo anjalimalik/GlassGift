@@ -41,7 +41,7 @@ class NGOEditModal extends Component {
 
   render() {
     return (
-      <div className="ngoedit-modal">
+      <div className="NGOEditModal">
         <Modal
           show={this.props.visibility}
           onHide={() => this.props.onChangeVisibility(false)}
