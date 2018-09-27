@@ -11,15 +11,21 @@ class Profile extends Component {
     super(props);
 
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
+    this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
     this.renderNGOUpdateAlert = this.renderNGOUpdateAlert.bind(this);
 
     this.state = {
       ngoEditModalVis: false,
+      ngoEditNoticeModalVis: false,
     };
   }
 
-  onChangeNGOEditModalVisibility(vis) {
-    this.setState({ngoEditModalVis: vis});
+  onChangeNGOEditModalVisibility(ngoEditModalVis) {
+    this.setState({ngoEditModalVis});
+  }
+
+  onChangeNGOEditNoticeModalVisibility(ngoEditNoticeModalVis) {
+    this.setState({ngoEditNoticeModalVis});
   }
 
   renderNGOUpdateAlert() {
@@ -46,7 +52,8 @@ class Profile extends Component {
       <div className="Profile">
         {this.renderNGOUpdateAlert()}
         <PageHeader>Profile</PageHeader>
-        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Test</Button>
+        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Test Edit Modal</Button>
+        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Test Notice Modal</Button>
         <NGOEditModal visibility={this.state.ngoEditModalVis} onChangeVisibility={this.onChangeNGOEditModalVisibility}/>
       </div>
     );
