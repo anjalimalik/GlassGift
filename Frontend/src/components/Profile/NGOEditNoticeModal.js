@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateNGO, updateNGOClear } from '../../actions/updateNGO';
 
 
@@ -40,7 +41,7 @@ class NGOEditNoticeModal extends Component {
               <ControlLabel>New Notice</ControlLabel>
               <FormControl
                 autoFocus
-                placeholder="johnsmith@email.com..."
+                placeholder={this.props.notice}
                 value={this.state.notice}
                 onChange={(e) => { this.setState({ notice: e.target.value }) }}
               />
@@ -49,8 +50,14 @@ class NGOEditNoticeModal extends Component {
 
           <Modal.Footer>
             <Button onClick={() => this.props.onChangeVisibility(false)}>Close</Button>
-            <Button bsStyle="primary" onClick={this.onSaveChanges}>
-              Save Notice
+            <Button
+              bsStyle="primary"
+              disabled={this.props.pending}
+              onClick={this.onSaveChanges}
+            >
+              Save Changes
+              { this.props.pending ? <span className="loginButtonSpinner">
+                <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
             </Button>
           </Modal.Footer>
         </Modal>

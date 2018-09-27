@@ -56,10 +56,13 @@ class Profile extends Component {
         <Button onClick={() => this.setState({ngoEditModalVis: true})}>Test Edit Modal</Button>
         <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Test Notice Modal</Button>
         <NGOEditModal
+          location="test location"
+          categories={[{ label:"Health", value: "5" }]}
           visibility={this.state.ngoEditModalVis}
           onChangeVisibility={this.onChangeNGOEditModalVisibility}
         />
         <NGOEditNoticeModal
+          notice="test"
           visibility={this.state.ngoEditNoticeModalVis}
           onChangeVisibility={this.onChangeNGOEditNoticeModalVisibility}
         />
