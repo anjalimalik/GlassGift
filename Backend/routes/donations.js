@@ -14,8 +14,8 @@ router.post('/', function(req, res) {
 
     const client = new pg.Client(connection)
 	client.connect();
-	 const query = client.query(`INSERT INTO TABLE Ngo (
-            desscription, idCategory, calendarLink, notice, minLimit, maxLimit,emailTemplate
+	 const query = client.query(`INSERT INTO TABLE Donation (
+            donorId, ngoId, anonymity, message, donationType, honoredUserId, honoredUerName, date 
         ) VALUES (
             
         )`);

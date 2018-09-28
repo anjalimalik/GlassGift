@@ -1,3 +1,4 @@
+//TBH, this is mostly a model file, model all your database functions after this.
 const pg = require('pg');
 const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/todo';
 
