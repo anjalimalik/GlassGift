@@ -274,7 +274,7 @@ class Signup extends Component {
                 value={this.state.minLimit}
                 onChange={(e) => { this.setState({ minLimit: e.target.value }) }}
               />{' '}
-              <ControlLabel>Max:   </ControlLabel>{' '}
+              <ControlLabel style={{ marginLeft: 20, }}>Max:   </ControlLabel>{' '}
               <FormControl
                 autoFocus
                 type="text"
@@ -285,7 +285,7 @@ class Signup extends Component {
             </Form>
 
             <br />
-            
+
             <FormGroup bsSize="large">
               <ControlLabel>Calender Link</ControlLabel>
               <FormControl 
