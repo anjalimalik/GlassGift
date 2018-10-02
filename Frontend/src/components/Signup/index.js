@@ -129,6 +129,7 @@ class Signup extends Component {
                   value={this.state.password}
                   onChange={(e) => { this.setState({ password: e.target.value }) }}
                 />
+                <br />
                 <FormControl
                   type="password"
                   placeholder="Confirm Password"
@@ -146,7 +147,7 @@ class Signup extends Component {
                   value={this.state.age}
                   onChange={(e) => { this.setState({ age: e.target.value }) }}
                 />
-                
+
               </FormGroup>
               <FormGroup bsSize="large">
                 <ControlLabel>Gender</ControlLabel>
@@ -203,7 +204,7 @@ class Signup extends Component {
               />
             </FormGroup>
 
-            <FormGroup bsSize="large">
+            <FormGroup bsSize="large" >
               <ControlLabel>Password</ControlLabel>
               <FormControl
                 type="password"
@@ -211,6 +212,7 @@ class Signup extends Component {
                 value={this.state.password}
                 onChange={(e) => { this.setState({ password: e.target.value }) }}
               />
+              <br />
               <FormControl
                 type="password"
                 placeholder="Confirm Password"
