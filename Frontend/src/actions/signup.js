@@ -33,9 +33,8 @@ export function signupClear() {
   };
 }
 
-// Testing function
 function callSignupApi(state) {
-  return new Promise((resolve,reject) => {
+  return new Promise((resolve, reject) => {
     const body = {
       name: state.name,
       email: state.email,
