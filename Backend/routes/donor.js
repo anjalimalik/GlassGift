@@ -1,26 +1,27 @@
-var express = require('express');
-const pg = require('pg');
-var router = express.Router();
+const express = require('express');
+const bcrypt = require("bcrypt");
+const db = require('../models/database');
 
-const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/todo';
+const router = express.Router();
+const saltRounds = 10;
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.post('/', function(req, res) {
+router.post('/', async function(req, res) {
     const donor = req.body;
-
-client.connect();
-    const client = new pg.Client(connectionString);
-    const query = client.query(`INSERT INTO TABLE Donor (
-            paymentData, age, gender
-        ) VALUES (
-            
-        )`);
+    const hash = await bcrypt(donor.password, saltRounds);
     
-    query.on("end", client.end());
+    db.insert("User",
+        ["email", "password", "location", "emailConfirmation", "confirmed"],
+        [donor.email, hash, donor.location, donor.emailConfirmation, donor.confirmed]);
+    db.insert("Donor", 
+        ["paymentData", "age", "gender"],
+        [donor.paymentData, donor.age, donor.gender]);
+        
+    res.status(200);
 });
 
 module.exports = router;

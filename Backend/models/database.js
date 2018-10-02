@@ -1,10 +1,24 @@
-//TBH, this is mostly a model file, model all your database functions after this.
-const pg = require('pg');
-const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/todo';
+const {Pool} = require('pg');
+const fs = require('fs');
 
-const client = new pg.Client(connectionString);
-client.connect();
-const query = client.query(
-    'CREATE TABLE items(id SERIAL PRIMARY KEY, text VARCHAR(40) not null, complete BOOLEAN)');
+const pool = new Pool();
 
-query.on("end", client.end());
+async function execute(query, values) {
+	const result = await pool.query(query, values);
+	return result.rows;
+}
+
+async function init() {
+    return await execute(fs.readFileSync('../sql/tables.sql'));
+}
+
+async function insert(table, cols, vals) {
+	if (cols.length !== vals.length) throw "Different number of columns and values";
+	return await execute(`INSERT INTO TABLE ${table} (${cols.join(", ")}) VALUES (${vals.join(", ")})`);
+}
+
+async function modify(table, property, value, qualifier) {
+	return await execute(`UPDATE ${table} SET ${property}=${value} WHERE ${qualifier}`);
+}
+
+module.exports = {execute, insert, modify, init};
