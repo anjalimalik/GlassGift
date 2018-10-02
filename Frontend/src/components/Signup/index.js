@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab,
+  Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab, Form,
 } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
@@ -46,7 +46,10 @@ class Signup extends Component {
       password: '',
       confPassword: '',
       description: '',
+      minLimit: '',
+      maxLimit: '',
       categories: [],
+      calLink: '',
     };
   }
 
@@ -222,6 +225,23 @@ class Signup extends Component {
             </FormGroup>
 
             <FormGroup bsSize="large">
+              <ControlLabel>Categories</ControlLabel>
+              <Select isMulti value={this.state.categories}
+                options={selectNGOOptions} onChange={this.onCategoriesChange}
+              />
+            </FormGroup>
+
+            <br/>
+            <h3>
+                Profile Specific Information</h3>
+            <hr
+                style={{
+                  borderBottomColor: 'black',
+                  borderBottomWidth: 1,
+                }}
+            />
+
+            <FormGroup bsSize="large">
               <ControlLabel>Location</ControlLabel>
               <FormControl
                 autoFocus
@@ -233,11 +253,50 @@ class Signup extends Component {
             </FormGroup>
 
             <FormGroup bsSize="large">
-              <ControlLabel>Categories</ControlLabel>
-              <Select isMulti value={this.state.categories}
-                options={selectNGOOptions} onChange={this.onCategoriesChange}
-              />
+              <ControlLabel>Description</ControlLabel>
+              <FormControl 
+                autoFocus
+                type="text"
+                componentClass="textarea" 
+                placeholder="(Optional)" 
+                value={this.state.description}
+                onChange={(e) => { this.setState({ description: e.target.value }) }}
+                />
             </FormGroup>
+
+            <ControlLabel>Donation Limits (optional)</ControlLabel>
+            <Form inline bsSize="sm">
+              <ControlLabel>Min:   </ControlLabel>{' '}
+              <FormControl
+                autoFocus
+                type="text"
+                placeholder="$"
+                value={this.state.minLimit}
+                onChange={(e) => { this.setState({ minLimit: e.target.value }) }}
+              />{' '}
+              <ControlLabel>Max:   </ControlLabel>{' '}
+              <FormControl
+                autoFocus
+                type="text"
+                placeholder="$$$"
+                value={this.state.maxLimit}
+                onChange={(e) => { this.setState({ maxLimit: e.target.value }) }}
+              />{' '}
+            </Form>
+
+            <br />
+            
+            <FormGroup bsSize="large">
+              <ControlLabel>Calender Link</ControlLabel>
+              <FormControl 
+                autoFocus
+                type="text"
+                placeholder="(Optional)" 
+                value={this.state.calLink}
+                onChange={(e) => { this.setState({ calLink: e.target.value }) }}
+                />
+            </FormGroup>
+
 
             <Button
               block
