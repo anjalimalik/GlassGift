@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
-import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR } from '../../constants';
+import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR, GENDER_OPTIONS } from '../../constants';
 import { signup, signupClear } from '../../actions/signup';
 import './Signup.css';
 
@@ -14,6 +14,13 @@ const selectNGOOptions = Object.keys(NGO_CATEGORIES).map(key => {
   return {
     value: key,
     label: NGO_CATEGORIES[key],
+  };
+});
+
+const selectGenderOptions = Object.keys(GENDER_OPTIONS).map(key => {
+  return {
+    value: key,
+    label: GENDER_OPTIONS[key],
   };
 });
 
@@ -25,6 +32,7 @@ class Signup extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onChangeTab = this.onChangeTab.bind(this);
     this.onCategoriesChange = this.onCategoriesChange.bind(this);
+    this.onGenderChange = this.onGenderChange.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
 
     this.state = {
@@ -33,6 +41,8 @@ class Signup extends Component {
       name: '',
       email: '',
       location: '',
+      age: '',
+      gender: '',
       password: '',
       confPassword: '',
       description: '',
@@ -55,6 +65,10 @@ class Signup extends Component {
 
   onCategoriesChange(categories) {
     this.setState({ categories });
+  }
+
+  onGenderChange(gender) {
+    this.setState({ gender });
   }
 
   renderAlert() {
@@ -121,6 +135,24 @@ class Signup extends Component {
                   value={this.state.confPassword}
                   onChange={(e) => { this.setState({ confPassword: e.target.value }) }}
                 />
+              </FormGroup>
+
+              <FormGroup bsSize="large">
+                <ControlLabel>Age</ControlLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  placeholder="##"
+                  value={this.state.age}
+                  onChange={(e) => { this.setState({ age: e.target.value }) }}
+                />
+                
+              </FormGroup>
+              <FormGroup bsSize="large">
+                <ControlLabel>Gender</ControlLabel>
+                <Select value={this.state.gender}
+                options={selectGenderOptions} onChange={this.onGenderChange}
+              />
               </FormGroup>
 
               <FormGroup bsSize="large">
