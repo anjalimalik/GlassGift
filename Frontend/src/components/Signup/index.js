@@ -46,7 +46,8 @@ class Signup extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.signup(this.state);
+    this.props.signup(this.state)
+    .then(() => console.log('done'));
   }
 
   onChangeTab(tab) {
