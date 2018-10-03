@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PageHeader } from 'react-bootstrap';
+import { PageHeader, Button } from 'react-bootstrap';
 
 class Dashboard extends Component {
 
@@ -14,10 +14,16 @@ class Dashboard extends Component {
     return (
       <div className="Dashboard">
         <PageHeader>Dashboard</PageHeader>
-        <h1>Welcome</h1>
+        <Button bsSize="large" className="pull-left" onClick={()=> {this.props.history.replace('/profile')}}>
+              Profile
+          </Button>
+          <br />
+          <br />
+          <br />
+          <Button bsSize="large"  className="pull-left" onClick={()=> {this.props.history.replace('/')}}>
+              Search NGOs
+          </Button>
 
-        <h6>Account Settings</h6>
-        <h6>Activity</h6>
       </div>
     );
   }
