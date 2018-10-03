@@ -1,7 +1,13 @@
 const createError = require('http-errors');
+const db = require('./database');
 
-function ipFilter(req, res, next) {
-    
+async function ipFilter(req, res, next) {
+    const userId = req.body ? req.body.userId : req.params.userId;
+    const pastIps = await db.get('UserIps', ['ip'], `userId = ${userId}`);
+
+    if (!pastIps.includes(req.ip)) {
+    	// Throw some error
+    } else next();
 }
 
 function error(err, req, res, next) {

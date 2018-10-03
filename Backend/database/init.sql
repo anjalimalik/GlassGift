@@ -61,7 +61,7 @@ create table if not exists RecurringDonation(
   frequency integer
 );
 
-create table if not exists IpAddresses(
+create table if not exists UserIps(
     userId varchar(30) references GGUser,
     ip varchar(15) unique primary key
 )

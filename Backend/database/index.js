@@ -12,6 +12,10 @@ async function init() {
     return await execute(fs.readFileSync('./init.database', 'utf-8'));
 }
 
+async function get(table, cols, query) {
+	return await execute(`SELECT ${cols.join(', ')} FROM ${table} WHERE ${query}`);
+}
+
 async function insert(table, cols, vals) {
 	if (cols.length !== vals.length) throw "Different number of columns and values";
 	return await execute(`INSERT INTO TABLE ${table} (${cols.join(", ")}) VALUES (${vals.join(", ")})`);
@@ -21,4 +25,4 @@ async function modify(table, property, value, qualifier) {
 	return await execute(`UPDATE ${table} SET ${property}=${value} WHERE ${qualifier}`);
 }
 
-module.exports = {insert, modify, init};
+module.exports = {get, insert, modify, init};
