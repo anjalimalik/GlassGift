@@ -9,7 +9,7 @@ async function execute(query, values) {
 }
 
 async function init() {
-    return await execute(fs.readFileSync('./sql/tables.sql', 'utf-8'));
+    return await execute(fs.readFileSync('./tables.sql', 'utf-8'));
 }
 
 async function insert(table, cols, vals) {

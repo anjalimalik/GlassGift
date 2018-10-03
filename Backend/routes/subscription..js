@@ -1,26 +1,14 @@
-var express = require('express');
-const pg = require('pg');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/todo';
+router.post('/', function (req, res) {
+	const donor = req.body;
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
-router.post('/', function(req, res) {
-    const donor = req.body;
-
-client.connect();
-    const client = new pg.Client(connectionString);
-    const query = client.query(`INSERT INTO TABLE DonorSubscriptions (
+	const query = client.query(`INSERT INTO TABLE DonorSubscriptions (
             donorId, ngoId
         ) VALUES (
             
         )`);
-    
-    query.on("end", client.end());
 });
 
 module.exports = router;

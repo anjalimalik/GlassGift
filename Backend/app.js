@@ -9,7 +9,7 @@ const donorRouter = require('./routes/donor');
 const ngoRouter = require('./routes/ngo');
 const main = require('./bin/server');
 const {ipFilter} = require('./middleware');
-const db = require('./models/database');
+const db = require('./sql/database');
 
 require('dotenv').config();
 const app = express();
