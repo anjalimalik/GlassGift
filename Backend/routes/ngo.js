@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require("bcrypt");
-const db = require('../sql/database');
+const db = require('../database');
 
 const router = express.Router();
 const saltRounds = 10;
@@ -15,6 +15,7 @@ router.post('/', async function(req, res) {
     db.insert("Donor", 
         ["emailTemplate", "description", "calLink", "notice", "minLimit", "maxLimit"],
         [ngo.emailTemplate, ngo.description, ngo.calLink, ngo.notice, ngo.minLimit, ngo.maxLimit]);
+    res.status(200);
 });
 
 router.put('/notice', async function(req, res) {

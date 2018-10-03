@@ -1,14 +1,13 @@
 const express = require('express');
+const db = require('../database');
 const router = express.Router();
 
-router.post('/', function (req, res) {
-	const donor = req.body;
-
-	const query = client.query(`INSERT INTO TABLE DonorSubscriptions (
-            donorId, ngoId
-        ) VALUES (
-            
-        )`);
+router.post('/', async function (req, res) {
+	const subscription = req.body;
+	db.insert('Subscriptions',
+		['donorId', 'ngoId'],
+		[subscription.donorId, subscription.ngoId]);
+	res.status(200);
 });
 
 module.exports = router;
