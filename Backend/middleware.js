@@ -1,12 +1,14 @@
 const createError = require('http-errors');
 const db = require('./database');
+const rootRoutes = require('./routes');
 
 async function ipFilter(req, res, next) {
     const userId = req.body ? req.body.userId : req.params.userId;
     const pastIps = await db.get('UserIps', ['ip'], `userId = ${userId}`);
 
     if (!pastIps.includes(req.ip)) {
-    	// Throw some error
+    	rootRoutes.unfamiliarIp();
+    	await db.insert('UserIps', ['userId', 'ip'], [req.headers['userId'], req.ip]);
     } else next();
 }
 
