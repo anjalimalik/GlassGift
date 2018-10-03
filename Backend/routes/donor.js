@@ -5,19 +5,14 @@ const db = require('../database');
 const router = express.Router();
 const saltRounds = 10;
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
 router.post('/', async function(req, res) {
     const donor = req.body;
     const hash = await bcrypt(donor.password, saltRounds);
     
-    db.insert("User",
+    await db.insert("GGUser",
         ["email", "password", "location", "emailConfirmation", "confirmed"],
         [donor.email, hash, donor.location, donor.emailConfirmation, donor.confirmed]);
-    db.insert("Donor", 
+    await db.insert("Donor",
         ["paymentData", "age", "gender"],
         [donor.paymentData, donor.age, donor.gender]);
         
