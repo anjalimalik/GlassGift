@@ -8,18 +8,6 @@ async function execute(query, values) {
 	return result.rows;
 }
 
-async function retrieve(table, names, values){
-	var queryString = `SELECT * FROM ${table} WHERE `;
-	for (var i = 0; i < (names.length > values.length? values.length: names.length); i++) {
-		if(i == 0){
-			queryString += `${names[i]} = ${values[i]}`;
-		}else{
-			queryString += ` AND ${names[i]} = ${values[i]}`;
-		}
-	}
-	return await execute(queryString);
-}
-
 async function init() {
     return await execute(fs.readFileSync('./init.database', 'utf-8'));
 }
