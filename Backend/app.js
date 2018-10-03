@@ -1,15 +1,19 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var main = require('./bin/server');
-const {ipFilter} = require('../middleware');
+const indexRouter = require('./routes/index');
+const donorRouter = require('./routes/donor');
+const ngoRouter = require('./routes/ngo');
+const main = require('./bin/server');
+const {ipFilter} = require('./middleware');
+const db = require('./models/database');
 
-var app = express();
+require('dotenv').config();
+const app = express();
+db.init();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,7 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(ipFilter);
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/donor', donorRouter);
+app.use('/ngo', ngoRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
