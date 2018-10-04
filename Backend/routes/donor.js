@@ -12,17 +12,13 @@ router.post('/', async function(req, res) {
     var emailConfirmation = `http://localhost:8080/confirmEmail?email=${id}`;
     
     await db.insert("GGUser",
-        ["id","email", "password", "location", "emailConfirmation", "confirmed"],
-        [id, donor.email, hash, donor.location, emailConfirmation, false]);
+        ["id","email", "password", "name", "location", "emailConfirmation", "confirmed"],
+        [id, donor.email, hash, donor.name, donor.location, emailConfirmation, false]);
     await db.insert("Donor",
         ["paymentData", "age", "gender"],
         [donor.paymentData, donor.age, donor.gender]);
-        
-    var token = jwt.sign(id, config.secret, {
-      expiresIn: 86400 // expires in 24 hours
-    });
-    email.sendConfirmationEmail(ngo.email, "Placeholder", emailConfirmation, 0);
-    res.status(200).send({auth: true, token: token});
+    email.sendConfirmationEmail(ngo.email, donor.name, emailConfirmation, 0);
+    res.status(200);
 });
 
 router.put('/', async function (req, res) {
@@ -32,9 +28,7 @@ router.put('/', async function (req, res) {
 	if (rows.length === 0) {
 	    res.status(500).send(`No Donor with id ${changes.id} found`);
 	} else {
-		for (let i = 0; i < changes.names.length && i < changes.values.length; i++) {
-			await db.modify("Donor", changes.names[i], changes.values[i], id_req);
-		}
+		
 		res.status(200);
 	}
 });

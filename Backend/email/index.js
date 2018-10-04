@@ -58,3 +58,4 @@ async function sendIPemail(email, ipAddr){
 	});
 }
 
+module.exports = {sendIPemail, sendConfirmationEmail}

@@ -2,6 +2,7 @@ create table if not exists GGUser(
   id varchar(30) unique primary key,
   email varchar(30),
   password varchar(30),
+  name varchar(30),
   location varchar(30),
   emailConfirmation varchar(30),
   confirmed boolean,

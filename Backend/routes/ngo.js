@@ -20,12 +20,9 @@ router.post('/', async function(req, res) {
     await db.insert("NGO",
         ["id", "emailTemplate", "description", "calLink", "notice", "minLimit", "maxLimit"],
         [id, ngo.emailTemplate, ngo.description, ngo.calLink, ngo.notice, ngo.minLimit, ngo.maxLimit]);
-
-    var token = jwt.sign(id, config.secret, {
-      expiresIn: 86400 // expires in 24 hours
-    });
+    
     email.sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
-    res.status(200).send({auth: true, token: token});
+    res.status(200);
 });
 
 router.put('/', async function (req, res) {
