@@ -9,7 +9,7 @@ async function execute(query, values) {
 }
 
 async function init() {
-    return await execute(fs.readFileSync('./init.database', 'utf-8'));
+    return await execute(fs.readFileSync('./init.sql', 'utf-8'));
 }
 
 async function get(table, cols, query) {
@@ -25,4 +25,4 @@ async function modify(table, property, value, qualifier) {
 	return await execute(`UPDATE ${table} SET ${property}=${value} WHERE ${qualifier}`);
 }
 
-module.exports = {insert, modify, init, retrieve};
+module.exports = {get, insert, modify, init};
