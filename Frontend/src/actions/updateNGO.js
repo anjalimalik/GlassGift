@@ -32,7 +32,6 @@ export function updateNGOClear() {
   };
 }
 
-// Testing function
 function callUpdateNGOApi(state) {
   return new Promise((resolve, reject) => {
     const body = {
@@ -49,8 +48,6 @@ function callUpdateNGOApi(state) {
   });
 }
 
-
-// TODO change other action creators to use Promises
 export function updateNGO(state) {
   const request = callUpdateNGOApi(state);
   return dispatch => {

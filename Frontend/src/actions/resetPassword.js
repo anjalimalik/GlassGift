@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const RESET_PASSWORD_PENDING = 'RESET_PASSWORD_PENDING';
 export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
 export const RESET_PASSWORD_ERROR = 'RESET_PASSWORD_ERROR';
@@ -30,26 +32,24 @@ export function resetPasswordClear() {
   };
 }
 
-// Testing function
-function callResetPasswordApi(password, confPassword, cb) {
-  setTimeout(() => {
-    if (password === 'admin@example.com' && confPassword === 'admin') {
-      return cb(null);
-    }
-    return cb(new Error('Invalid email and/or password'));
-  }, 500);
+function callResetPasswordApi(password, token) {
+  return new Promise((resolve, reject) => {
+    const body = {
+      password: password,
+      token: token,
+    };
+    axios.put('http://localhost:3000/password_reset', body)
+    .then(response => resolve(response.data))
+    .catch(error => reject(new Error(error.response.data.error)));
+  })
 }
 
-
-export function resetPassword(password, confPassword) {
-  return (dispatch) => {
+export function resetPassword(password, token) {
+  const request = callResetPasswordApi(password, token);
+  return dispatch => {
     dispatch(resetPasswordPending(true));
-    callResetPasswordApi(password, confPassword, (error) => {
-      if (!error) {
-        dispatch(resetPasswordSuccess(true));
-      } else {
-        dispatch(resetPasswordError(error));
-      }
-    });
+    return request
+    .then(response => dispatch(resetPasswordSuccess(true)))
+    .catch(error => dispatch(resetPasswordError(error)));
   };
 }

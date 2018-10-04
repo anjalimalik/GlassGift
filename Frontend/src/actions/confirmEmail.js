@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const CONFIRM_EMAIL_PENDING = 'CONFIRM_EMAIL_PENDING';
 export const CONFIRM_EMAIL_SUCCESS = 'CONFIRM_EMAIL_SUCCESS';
 export const CONFIRM_EMAIL_ERROR = 'CONFIRM_EMAIL_ERROR';
@@ -30,24 +32,23 @@ export function confirmEmailClear() {
   };
 }
 
-// Testing function
-function callConfirmEmailApi(cb) {
-  setTimeout(() => {
-    // return cb();
-    return cb(new Error('Error forgetting Password!'));
-  }, 500);
+function callConfirmEmailApi(token) {
+  return new Promise((resolve, reject) => {
+    const body = {
+      token,
+    };
+    axios.post('http://localhost:3000/confirm_email', body)
+    .then(response => resolve(response.data))
+    .catch(error => reject(new Error(error.response.data.error)));
+  });
 }
 
-
-export function confirmEmail() {
+export function confirmEmail(token) {
+  const request = callConfirmEmailApi(token);
   return dispatch => {
     dispatch(confirmEmailPending(true));
-    callConfirmEmailApi(error => {
-      if (!error) {
-        dispatch(confirmEmailSuccess(true));
-      } else {
-        dispatch(confirmEmailError(error));
-      }
-    });
+    return request
+    .then(response => dispatch(confirmEmailSuccess(true)))
+    .catch(error => dispatch(confirmEmailError(error)));
   };
 }
