@@ -31,8 +31,6 @@ class Signup extends Component {
 
     this.onSubmit = this.onSubmit.bind(this);
     this.onChangeTab = this.onChangeTab.bind(this);
-    this.onCategoriesChange = this.onCategoriesChange.bind(this);
-    this.onGenderChange = this.onGenderChange.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
 
     this.state = {
@@ -62,21 +60,13 @@ class Signup extends Component {
     this.props.signup(this.state)
     .then(() => {
       if (this.props.success) {
-        this.props.history.push(`/sentEmail?email=${this.state.email}`);
+        this.props.history.push(`/sentEmail=${this.state.email}`);
       }
     });
   }
 
   onChangeTab(tab) {
     this.setState({ tab })
-  }
-
-  onCategoriesChange(categories) {
-    this.setState({ categories });
-  }
-
-  onGenderChange(gender) {
-    this.setState({ gender });
   }
 
   renderAlert() {
@@ -90,7 +80,6 @@ class Signup extends Component {
     return null;
   }
 
-  // TODO add location autocomplete
   render() {
     return (
       <div className="Signup center-block">
@@ -114,7 +103,7 @@ class Signup extends Component {
                   type="text"
                   placeholder="John Smith..."
                   value={this.state.name}
-                  onChange={(e) => { this.setState({ name: e.target.value }) }}
+                  onChange={e => this.setState({ name: e.target.value })}
                 />
               </FormGroup>
 
@@ -125,7 +114,7 @@ class Signup extends Component {
                   type="email"
                   placeholder="johnsmith@email.com..."
                   value={this.state.email}
-                  onChange={(e) => { this.setState({ email: e.target.value }) }}
+                  onChange={e => this.setState({ email: e.target.value })}
                 />
               </FormGroup>
 
@@ -135,14 +124,14 @@ class Signup extends Component {
                   type="password"
                   placeholder="Password"
                   value={this.state.password}
-                  onChange={(e) => { this.setState({ password: e.target.value }) }}
+                  onChange={e => this.setState({ password: e.target.value })}
                 />
                 <br />
                 <FormControl
                   type="password"
                   placeholder="Confirm Password"
                   value={this.state.confPassword}
-                  onChange={(e) => { this.setState({ confPassword: e.target.value }) }}
+                  onChange={e => this.setState({ confPassword: e.target.value })}
                 />
               </FormGroup>
 
@@ -153,14 +142,15 @@ class Signup extends Component {
                   type="text"
                   placeholder="##"
                   value={this.state.age}
-                  onChange={(e) => { this.setState({ age: e.target.value }) }}
+                  onChange={e => this.setState({ age: e.target.value })}
                 />
 
               </FormGroup>
               <FormGroup bsSize="large">
                 <ControlLabel>Gender</ControlLabel>
                 <Select value={this.state.gender}
-                options={selectGenderOptions} onChange={this.onGenderChange}
+                options={selectGenderOptions}
+                onChange={gender => this.setState({ gender })}
               />
               </FormGroup>
 
@@ -171,7 +161,7 @@ class Signup extends Component {
                   type="text"
                   placeholder="(Optional)"
                   value={this.state.location}
-                  onChange={(e) => { this.setState({ location: e.target.value }) }}
+                  onChange={e => this.setState({ location: e.target.value })}
                 />
               </FormGroup>
 
@@ -197,7 +187,7 @@ class Signup extends Component {
                 type="text"
                 placeholder="John Smith..."
                 value={this.state.name}
-                onChange={(e) => { this.setState({ name: e.target.value }) }}
+                onChange={e => this.setState({ name: e.target.value })}
               />
             </FormGroup>
 
@@ -208,7 +198,7 @@ class Signup extends Component {
                 type="email"
                 placeholder="johnsmith@email.com..."
                 value={this.state.email}
-                onChange={(e) => { this.setState({ email: e.target.value }) }}
+                onChange={e => this.setState({ email: e.target.value })}
               />
             </FormGroup>
 
@@ -218,21 +208,22 @@ class Signup extends Component {
                 type="password"
                 placeholder="Password"
                 value={this.state.password}
-                onChange={(e) => { this.setState({ password: e.target.value }) }}
+                onChange={e => this.setState({ password: e.target.value })}
               />
               <br />
               <FormControl
                 type="password"
                 placeholder="Confirm Password"
                 value={this.state.confPassword}
-                onChange={(e) => { this.setState({ confPassword: e.target.value }) }}
+                onChange={e => this.setState({ confPassword: e.target.value })}
               />
             </FormGroup>
 
             <FormGroup bsSize="large">
               <ControlLabel>Categories</ControlLabel>
               <Select isMulti value={this.state.categories}
-                options={selectNGOOptions} onChange={this.onCategoriesChange}
+                options={selectNGOOptions}
+                onChange={categories => this.setState({ categories })}
               />
             </FormGroup>
 
@@ -253,19 +244,19 @@ class Signup extends Component {
                 type="text"
                 placeholder="(Optional)"
                 value={this.state.location}
-                onChange={(e) => { this.setState({ location: e.target.value }) }}
+                onChange={e => this.setState({ location: e.target.value })}
               />
             </FormGroup>
 
             <FormGroup bsSize="large">
               <ControlLabel>Description</ControlLabel>
-              <FormControl 
+              <FormControl
                 autoFocus
                 type="text"
-                componentClass="textarea" 
-                placeholder="(Optional)" 
+                componentClass="textarea"
+                placeholder="(Optional)"
                 value={this.state.description}
-                onChange={(e) => { this.setState({ description: e.target.value }) }}
+                onChange={e => this.setState({ description: e.target.value })}
                 />
             </FormGroup>
 
@@ -277,7 +268,7 @@ class Signup extends Component {
                 type="text"
                 placeholder="$"
                 value={this.state.minLimit}
-                onChange={(e) => { this.setState({ minLimit: e.target.value }) }}
+                onChange={e => this.setState({ minLimit: e.target.value }) }
               />{' '}
               <ControlLabel style={{ marginLeft: 20, }}>Max:   </ControlLabel>{' '}
               <FormControl
@@ -285,7 +276,7 @@ class Signup extends Component {
                 type="text"
                 placeholder="$$$"
                 value={this.state.maxLimit}
-                onChange={(e) => { this.setState({ maxLimit: e.target.value }) }}
+                onChange={e => this.setState({ maxLimit: e.target.value })}
               />{' '}
             </Form>
 
@@ -293,12 +284,12 @@ class Signup extends Component {
 
             <FormGroup bsSize="large">
               <ControlLabel>Calender Link</ControlLabel>
-              <FormControl 
+              <FormControl
                 autoFocus
                 type="text"
-                placeholder="(Optional)" 
+                placeholder="(Optional)"
                 value={this.state.calLink}
-                onChange={(e) => { this.setState({ calLink: e.target.value }) }}
+                onChange={e => this.setState({ calLink: e.target.value })}
                 />
             </FormGroup>
 

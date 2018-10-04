@@ -43,7 +43,7 @@ class NGOEditNoticeModal extends Component {
                 autoFocus
                 placeholder={this.props.notice}
                 value={this.state.notice}
-                onChange={(e) => { this.setState({ notice: e.target.value }) }}
+                onChange={e => this.setState({ notice: e.target.value }) }
               />
             </FormGroup>
           </Modal.Body>

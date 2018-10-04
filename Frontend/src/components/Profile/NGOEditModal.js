@@ -24,8 +24,12 @@ class NGOEditModal extends Component {
     this.onCategoriesChange = this.onCategoriesChange.bind(this);
 
     this.state = {
-      location: '',
+      location: this.props.location || '',
       categories: this.props.categories || [],
+      description: this.props.description || '',
+      donationMin: this.props.donationMin || null,
+      donationMax: this.props.donationMax || null,
+      calendarLink: this.props.calendarLink || '',
     };
   }
 
@@ -54,11 +58,10 @@ class NGOEditModal extends Component {
             <FormGroup bsSize="large">
               <ControlLabel>Location</ControlLabel>
               <FormControl
-                autoFocus
                 type="text"
                 placeholder={this.props.location}
                 value={this.state.location}
-                onChange={(e) => { this.setState({ location: e.target.value }) }}
+                onChange={e => this.setState({ location: e.target.value })}
               />
             </FormGroup>
 
@@ -67,6 +70,45 @@ class NGOEditModal extends Component {
               <Select isMulti value={this.state.categories}
                 options={selectNGOOptions} onChange={this.onCategoriesChange}
               />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Description</ControlLabel>
+              <FormControl
+                type="text"
+                componentClass="textarea"
+                placeholder="(Optional)"
+                value={this.state.description}
+                onChange={e => this.setState({ description: e.target.value }) }
+                />
+            </FormGroup>
+
+            <ControlLabel>Donation Limits (optional)</ControlLabel>
+            <FormGroup inline bsSize="large">
+              <ControlLabel>Min:</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="$"
+                value={this.state.minLimit}
+                onChange={e => this.setState({ minLimit: e.target.value }) }
+              />
+              <ControlLabel>Max:</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="$$$"
+                value={this.state.maxLimit}
+                onChange={e => this.setState({ maxLimit: e.target.value }) }
+              />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Calender Link</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="(Optional)"
+                value={this.state.calLink}
+                onChange={e => this.setState({ calLink: e.target.value }) }
+                />
             </FormGroup>
           </Modal.Body>
 

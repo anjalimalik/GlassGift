@@ -42,15 +42,21 @@ function callSignupApi(state) {
       location: state.location,
     }
     if (state.tab === SIGNUP_TAB_DONOR) {
-      body.type = 'donor';
+      body.age = state.age;
+      body.gender = state.gender;
+      axios.post('http://localhost:3000/donor/', body)
+      .then(response => resolve(response.data))
+      .catch(error => reject(new Error(error.response.data.error)));
     } else {
-      body.type = 'ngo';
       body.categories = state.categories;
+      body.description = state.description;
+      body.donationMin = state.donationMin;
+      body.donationMax = state.donationMax;
+      body.calendarLink = state.calendarLink;
+      axios.post('http://localhost:3000/ngo/', body)
+      .then(response => resolve(response.data))
+      .catch(error => reject(new Error(error.response.data.error)));
     }
-
-    axios.post('http://localhost:3000/api/auth/register', body)
-    .then(response => resolve(response.data))
-    .catch(error => reject(new Error(error.response.data.error)));
   });
 }
 
