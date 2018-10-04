@@ -16,6 +16,8 @@ import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import Profile from './components/Profile';
+import SentEmail from './components/SentEmail';
+import ConfirmEmail from './components/ConfirmEmail';
 import Dashboard from './components/Dashboard';
 import UnknownAccess from './components/UnknownAccess';
 //import Search from './components/Search';
@@ -45,6 +47,8 @@ ReactDOM.render(
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/unknownaccess" component={UnknownAccess} />
         <Route exact path="/profile" component={Profile} />
+        <Route exact path="/sentEmail" component={SentEmail} />
+        <Route exact path="/confirmEmail" component={ConfirmEmail} />
       </div>
     </BrowserRouter>
   </Provider>,

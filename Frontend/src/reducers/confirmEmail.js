@@ -1,4 +1,6 @@
-import { SIGNUP_PENDING, SIGNUP_SUCCESS, SIGNUP_ERROR, SIGNUP_CLEAR } from '../actions/signup';
+import {
+  CONFIRM_EMAIL_PENDING, CONFIRM_EMAIL_SUCCESS, CONFIRM_EMAIL_ERROR, CONFIRM_EMAIL_CLEAR,
+} from '../actions/confirmEmail';
 
 export default function reducer(state = {
   pending: false,
@@ -6,25 +8,25 @@ export default function reducer(state = {
   error: null,
 }, action) {
   switch (action.type) {
-    case SIGNUP_PENDING:
+    case CONFIRM_EMAIL_PENDING:
       return {
         pending: action.payload,
         success: false,
         error: null,
       };
-    case SIGNUP_SUCCESS:
+    case CONFIRM_EMAIL_SUCCESS:
       return {
         pending: false,
-        success: true,
+        success: action.payload,
         error: null,
       };
-    case SIGNUP_ERROR:
+    case CONFIRM_EMAIL_ERROR:
       return {
         pending: false,
         success: false,
         error: action.payload.message,
       };
-    case SIGNUP_CLEAR:
+    case CONFIRM_EMAIL_CLEAR:
       return {
         pending: false,
         success: false,

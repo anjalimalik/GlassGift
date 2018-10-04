@@ -1,12 +1,12 @@
-import reducer from './signup';
+import reducer from '../../reducers/resetPassword';
 import {
-  SIGNUP_PENDING, SIGNUP_SUCCESS, SIGNUP_ERROR, SIGNUP_CLEAR,
-} from '../actions/signup';
+  RESET_PASSWORD_PENDING, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_ERROR, RESET_PASSWORD_CLEAR,
+} from '../../actions/resetPassword';
 
 describe('Forgot Password Reducer', () => {
-  it('tests SIGNUP_PENDING true', () => {
+  it('tests RESET_PASSWORD_PENDING true', () => {
     const action = {
-      type: SIGNUP_PENDING,
+      type: RESET_PASSWORD_PENDING,
       payload: true,
     };
     const expectedState = {
@@ -17,9 +17,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_PENDING false', () => {
+  it('tests RESET_PASSWORD_PENDING false', () => {
     const action = {
-      type: SIGNUP_PENDING,
+      type: RESET_PASSWORD_PENDING,
       payload: false,
     };
     const initialState = {
@@ -35,9 +35,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_SUCCESS true', () => {
+  it('tests RESET_PASSWORD_SUCCESS true', () => {
     const action = {
-      type: SIGNUP_SUCCESS,
+      type: RESET_PASSWORD_SUCCESS,
       payload: true,
     };
     const expectedState = {
@@ -48,9 +48,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_SUCCESS false', () => {
+  it('tests RESET_PASSWORD_SUCCESS false', () => {
     const action = {
-      type: SIGNUP_SUCCESS,
+      type: RESET_PASSWORD_SUCCESS,
       payload: false,
     };
     const initialState = {
@@ -66,10 +66,10 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_ERROR', () => {
-    const error = new Error('Error signing up!');
+  it('tests RESET_PASSWORD_ERROR', () => {
+    const error = new Error('Error forgetting Password!');
     const action = {
-      type: SIGNUP_ERROR,
+      type: RESET_PASSWORD_ERROR,
       payload: error,
     };
     const expectedState = {
@@ -80,9 +80,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_CLEAR', () => {
+  it('tests RESET_PASSWORD_CLEAR', () => {
     const action = {
-      type: SIGNUP_CLEAR,
+      type: RESET_PASSWORD_CLEAR,
     };
     const initialState = {
       pending: false,

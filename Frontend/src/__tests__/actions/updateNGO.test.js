@@ -2,7 +2,7 @@ import configureStore from 'redux-mock-store';
 import {
   UPDATE_NGO_PENDING, UPDATE_NGO_SUCCESS, UPDATE_NGO_ERROR, UPDATE_NGO_CLEAR,
   updateNGOPending, updateNGOSuccess, updateNGOError, updateNGOClear,
-} from './updateNGO';
+} from '../../actions/updateNGO';
 
 const mockStore = configureStore();
 const store = mockStore();

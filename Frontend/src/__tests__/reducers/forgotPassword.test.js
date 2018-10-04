@@ -1,12 +1,12 @@
-import reducer from './login';
+import reducer from '../../reducers/forgotPassword';
 import {
-  LOGIN_PENDING, LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_CLEAR,
-} from '../actions/login';
+  FORGOT_PASSWORD_PENDING, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_ERROR, FORGOT_PASSWORD_CLEAR,
+} from '../../actions/forgotPassword';
 
-describe('Login Reducer', () => {
-  it('tests LOGIN_PENDING true', () => {
+describe('Forgot Password Reducer', () => {
+  it('tests FORGOT_PASSWORD_PENDING true', () => {
     const action = {
-      type: LOGIN_PENDING,
+      type: FORGOT_PASSWORD_PENDING,
       payload: true,
     };
     const expectedState = {
@@ -17,9 +17,9 @@ describe('Login Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests LOGIN_PENDING false', () => {
+  it('tests FORGOT_PASSWORD_PENDING false', () => {
     const action = {
-      type: LOGIN_PENDING,
+      type: FORGOT_PASSWORD_PENDING,
       payload: false,
     };
     const initialState = {
@@ -35,9 +35,9 @@ describe('Login Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests LOGIN_SUCCESS true', () => {
+  it('tests FORGOT_PASSWORD_SUCCESS true', () => {
     const action = {
-      type: LOGIN_SUCCESS,
+      type: FORGOT_PASSWORD_SUCCESS,
       payload: true,
     };
     const expectedState = {
@@ -48,9 +48,9 @@ describe('Login Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests LOGIN_SUCCESS false', () => {
+  it('tests FORGOT_PASSWORD_SUCCESS false', () => {
     const action = {
-      type: LOGIN_SUCCESS,
+      type: FORGOT_PASSWORD_SUCCESS,
       payload: false,
     };
     const initialState = {
@@ -66,10 +66,10 @@ describe('Login Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests LOGIN_ERROR', () => {
-    const error = new Error('Error logging in');
+  it('tests FORGOT_PASSWORD_ERROR', () => {
+    const error = new Error('Error forgetting Password!');
     const action = {
-      type: LOGIN_ERROR,
+      type: FORGOT_PASSWORD_ERROR,
       payload: error,
     };
     const expectedState = {
@@ -80,9 +80,9 @@ describe('Login Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests LOGIN_CLEAR', () => {
+  it('tests FORGOT_PASSWORD_CLEAR', () => {
     const action = {
-      type: LOGIN_CLEAR,
+      type: FORGOT_PASSWORD_CLEAR,
     };
     const initialState = {
       pending: false,

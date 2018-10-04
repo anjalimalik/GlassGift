@@ -2,7 +2,7 @@ import configureStore from 'redux-mock-store';
 import {
   LOGIN_PENDING, LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_CLEAR,
   loginPending, loginSuccess, loginError, loginClear,
-} from './login';
+} from '../../actions/login';
 
 const mockStore = configureStore();
 const store = mockStore();
