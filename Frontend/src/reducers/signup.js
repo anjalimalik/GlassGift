@@ -15,7 +15,7 @@ export default function reducer(state = {
     case SIGNUP_SUCCESS:
       return {
         pending: false,
-        success: action.payload,
+        success: true,
         error: null,
       };
     case SIGNUP_ERROR:
