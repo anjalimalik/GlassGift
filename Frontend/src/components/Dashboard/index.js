@@ -20,7 +20,7 @@ class Dashboard extends Component {
           <br />
           <br />
           <br />
-          <Button bsSize="large"  className="pull-left" onClick={()=> {this.props.history.replace('/')}}>
+          <Button bsSize="large"  className="pull-left" onClick={()=> {this.props.history.replace('/search')}}>
               Search NGOs
           </Button>
 

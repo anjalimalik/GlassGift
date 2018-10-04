@@ -14,5 +14,5 @@ export default combineReducers({
   forgotPassword,
   updateNGO,
   confirmEmail,
-  //search,
+  search,
 });
