@@ -1,21 +1,31 @@
 const express = require('express');
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+var jwt = require('jsonwebtoken');
 const db = require('../database');
+var uuid = require('uuid/v3');
+const email = require('./email')
 
 const router = express.Router();
 const saltRounds = 10;
 
 router.post('/', async function(req, res) {
     const ngo = req.body;
-    const hash = await bcrypt(ngo.password, saltRounds);
-    
+    const hash = bcryptjs.hashSync(req.body.password, 10);
+    var id = uuid(ngo.email, uuid.DNS);
+    var emailConfirmation = `http://localhost:8080/confirmEmail?email=${id}`;
+
     await db.insert("GGUser",
-        ["email", "password", "location", "emailConfirmation", "confirmed"],
-        [ngo.email, hash, ngo.location, ngo.emailConfirmation, ngo.confirmed]);
-    await db.insert("Donor",
-        ["emailTemplate", "description", "calLink", "notice", "minLimit", "maxLimit"],
-        [ngo.emailTemplate, ngo.description, ngo.calLink, ngo.notice, ngo.minLimit, ngo.maxLimit]);
-    res.status(200);
+        ["id","email", "password", "name", "location", "emailConfirmation", "confirmed"],
+        [id, ngo.email, hash, ngo.name, ngo.location, emailConfirmation, false]);
+    await db.insert("NGO",
+        ["id", "emailTemplate", "description", "calLink", "notice", "minLimit", "maxLimit"],
+        [id, ngo.emailTemplate, ngo.description, ngo.calLink, ngo.notice, ngo.minLimit, ngo.maxLimit]);
+
+    var token = jwt.sign(id, config.secret, {
+      expiresIn: 86400 // expires in 24 hours
+    });
+    email.sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
+    res.status(200).send({auth: true, token: token});
 });
 
 router.put('/', async function (req, res) {
@@ -33,8 +43,30 @@ router.put('/', async function (req, res) {
 	}
 });
 
-router.get('/search', function (req, res) {
-	//To be discovered
+router.get('/search', async function (req, res) {
+	const basis = req.body.BasisOf;
+	const keyword = req.body.key;
+
+	switch(basis){
+		case 0:
+			//keyword 
+			var rows = db.get("GGUser", "*", `name LIKE ${keyword} AND INNER JOIN NGO ON NGO.id = GGUser.id`);
+			res.status(200).send(JSON.stringify(rows));
+			break;
+		case 1:
+			//location
+			var rows = db.get("GGUser", "*", `location LIKE ${keyword} AND INNER JOIN NGO ON NGO.id = GGUser.id`);
+			res.status(200).send(JSON.stringify(rows));
+			break;
+		case 2:
+			//category
+			var rows = db.get("NGO", "*", `category LIKE ${keyword} AND INNER JOIN GGUser ON GGUser.id = NGO.id`);
+			res.status(200).send(JSON.stringify(rows));
+			break;
+		default:
+			res.status(500).send('The search criteria did not match what was offered.');
+			break;
+	}
 });
 
 router.get('/notice', async function (req, res) {

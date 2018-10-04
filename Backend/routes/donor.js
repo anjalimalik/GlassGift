@@ -7,16 +7,22 @@ const saltRounds = 10;
 
 router.post('/', async function(req, res) {
     const donor = req.body;
-    const hash = await bcrypt(donor.password, saltRounds);
+    const hash = bcryptjs.hashSync(req.body.password, 10);
+    var id = uuid(donor.email, uuid.DNS);
+    var emailConfirmation = `http://localhost:8080/confirmEmail?email=${id}`;
     
     await db.insert("GGUser",
-        ["email", "password", "location", "emailConfirmation", "confirmed"],
-        [donor.email, hash, donor.location, donor.emailConfirmation, donor.confirmed]);
+        ["id","email", "password", "location", "emailConfirmation", "confirmed"],
+        [id, donor.email, hash, donor.location, emailConfirmation, false]);
     await db.insert("Donor",
         ["paymentData", "age", "gender"],
         [donor.paymentData, donor.age, donor.gender]);
         
-    res.status(200);
+    var token = jwt.sign(id, config.secret, {
+      expiresIn: 86400 // expires in 24 hours
+    });
+    email.sendConfirmationEmail(ngo.email, "Placeholder", emailConfirmation, 0);
+    res.status(200).send({auth: true, token: token});
 });
 
 router.put('/', async function (req, res) {
