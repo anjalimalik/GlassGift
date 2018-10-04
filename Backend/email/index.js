@@ -25,9 +25,9 @@ async function sendConfirmationEmail(email, name, confirmationLink, type) {
 
 	transporter.sendMail(mailoptions, function(err, info){
 		if(error){
-			console.log(error);
+			return console.error(error);
 		}else{
-			console.log('Email sent' + info.response);
+			return console.log('Email sent' + info.response);
 		}
 	});
 }
@@ -51,9 +51,9 @@ async function sendIPemail(email, ipAddr){
 
 	transporter.sendMail(mailoptions, function(err, info){
 		if(error){
-			console.log(error);
+			return console.error(error);
 		}else{
-			console.log('Email sent' + info.response);
+			return console.log('Email sent' + info.response);
 		}
 	});
 }
