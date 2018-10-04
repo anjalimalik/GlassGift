@@ -9,7 +9,7 @@ router.post('/', async function(req, res) {
     const donor = req.body;
     const hash = bcryptjs.hashSync(req.body.password, 10);
     var id = uuid(donor.email, uuid.DNS);
-    var emailConfirmation = `http://localhost:8080/confirmEmail?email=${id}`;
+    var emailConfirmation = bcryptjs.hashSync(id, Math.floor(Math.random() * 255));
     
     await db.insert("GGUser",
         ["id","email", "password", "name", "location", "emailConfirmation", "confirmed"],
@@ -17,6 +17,7 @@ router.post('/', async function(req, res) {
     await db.insert("Donor",
         ["paymentData", "age", "gender"],
         [donor.paymentData, donor.age, donor.gender]);
+    
     email.sendConfirmationEmail(ngo.email, donor.name, emailConfirmation, 0);
     res.status(200);
 });

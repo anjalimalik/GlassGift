@@ -9,9 +9,9 @@ var transporter = nodemailer.createTransport({
 	}
 });
 
-async function sendConfirmationEmail(email, name, confirmationLink, type) {
+async function sendConfirmationEmail(email, name, confirmationToken, type) {
 	var body = `Dear ${name},\n\nWelcome to GlassGift!\n Before we get started, we need you to follow the link`+
-			   ` posted below:\n\n\t${confirmationLink}\n\nOnce you navigate to this page you will finish your` + 
+			   ` posted below:\n\n\thttp://localhost:8080/confirmEmail?token=${confirmationToken}\n\nOnce you navigate to this page you will finish your` + 
 			   ` registration as a new ${(type === 0 ? "NGO" : "donor")} on GlassGift. Thanks!!!\n\n`+
 			   `Best Regards,\nThe GlassGift Team\n\n`+
 			   `P.S.: Please don't respond to this email, we won\'t see it.\n`; 
@@ -58,4 +58,29 @@ async function sendIPemail(email, ipAddr){
 	});
 }
 
-module.exports = {sendIPemail, sendConfirmationEmail}
+async function sendForgotPasswordemail(email, token){
+	var body = `Dear User,\n\nHello from GlassGift! We noticed that you wish to reset or have forgotten`+
+		`your password, this is not issue, however we do ask that you follow this link:\n\n`+
+		`URL/token=${token}\n\nThis is sipmly so we can verify that you are who you say you are.\n`+
+		`You will have 24 hours to reset your password, after that, the link we gave you will expire.\n`+
+		`Thank you for using GlassGift! Hopefully we will never encounter this issue again.\n\n`+
+		`Best Regards,\nThe GlassGift Team\n\n`+
+		`P.S.: Please don't respond to this email, we won\'t see it.\n`; 
+
+	var mailoptions = {
+		from: 'glassgiftteam@gmail.com'
+		to: email,
+		subject: 'GlassGift: Reset your password!',
+		text: body
+	};
+
+	transporter.sendMail(mailoptions, function(err, info){
+		if(error){
+			return console.error(error);
+		}else{
+			return console.log('Email sent' + info.response);
+		}
+	});
+}
+
+module.exports = {sendIPemail, sendConfirmationEmail, sendForgotPasswordemail}
