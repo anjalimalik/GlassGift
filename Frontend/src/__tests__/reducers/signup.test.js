@@ -1,12 +1,12 @@
-import reducer from './updateNGO';
+import reducer from '../../reducers/signup';
 import {
-  UPDATE_NGO_PENDING, UPDATE_NGO_SUCCESS, UPDATE_NGO_ERROR, UPDATE_NGO_CLEAR,
-} from '../actions/updateNGO';
+  SIGNUP_PENDING, SIGNUP_SUCCESS, SIGNUP_ERROR, SIGNUP_CLEAR,
+} from '../../actions/signup';
 
-describe('Update NGO Reducer', () => {
-  it('tests UPDATE_NGO_PENDING true', () => {
+describe('Forgot Password Reducer', () => {
+  it('tests SIGNUP_PENDING true', () => {
     const action = {
-      type: UPDATE_NGO_PENDING,
+      type: SIGNUP_PENDING,
       payload: true,
     };
     const expectedState = {
@@ -17,9 +17,9 @@ describe('Update NGO Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests UPDATE_NGO_PENDING false', () => {
+  it('tests SIGNUP_PENDING false', () => {
     const action = {
-      type: UPDATE_NGO_PENDING,
+      type: SIGNUP_PENDING,
       payload: false,
     };
     const initialState = {
@@ -35,9 +35,9 @@ describe('Update NGO Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests UPDATE_NGO_SUCCESS true', () => {
+  it('tests SIGNUP_SUCCESS true', () => {
     const action = {
-      type: UPDATE_NGO_SUCCESS,
+      type: SIGNUP_SUCCESS,
       payload: true,
     };
     const expectedState = {
@@ -48,28 +48,10 @@ describe('Update NGO Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests UPDATE_NGO_SUCCESS false', () => {
-    const action = {
-      type: UPDATE_NGO_SUCCESS,
-      payload: false,
-    };
-    const initialState = {
-      pending: false,
-      success: true,
-      error: null,
-    };
-    const expectedState = {
-      pending: false,
-      success: false,
-      error: null,
-    };
-    expect(reducer(initialState, action)).toEqual(expectedState);
-  });
-
-  it('tests UPDATE_NGO_ERROR', () => {
+  it('tests SIGNUP_ERROR', () => {
     const error = new Error('Error signing up!');
     const action = {
-      type: UPDATE_NGO_ERROR,
+      type: SIGNUP_ERROR,
       payload: error,
     };
     const expectedState = {
@@ -80,9 +62,9 @@ describe('Update NGO Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests UPDATE_NGO_CLEAR', () => {
+  it('tests SIGNUP_CLEAR', () => {
     const action = {
-      type: UPDATE_NGO_CLEAR,
+      type: SIGNUP_CLEAR,
     };
     const initialState = {
       pending: false,

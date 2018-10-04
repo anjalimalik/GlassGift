@@ -47,7 +47,11 @@ class Signup extends Component {
   onSubmit(e) {
     e.preventDefault();
     this.props.signup(this.state)
-    .then(() => console.log('done'));
+    .then(() => {
+      if (this.props.success) {
+        this.props.history.push(`/sentEmail?email=${this.state.email}`);
+      }
+    });
   }
 
   onChangeTab(tab) {

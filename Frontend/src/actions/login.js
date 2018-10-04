@@ -47,9 +47,10 @@ function callLoginApi(email, password, cb) {
 
 
 export function login(email, password, rememberMe) {
+  const request = callLoginApi(email, password)
   return (dispatch) => {
     dispatch(loginPending(true));
-    callLoginApi(email, password)
+    return request
     .then(response => {
       saveUserToken(response.token);
       dispatch(loginSuccess(response));

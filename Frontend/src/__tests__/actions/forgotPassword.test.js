@@ -2,7 +2,7 @@ import configureStore from 'redux-mock-store';
 import {
   FORGOT_PASSWORD_PENDING, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_ERROR, FORGOT_PASSWORD_CLEAR,
   forgotPasswordPending, forgotPasswordSuccess, forgotPasswordError, forgotPasswordClear,
-} from './forgotPassword';
+} from '../../actions/forgotPassword';
 
 const mockStore = configureStore();
 const store = mockStore();

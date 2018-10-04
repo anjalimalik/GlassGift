@@ -55,9 +55,10 @@ function callSignupApi(state) {
 }
 
 export function signup(state) {
+  const request = callSignupApi(state);
   return dispatch => {
     dispatch(signupPending(true));
-    callSignupApi(state)
+    return request
     .then(response => dispatch(signupSuccess(response)))
     .catch(error => dispatch(signupError(error)));
   };

@@ -1,12 +1,12 @@
-import reducer from './resetPassword';
+import reducer from '../../reducers/updateNGO';
 import {
-  RESET_PASSWORD_PENDING, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_ERROR, RESET_PASSWORD_CLEAR,
-} from '../actions/resetPassword';
+  UPDATE_NGO_PENDING, UPDATE_NGO_SUCCESS, UPDATE_NGO_ERROR, UPDATE_NGO_CLEAR,
+} from '../../actions/updateNGO';
 
-describe('Forgot Password Reducer', () => {
-  it('tests RESET_PASSWORD_PENDING true', () => {
+describe('Update NGO Reducer', () => {
+  it('tests UPDATE_NGO_PENDING true', () => {
     const action = {
-      type: RESET_PASSWORD_PENDING,
+      type: UPDATE_NGO_PENDING,
       payload: true,
     };
     const expectedState = {
@@ -17,9 +17,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests RESET_PASSWORD_PENDING false', () => {
+  it('tests UPDATE_NGO_PENDING false', () => {
     const action = {
-      type: RESET_PASSWORD_PENDING,
+      type: UPDATE_NGO_PENDING,
       payload: false,
     };
     const initialState = {
@@ -35,9 +35,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests RESET_PASSWORD_SUCCESS true', () => {
+  it('tests UPDATE_NGO_SUCCESS true', () => {
     const action = {
-      type: RESET_PASSWORD_SUCCESS,
+      type: UPDATE_NGO_SUCCESS,
       payload: true,
     };
     const expectedState = {
@@ -48,9 +48,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests RESET_PASSWORD_SUCCESS false', () => {
+  it('tests UPDATE_NGO_SUCCESS false', () => {
     const action = {
-      type: RESET_PASSWORD_SUCCESS,
+      type: UPDATE_NGO_SUCCESS,
       payload: false,
     };
     const initialState = {
@@ -66,10 +66,10 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests RESET_PASSWORD_ERROR', () => {
-    const error = new Error('Error forgetting Password!');
+  it('tests UPDATE_NGO_ERROR', () => {
+    const error = new Error('Error signing up!');
     const action = {
-      type: RESET_PASSWORD_ERROR,
+      type: UPDATE_NGO_ERROR,
       payload: error,
     };
     const expectedState = {
@@ -80,9 +80,9 @@ describe('Forgot Password Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests RESET_PASSWORD_CLEAR', () => {
+  it('tests UPDATE_NGO_CLEAR', () => {
     const action = {
-      type: RESET_PASSWORD_CLEAR,
+      type: UPDATE_NGO_CLEAR,
     };
     const initialState = {
       pending: false,

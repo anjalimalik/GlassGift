@@ -4,6 +4,7 @@ import signup from './signup';
 import resetPassword from './resetPassword';
 import forgotPassword from './forgotPassword';
 import updateNGO from './updateNGO';
+import confirmEmail from './confirmEmail';
 
 export default combineReducers({
   login,
@@ -11,4 +12,5 @@ export default combineReducers({
   resetPassword,
   forgotPassword,
   updateNGO,
+  confirmEmail,
 });
