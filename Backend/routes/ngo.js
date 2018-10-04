@@ -12,7 +12,7 @@ router.post('/', async function(req, res) {
     const ngo = req.body;
     const hash = bcryptjs.hashSync(req.body.password, 10);
     var id = uuid(ngo.email, uuid.DNS);
-    var emailConfirmation = `http://localhost:8080/confirmEmail?email=${id}`;
+    var emailConfirmation = bcryptjs.hashSync(id, Math.floor(Math.random() * 255));
 
     await db.insert("GGUser",
         ["id","email", "password", "name", "location", "emailConfirmation", "confirmed"],
