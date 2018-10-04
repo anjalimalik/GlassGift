@@ -8,6 +8,10 @@ async function execute(query, values) {
 	return result.rows;
 }
 
+async function directQuery(query) {
+    return await execute(directQuery);
+}
+
 async function init() {
     return await execute(fs.readFileSync('./database/init.sql', 'utf-8'));
 }
@@ -25,4 +29,4 @@ async function modify(table, property, value, qualifier) {
 	return await execute(`UPDATE ${table} SET ${property}=${value} WHERE ${qualifier}`);
 }
 
-module.exports = {get, insert, modify, init};
+module.exports = {get, insert, modify, init, directQuery};

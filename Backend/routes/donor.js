@@ -7,15 +7,17 @@ const saltRounds = 10;
 
 router.post('/', async function(req, res) {
     const donor = req.body;
-    const hash = await bcrypt(donor.password, saltRounds);
+    const hash = bcryptjs.hashSync(req.body.password, 10);
+    var id = uuid(donor.email, uuid.DNS);
+    var emailConfirmation = `http://localhost:8080/confirmEmail?email=${id}`;
     
     await db.insert("GGUser",
-        ["email", "password", "location", "emailConfirmation", "confirmed"],
-        [donor.email, hash, donor.location, donor.emailConfirmation, donor.confirmed]);
+        ["id","email", "password", "name", "location", "emailConfirmation", "confirmed"],
+        [id, donor.email, hash, donor.name, donor.location, emailConfirmation, false]);
     await db.insert("Donor",
         ["paymentData", "age", "gender"],
         [donor.paymentData, donor.age, donor.gender]);
-        
+    email.sendConfirmationEmail(ngo.email, donor.name, emailConfirmation, 0);
     res.status(200);
 });
 
@@ -26,9 +28,7 @@ router.put('/', async function (req, res) {
 	if (rows.length === 0) {
 	    res.status(500).send(`No Donor with id ${changes.id} found`);
 	} else {
-		for (let i = 0; i < changes.names.length && i < changes.values.length; i++) {
-			await db.modify("Donor", changes.names[i], changes.values[i], id_req);
-		}
+		
 		res.status(200);
 	}
 });
