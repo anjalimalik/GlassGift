@@ -1,10 +1,10 @@
 const express = require('express');
-const mailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 
 var transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
-		user: 'glassgiftteam@gmail.com'
+		user: 'glassgiftteam@gmail.com',
 		pass: 'jack3dj3sus'
 	}
 });
@@ -17,7 +17,7 @@ async function sendConfirmationEmail(email, name, confirmationLink, type) {
 			   `P.S.: Please don't respond to this email, we won\'t see it.\n`; 
 
 	var mailoptions = {
-		from: 'glassgiftteam@gmail.com'
+		from: 'glassgiftteam@gmail.com',
 		to: email,
 		subject: 'Confirmation Email: Please Confirm Your Account',
 		text: body
@@ -43,7 +43,7 @@ async function sendIPemail(email, ipAddr){
 		`P.S.: Please don't respond to this email, we won\'t see it.\n`; 
 
 	var mailoptions = {
-		from: 'glassgiftteam@gmail.com'
+		from: 'glassgiftteam@gmail.com',
 		to: email,
 		subject: 'GlassGift: Login from unusual IP Address',
 		text: body

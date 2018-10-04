@@ -39,7 +39,7 @@ function callResetPasswordApi(password, token) {
       token: token,
     };
     axios.put('http://localhost:3000/password_reset', body)
-    .then(response => resolve(response.data))
+    .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   })
 }
@@ -49,7 +49,7 @@ export function resetPassword(password, token) {
   return dispatch => {
     dispatch(resetPasswordPending(true));
     return request
-    .then(response => dispatch(resetPasswordSuccess(true)))
+    .then(() => dispatch(resetPasswordSuccess(true)))
     .catch(error => dispatch(resetPasswordError(error)));
   };
 }

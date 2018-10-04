@@ -38,7 +38,7 @@ function callConfirmEmailApi(token) {
       token,
     };
     axios.post('http://localhost:3000/confirm_email', body)
-    .then(response => resolve(response.data))
+    .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
 }
@@ -48,7 +48,7 @@ export function confirmEmail(token) {
   return dispatch => {
     dispatch(confirmEmailPending(true));
     return request
-    .then(response => dispatch(confirmEmailSuccess(true)))
+    .then(() => dispatch(confirmEmailSuccess(true)))
     .catch(error => dispatch(confirmEmailError(error)));
   };
 }

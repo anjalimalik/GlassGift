@@ -38,7 +38,7 @@ function callForgotPasswordApi(email) {
       email,
     };
     axios.post('http://localhost:3000/forgot_password', body)
-    .then(response => resolve(response.data))
+    .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
 }
@@ -49,7 +49,7 @@ export function forgotPassword(email) {
   return dispatch => {
     dispatch(forgotPasswordPending(true));
     return request
-    .then(response => dispatch(forgotPasswordSuccess(true)))
+    .then(() => dispatch(forgotPasswordSuccess(true)))
     .catch(error => dispatch(forgotPasswordError(error)));
   };
 }

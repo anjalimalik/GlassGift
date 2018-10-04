@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 var jwt = require('jsonwebtoken');
 const db = require('../database');
 var uuid = require('uuid/v3');
-const email = require('./email')
+const email = require('../email')
 
 const router = express.Router();
 const saltRounds = 10;
