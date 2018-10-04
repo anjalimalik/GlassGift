@@ -1,4 +1,4 @@
-import { SEARCH_PENDING, SEARCH_SUCCESS, SEARCH_ERROR, SEARCH_CLEAR } from '../actions/search';
+import { SEARCH_PENDING, SEARCH_SUCCESS, SEARCH_ERROR, SEARCH_CLEAR, SEARCH } from '../actions/search';
 
 export default function reducer(state = {  
   pending: false,
@@ -6,7 +6,7 @@ export default function reducer(state = {
   error: null,
 }, action) {
   switch(action.type) {
-    case 'SEARCH': {
+    case SEARCH: {
       return { ...state, data: action.data };
     }
     case SEARCH_PENDING:

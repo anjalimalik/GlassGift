@@ -4,6 +4,7 @@ export const SEARCH_PENDING = 'SEARCH_PENDING';
 export const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
 export const SEARCH_ERROR = 'SEARCH_ERROR';
 export const SEARCH_CLEAR = 'SEARCH_CLEAR';
+export const SEARCH = 'SEARCH';
 
 export function searchPending(pending) {
   return {
@@ -51,7 +52,7 @@ export function search(BasisOf, Key) {
     return request
     .then(response => {
       dispatch({
-        type: 'SEARCH',
+        type: SEARCH,
         data: response.data
       });
       return response.data;
