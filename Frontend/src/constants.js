@@ -17,3 +17,12 @@ export const NGO_CATEGORIES = {
   10: 'Research & Public Policy',
   11: 'Other',
 };
+
+export const GENDER_OPTIONS = {
+  0:  'Female',
+  1:  'Male',
+  2:  'Transgender',
+  3:  'Gender Variant/Non-Conforming',
+  4:  'Not Listed',
+  5:  'Prefer Not to Answer',
+};

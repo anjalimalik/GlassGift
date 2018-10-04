@@ -18,6 +18,10 @@ import ResetPassword from './components/ResetPassword';
 import Profile from './components/Profile';
 import SentEmail from './components/SentEmail';
 import ConfirmEmail from './components/ConfirmEmail';
+import Dashboard from './components/Dashboard';
+import UnknownAccess from './components/UnknownAccess';
+//import Search from './components/Search';
+//import NgosList from './components/NgosList';
 
 // Font Awesome
 library.add(faSpinner);
@@ -32,12 +36,16 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <div className="container-fluid">
-        <Header />
+        <Header >
+        </Header>
+        <a className="btn btn-link btn-bg pull-right" onClick={e => {/* add auth logout function call later */}} href={"/login"}>Logout</a>
         <Route exact path="/" component={App} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />
         <Route exact path="/resetPassword" component={ResetPassword} />
+        <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/unknownaccess" component={UnknownAccess} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/sentEmail" component={SentEmail} />
         <Route exact path="/confirmEmail" component={ConfirmEmail} />

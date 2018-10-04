@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab,
+  Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab, Form,
 } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
-import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR } from '../../constants';
+import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR, GENDER_OPTIONS } from '../../constants';
 import { signup, signupClear } from '../../actions/signup';
 import './Signup.css';
 
@@ -14,6 +14,13 @@ const selectNGOOptions = Object.keys(NGO_CATEGORIES).map(key => {
   return {
     value: key,
     label: NGO_CATEGORIES[key],
+  };
+});
+
+const selectGenderOptions = Object.keys(GENDER_OPTIONS).map(key => {
+  return {
+    value: key,
+    label: GENDER_OPTIONS[key],
   };
 });
 
@@ -25,6 +32,7 @@ class Signup extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onChangeTab = this.onChangeTab.bind(this);
     this.onCategoriesChange = this.onCategoriesChange.bind(this);
+    this.onGenderChange = this.onGenderChange.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
 
     this.state = {
@@ -33,10 +41,15 @@ class Signup extends Component {
       name: '',
       email: '',
       location: '',
+      age: '',
+      gender: '',
       password: '',
       confPassword: '',
       description: '',
+      minLimit: '',
+      maxLimit: '',
       categories: [],
+      calLink: '',
     };
   }
 
@@ -60,6 +73,10 @@ class Signup extends Component {
 
   onCategoriesChange(categories) {
     this.setState({ categories });
+  }
+
+  onGenderChange(gender) {
+    this.setState({ gender });
   }
 
   renderAlert() {
@@ -120,12 +137,31 @@ class Signup extends Component {
                   value={this.state.password}
                   onChange={(e) => { this.setState({ password: e.target.value }) }}
                 />
+                <br />
                 <FormControl
                   type="password"
                   placeholder="Confirm Password"
                   value={this.state.confPassword}
                   onChange={(e) => { this.setState({ confPassword: e.target.value }) }}
                 />
+              </FormGroup>
+
+              <FormGroup bsSize="large">
+                <ControlLabel>Age</ControlLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  placeholder="##"
+                  value={this.state.age}
+                  onChange={(e) => { this.setState({ age: e.target.value }) }}
+                />
+
+              </FormGroup>
+              <FormGroup bsSize="large">
+                <ControlLabel>Gender</ControlLabel>
+                <Select value={this.state.gender}
+                options={selectGenderOptions} onChange={this.onGenderChange}
+              />
               </FormGroup>
 
               <FormGroup bsSize="large">
@@ -176,7 +212,7 @@ class Signup extends Component {
               />
             </FormGroup>
 
-            <FormGroup bsSize="large">
+            <FormGroup bsSize="large" >
               <ControlLabel>Password</ControlLabel>
               <FormControl
                 type="password"
@@ -184,6 +220,7 @@ class Signup extends Component {
                 value={this.state.password}
                 onChange={(e) => { this.setState({ password: e.target.value }) }}
               />
+              <br />
               <FormControl
                 type="password"
                 placeholder="Confirm Password"
@@ -191,6 +228,23 @@ class Signup extends Component {
                 onChange={(e) => { this.setState({ confPassword: e.target.value }) }}
               />
             </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Categories</ControlLabel>
+              <Select isMulti value={this.state.categories}
+                options={selectNGOOptions} onChange={this.onCategoriesChange}
+              />
+            </FormGroup>
+
+            <br/>
+            <h3>
+                Profile Specific Information</h3>
+            <hr
+                style={{
+                  borderBottomColor: 'black',
+                  borderBottomWidth: 1,
+                }}
+            />
 
             <FormGroup bsSize="large">
               <ControlLabel>Location</ControlLabel>
@@ -204,11 +258,50 @@ class Signup extends Component {
             </FormGroup>
 
             <FormGroup bsSize="large">
-              <ControlLabel>Categories</ControlLabel>
-              <Select isMulti value={this.state.categories}
-                options={selectNGOOptions} onChange={this.onCategoriesChange}
-              />
+              <ControlLabel>Description</ControlLabel>
+              <FormControl 
+                autoFocus
+                type="text"
+                componentClass="textarea" 
+                placeholder="(Optional)" 
+                value={this.state.description}
+                onChange={(e) => { this.setState({ description: e.target.value }) }}
+                />
             </FormGroup>
+
+            <ControlLabel>Donation Limits (optional)</ControlLabel>
+            <Form inline bsSize="sm">
+              <ControlLabel>Min:   </ControlLabel>{' '}
+              <FormControl
+                autoFocus
+                type="text"
+                placeholder="$"
+                value={this.state.minLimit}
+                onChange={(e) => { this.setState({ minLimit: e.target.value }) }}
+              />{' '}
+              <ControlLabel style={{ marginLeft: 20, }}>Max:   </ControlLabel>{' '}
+              <FormControl
+                autoFocus
+                type="text"
+                placeholder="$$$"
+                value={this.state.maxLimit}
+                onChange={(e) => { this.setState({ maxLimit: e.target.value }) }}
+              />{' '}
+            </Form>
+
+            <br />
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Calender Link</ControlLabel>
+              <FormControl 
+                autoFocus
+                type="text"
+                placeholder="(Optional)" 
+                value={this.state.calLink}
+                onChange={(e) => { this.setState({ calLink: e.target.value }) }}
+                />
+            </FormGroup>
+
 
             <Button
               block
