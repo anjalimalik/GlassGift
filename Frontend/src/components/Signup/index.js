@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab, Form,
-} from 'react-bootstrap';
+import { Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR, GENDER_OPTIONS } from '../../constants';
 import { signup, signupClear } from '../../actions/signup';
 import './Signup.css';
+
 
 const selectNGOOptions = Object.keys(NGO_CATEGORIES).map(key => {
   return {

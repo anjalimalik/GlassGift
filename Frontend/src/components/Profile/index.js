@@ -6,6 +6,7 @@ import { updateNGOClear } from '../../actions/updateNGO';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
 
+
 class Profile extends Component {
 
   constructor(props) {

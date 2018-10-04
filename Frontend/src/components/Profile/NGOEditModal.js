@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NGO_CATEGORIES } from '../../constants';
 import { updateNGO, updateNGOClear } from '../../actions/updateNGO';
 
+
 const selectNGOOptions = Object.keys(NGO_CATEGORIES).map(key => {
   return {
     value: key,
