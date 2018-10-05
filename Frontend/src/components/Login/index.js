@@ -94,7 +94,7 @@ class Login extends Component {
               </Checkbox>
             </Col>
             <Col sm={6}>
-              <LinkContainer to="/forgotPassword">
+              <LinkContainer to={`/forgotPassword?email=${this.state.email}`}>
                 <Button bsStyle="link">Forgot Password</Button>
               </LinkContainer>
             </Col>

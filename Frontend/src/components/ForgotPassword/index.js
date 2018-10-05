@@ -12,10 +12,15 @@ class ForgotPassword extends Component {
     super(props);
 
     this.renderContent = this.renderContent.bind(this);
+
+    const params = new URLSearchParams(props.location.search);
+    this.state = {
+      email: params.get('email'),
+    }
   }
 
   componentDidMount() {
-    this.props.forgotPassword();
+    this.props.forgotPassword(this.state.email);
   }
 
   componentWillUnmount() {
