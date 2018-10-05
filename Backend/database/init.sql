@@ -16,13 +16,9 @@ create table if not exists NGO(
   description text,
   calLink text,
   notice text,
+  category int,
   minLimit bigint,
   maxLimit bigint
-);
-
-create table if not exists NGOCategories(
-  ngoId text unique primary key references NGO,
-  category smallint
 );
 
 create table if not exists Donor(
