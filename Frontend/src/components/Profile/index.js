@@ -3,13 +3,16 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Alert, Button, PageHeader } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { updateNGOClear } from '../../../actions/updateNGO';
-import { getNGO, getNGOClear } from '../../../actions/getNGO';
+import { updateNGOClear } from '../../actions/updateNGO';
+import { getNGO, getNGOClear } from '../../actions/getNGO';
+import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
+import { getUserId } from '../../actions/utils';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
+import { NGO_CATEGORIES } from '../../constants';
 
 
-class NGOProfile extends Component {
+class Profile extends Component {
 
   constructor(props) {
     super(props);
@@ -25,15 +28,20 @@ class NGOProfile extends Component {
   }
 
   componentDidMount() {
-    this.props.getNGO();
+    this.props.getNGO(getUserId());
+    this.props.getNGONotice(getUserId());
   }
 
   onChangeNGOEditModalVisibility(ngoEditModalVis) {
     this.setState({ngoEditModalVis});
+    this.props.getNGO(getUserId());
+    this.props.getNGONotice(getUserId());
   }
 
   onChangeNGOEditNoticeModalVisibility(ngoEditNoticeModalVis) {
     this.setState({ngoEditNoticeModalVis});
+    this.props.getNGO(getUserId());
+    this.props.getNGONotice(getUserId());
   }
 
   renderAlert() {
@@ -65,7 +73,7 @@ class NGOProfile extends Component {
 
   render() {
 
-    if (this.props.get.pending) {
+    if (this.props.get.pending || this.props.getNotice.pending) {
       return (
         <div className="NGOProfile">
           <FontAwesomeIcon icon="spinner" size="6x" spin/>
@@ -77,16 +85,37 @@ class NGOProfile extends Component {
       <div className="NGOProfile">
         {this.renderAlert()}
         <PageHeader>Profile</PageHeader>
-        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Test Edit Modal</Button>
-        <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Test Notice Modal</Button>
+        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
+        <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+
+        <h2>Information</h2>
+        <h4>Name:</h4>
+        {this.props.get.success.name}
+        <h4>Email:</h4>
+        {this.props.get.success.email}
+        <h4>Location</h4>
+        {this.props.get.success.location || 'No location listed'}
+        <h4>Category</h4>
+        {NGO_CATEGORIES[this.props.get.success.category]}
+        <h4>Description</h4>
+        {this.props.get.success.description || 'No description listed'}
+        <h4>CalendarLink</h4>
+        {!this.props.get.success.callink ? <a>{this.props.get.success.callink}</a> : 'No calendar link listed'}
+
+        <h2>Notice</h2>
+        {this.props.getNotice.success.notice}
+
+
         <NGOEditModal
-          location="test location"
-          categories={[{ label:"Health", value: "5" }]}
+          location={this.props.get.success.location}
+          category={this.props.get.success.category}
+          description={this.props.get.success.description}
+          calendarLink={this.props.get.success.callink}
           visibility={this.state.ngoEditModalVis}
           onChangeVisibility={this.onChangeNGOEditModalVisibility}
         />
         <NGOEditNoticeModal
-          notice="test"
+          notice={this.props.getNotice.success.notice}
           visibility={this.state.ngoEditNoticeModalVis}
           onChangeVisibility={this.onChangeNGOEditNoticeModalVisibility}
         />
@@ -95,10 +124,11 @@ class NGOProfile extends Component {
   }
 }
 
-function mapStateToProps({ updateNGO, getNGO }) {
+function mapStateToProps({ updateNGO, getNGO, getNGONotice }) {
   return {
     update: updateNGO,
     get: getNGO,
+    getNotice: getNGONotice
   };
 }
 
@@ -107,7 +137,9 @@ function mapDispatchToProps(dispatch) {
     updateNGOClear,
     getNGO,
     getNGOClear,
+    getNGONotice,
+    getNGONoticeClear,
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NGOProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

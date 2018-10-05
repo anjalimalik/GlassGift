@@ -38,7 +38,7 @@ router.put('/', async function (req, res) {
 	const changes = req.body;
 
   try {
-    const token = res.get('Authentication');
+    const token = res.get('Authorization');
     if (!token) throw new Error('No token supplied');
 
     const decoded = jwt.verify(token, 'SECRETSECRETSECRET');

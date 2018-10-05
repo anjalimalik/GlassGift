@@ -45,7 +45,7 @@ function callUpdateNGOApi(state) {
       maxLimit: state.donationMax,
       calLink: state.calendarLink,
     };
-    axios.put('http://localhost:3000/ngo/', body, { headers: { Authentication: token }})
+    axios.put('http://localhost:3000/ngo/', body, { headers: { Authorization: token }})
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });

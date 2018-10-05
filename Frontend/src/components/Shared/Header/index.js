@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { removeUserToken, getUserToken } from '../../../actions/utils';
+import { removeUserToken, getUserToken, getUserId } from '../../../actions/utils';
+import { LinkContainer } from 'react-router-bootstrap';
+
 
 class Header extends Component {
 
@@ -18,9 +20,16 @@ class Header extends Component {
   }
 
   renderLogout() {
+    const id = getUserId();
     if (getUserToken()) {
       return (
         <Nav pullRight>
+          <LinkContainer to="/dashboard">
+            <NavItem>Dashboard</NavItem>
+          </LinkContainer>
+          <LinkContainer to={`/profile/${id}`}>
+            <NavItem>Profile</NavItem>
+          </LinkContainer>
           <NavItem onSelect={this.onLogoutSelect}>Logout</NavItem>
         </Nav>
       );

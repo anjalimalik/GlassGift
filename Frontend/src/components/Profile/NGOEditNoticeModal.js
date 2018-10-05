@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { updateNGO, updateNGOClear } from '../../../actions/updateNGO';
+import { updateNGONotice, updateNGONoticeClear } from '../../actions/updateNGONotice';
 
 
 class NGOEditNoticeModal extends Component {
@@ -20,7 +20,7 @@ class NGOEditNoticeModal extends Component {
   }
 
   onSaveChanges() {
-    this.props.updateNGO(this.state).then(() => {
+    this.props.updateNGONotice(this.state.notice).then(() => {
       this.props.onChangeVisibility(false)
     });
   }
@@ -71,18 +71,18 @@ NGOEditNoticeModal.propTypes = {
   onChangeVisibility: PropTypes.func,
 };
 
-function mapStateToProps({ updateNGO }) {
+function mapStateToProps({ updateNGONotice }) {
   return {
-    pending: updateNGO.pending,
-    success: updateNGO.success,
-    error: updateNGO.error,
+    pending: updateNGONotice.pending,
+    success: updateNGONotice.success,
+    error: updateNGONotice.error,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    updateNGO,
-    updateNGOClear,
+    updateNGONotice,
+    updateNGONoticeClear,
   }, dispatch);
 }
 

@@ -40,7 +40,7 @@ function callUpdateNGONoticeApi(notice) {
     const body = {
       notice,
     };
-    axios.put('http://localhost:3000/ngo/notice', body, { headers: { Authentication: token }})
+    axios.put('http://localhost:3000/ngo/notice', body, { headers: { Authorization: token }})
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
