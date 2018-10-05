@@ -28,7 +28,12 @@ class ResetPassword extends Component {
   onSubmit(e) {
     e.preventDefault();
     const { password, token } = this.state;
-    this.props.resetPassword(password, token);
+    this.props.resetPassword(password, token)
+    .then(() => {
+      if (this.props.success) {
+        this.props.history.push(`/login`);
+      }
+    });
   }
 
   renderAlert() {

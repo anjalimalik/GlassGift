@@ -34,7 +34,16 @@ class Header extends Component {
         </Nav>
       );
     }
-    return null;
+    return (
+      <Nav pullRight>
+        <LinkContainer to="/login">
+          <NavItem>Login</NavItem>
+        </LinkContainer>
+        <LinkContainer to={`/signup`}>
+          <NavItem>Signup</NavItem>
+        </LinkContainer>
+      </Nav>
+    );
   }
 
   render() {

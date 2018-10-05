@@ -17,7 +17,8 @@ router.post('/login', async function (req, res) {
 
 		const dbUser = dbResult.rows[0];
 
-		await bcrypt.compare(user.password, dbUser.password);
+		const match = await bcrypt.compare(user.password, dbUser.password);
+		if (!match) throw new Error('Wrong password');
 
 		if (!dbUser.confirmed) throw new Error('Not confirmed');
 
