@@ -37,7 +37,7 @@ function callForgotPasswordApi(email) {
     const body = {
       email,
     };
-    axios.post('http://localhost:3000/forgot_password', body)
+    axios.post('http://localhost:3000/reset_password', body)
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });

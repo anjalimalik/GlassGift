@@ -38,7 +38,7 @@ function callResetPasswordApi(password, token) {
       password: password,
       token: token,
     };
-    axios.put('http://localhost:3000/password_reset', body)
+    axios.put('http://localhost:3000/confirm_password', body)
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   })

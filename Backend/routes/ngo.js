@@ -59,6 +59,22 @@ router.put('/', async function (req, res) {
   }
 });
 
+router.get('/', async function (req, res) {
+  try {
+    const id = req.query.id;
+
+    const query = 'SELECT NGO.id as id, name, email, location, category, description, calLink, notice, minLimit, maxLimit FROM GGUser INNER JOIN NGO ON GGUser.id = NGO.id';
+    const dbResult = await db.pool.query(query);
+    if (dbResult.rows.length !== 1) throw new Error("NGO not found!");
+
+    return res.status(200).json(dbResult.rows[0]);
+
+  } catch (error) {
+     console.log(error);
+     return res.status(500).json({ error: error.message });
+   }
+});
+
 router.post('/search', async function (req, res) {
   try {
     const basis = req.body.BasisOf;
