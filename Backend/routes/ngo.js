@@ -48,7 +48,9 @@ router.put('/', async function (req, res) {
     let query = `UPDATE GGUser SET location = '${changes.location}' WHERE id = '${decoded.id}'`;
     await db.pool.query(query);
 
-    query = `UPDATE NGO SET description = '${changes.description}', category = '${changes.category}' calLink = '${changes.calendarLink}', minLimit = '${changes.minLimit || 0}', maxLimit = '${changes.maxLimit || 0}' WHERE id = '${decoded.id}'`;
+    console.log(changes);
+
+    query = `UPDATE NGO SET description = '${changes.description}', category = '${changes.category}', calLink = '${changes.calendarLink}', minLimit = '${changes.minLimit || 0}', maxLimit = '${changes.maxLimit || 0}' WHERE id = '${decoded.id}'`;
     await db.pool.query(query);
 
     return res.sendStatus(200);

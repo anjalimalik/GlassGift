@@ -22,15 +22,14 @@ class NGOEditModal extends Component {
     super(props);
 
     this.onSaveChanges = this.onSaveChanges.bind(this);
-    this.onCategoriesChange = this.onCategoriesChange.bind(this);
 
     this.state = {
       location: this.props.location || '',
-      categories: this.props.categories || [],
+      category: { value: `${this.props.category}`, label: NGO_CATEGORIES[this.props.category] },
       description: this.props.description || '',
-      donationMin: this.props.donationMin || null,
-      donationMax: this.props.donationMax || null,
-      calendarLink: this.props.calendarLink || '',
+      minLimit: this.props.donationMin || null,
+      maxLimit: this.props.donationMax || null,
+      calLink: this.props.calendarLink || '',
     };
   }
 
@@ -38,10 +37,6 @@ class NGOEditModal extends Component {
     this.props.updateNGO(this.state).then(() => {
       this.props.onChangeVisibility(false)
     });
-  }
-
-  onCategoriesChange(categories) {
-    this.setState({ categories });
   }
 
   render() {
@@ -68,8 +63,8 @@ class NGOEditModal extends Component {
 
             <FormGroup bsSize="large">
               <ControlLabel>Categories</ControlLabel>
-              <Select isMulti value={this.state.categories}
-                options={selectNGOOptions} onChange={this.onCategoriesChange}
+              <Select value={this.state.categories}
+                options={selectNGOOptions} onChange={category => this.setState({ category })}
               />
             </FormGroup>
 
@@ -85,7 +80,7 @@ class NGOEditModal extends Component {
             </FormGroup>
 
             <ControlLabel>Donation Limits (optional)</ControlLabel>
-            <FormGroup inline bsSize="large">
+            <FormGroup bsSize="large">
               <ControlLabel>Min:</ControlLabel>
               <FormControl
                 type="text"
