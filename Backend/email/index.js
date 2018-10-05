@@ -33,7 +33,7 @@ async function sendConfirmationEmail(email, name, confirmationLink, type) {
 	});
 }
 
-async function sendIPemail(email, ipAddr){
+async function sendIPEmail(email, ipAddr){
 	var body = `Dear User,\n\nHello from GlassGift! We noticed that you had logged in to your` +
 		` account from a different IP adress than normal, the IP address you logged in from is:\n\n\t${ipAddr}` +
 		`\n\nIf this was you, then you can disregard this email. Otherwise, we highly reccomend that you reset your` +
@@ -59,10 +59,10 @@ async function sendIPemail(email, ipAddr){
 	});
 }
 
-async function sendForgotPasswordemail(email, token){
+async function sendForgotPasswordEmail(email, resetPasswordLink){
 	var body = `Dear User,\n\nHello from GlassGift! We noticed that you wish to reset or have forgotten`+
 		`your password, this is not issue, however we do ask that you follow this link:\n\n`+
-		`URL/token=${token}\n\nThis is sipmly so we can verify that you are who you say you are.\n`+
+		`${resetPasswordLink}\n\nThis is sipmly so we can verify that you are who you say you are.\n`+
 		`You will have 24 hours to reset your password, after that, the link we gave you will expire.\n`+
 		`Thank you for using GlassGift! Hopefully we will never encounter this issue again.\n\n`+
 		`Best Regards,\nThe GlassGift Team\n\n`+
@@ -84,4 +84,4 @@ async function sendForgotPasswordemail(email, token){
 	});
 }
 
-module.exports = {sendIPemail, sendConfirmationEmail, sendForgotPasswordemail}
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail}

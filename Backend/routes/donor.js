@@ -24,6 +24,8 @@ router.post('/', async function(req, res) {
     query = `INSERT INTO DONOR(id, age, gender) VALUES ('${id}', '${donor.age}', '${donor.gender}')`
     await db.pool.query(query)
 
+    sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
+
     res.sendStatus(200);
 
   } catch (error) {

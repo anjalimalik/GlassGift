@@ -7,7 +7,6 @@ const indexRouter = require('./routes/');
 const donorRouter = require('./routes/donor');
 const ngoRouter = require('./routes/ngo');
 
-const {ipFilter, error, fourOhFour} = require('./middleware');
 const db = require('./database');
 
 require('dotenv').config();
@@ -20,9 +19,5 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/donor', donorRouter);
 app.use('/ngo', ngoRouter);
-
-// app.use(ipFilter);
-app.use(error);
-app.use(fourOhFour);
 
 module.exports = app;

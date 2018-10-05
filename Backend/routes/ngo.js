@@ -3,7 +3,8 @@ const bcrypt = require("bcryptjs");
 var jwt = require('jsonwebtoken');
 const db = require('../database');
 var uuidv4 = require('uuid/v4');
-const email = require('../email')
+const { sendConfirmationEmail } = require('../email');
+
 
 const router = express.Router();
 const saltRounds = 10;
@@ -25,6 +26,8 @@ router.post('/', async function(req, res) {
 
       query = `INSERT INTO NGO(id, description, calLink, minLimit, maxLimit) VALUES ('${id}', '${ngo.description}', '${ngo.calLink}', '${ngo.minLimit || 0}', '${ngo.maxLimit || 0}')`;
       await db.pool.query(query)
+
+      sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
 
       res.sendStatus(200);
     } catch (error) {

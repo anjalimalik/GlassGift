@@ -2,13 +2,15 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const bcrypt = require('bcryptjs');
+const uuidv4 = require('uuid/v4');
 var jwt = require('jsonwebtoken');
+const { sendForgotPasswordEmail, sendIPEmail } = require('../email');
 const saltRounds = 10;
 
 router.post('/login', async function (req, res) {
-	const user = req.body;
-
 	try {
+		const user = req.body;
+
 		let query = `SELECT * from GGUser where email = '${user.email}'`;
 		let dbResult = await db.pool.query(query);
 		if (dbResult.rows.length !== 1) throw new Error('Account doesn\'t exist');
@@ -17,7 +19,16 @@ router.post('/login', async function (req, res) {
 
 		await bcrypt.compare(user.password, dbUser.password);
 
-		// if (!dbUser.confirmed) throw new Error('Not confirmed');
+		if (!dbUser.confirmed) throw new Error('Not confirmed');
+
+		// Check IP
+		query = `SELECT ip from UserIps where userId = '${dbUser.id}'`;
+		dbResult = await db.pool.query(query);
+		if (!dbResult.rows.find(row => row.ip === req.ip)) {
+			sendIPEmail(dbUser.email, req.ip);
+			query = `INSERT INTO UserIps(userId, ip) VALUES ('${dbUser.id}', '${req.ip}')`;
+			await db.pool.query(query);
+		}
 
 		const j = jwt.sign({
   		exp: Math.floor(Date.now() / 1000) + (60 * 60),
@@ -47,13 +58,12 @@ router.post('/reset_password', async function (req, res) {
 		if (dbResult.rows.length !== 1) throw new Error('Account doesn\'t exist');
 
 		const emailId = uuidv4();
-		const emailConfirmation = `http://localhost:8080/confirmEmail?email=${emailId}`;
+		const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
 		query = `UPDATE GGUser SET resetPasswordToken = '${emailId}' where email = '${email}'`
 		await db.pool.query(query);
 
-		// TODO send email
-		
+		await sendForgotPasswordEmail('noahster11@gmail.com', emailConfirmation)
 
 		return res.sendStatus(200);
 	} catch (error) {
@@ -92,7 +102,7 @@ router.post('/confirm_account', async function (req, res) {
 
 		const id = dbResult.rows[0].id;
 
-		query = `UPDATE GGUser SET confiremd = 'true' where id = '${id}'`;
+		query = `UPDATE GGUser SET confirmed = 'true' where id = '${id}'`;
 		await db.pool.query(query);
 
 		return res.sendStatus(200);
