@@ -39,7 +39,7 @@ function callLoginApi(email, password, cb) {
       email,
       password,
     };
-    axios.post('http://localhost:3000/api/auth/login', body)
+    axios.post('http://localhost:3000/login', body)
     .then(response => resolve(response.data))
     .catch(error => reject(new Error(error.response.data.error)));
   })

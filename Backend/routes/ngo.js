@@ -15,7 +15,7 @@ router.post('/', async function(req, res) {
       const hash = await bcrypt.hash(req.body.password, 10);
       const id = uuidv4();
       const emailId = uuidv4();
-      const emailConfirmation = `http://localhost:8080/confirmEmail?email=${emailId}`;
+      const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
       let query = `SELECT * FROM GGUser WHERE email = '${ngo.email}'`;
       let dbResult = await db.pool.query(query);
@@ -130,9 +130,9 @@ router.get('/notice', async function (req, res) {
 });
 
 router.put('/notice', async function(req, res) {
-  const notice = req.body.notice;
-
   try {
+    const notice = req.body.notice;
+
     const token = req.get('Authorization');
     if (!token) throw new Error('No token supplied');
 

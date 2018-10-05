@@ -8,7 +8,7 @@ import updateNGONotice from './updateNGONotice';
 import getNGO from './getNGO';
 import getNGONotice from './getNGONotice';
 import confirmEmail from './confirmEmail';
-// import search from './search';
+import search from './search';
 
 export default combineReducers({
   login,

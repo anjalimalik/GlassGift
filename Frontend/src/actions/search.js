@@ -35,10 +35,10 @@ export function searchClear() {
 function callSearchApi(BasisOf, Key) {
   return new Promise((resolve, reject) => {
     const body = {
-      BasisOf, 
+      BasisOf,
       Key,
     };
-    axios.post('http://localhost:3000/api/search', body)
+    axios.post('http://localhost:3000/ngo/search', body)
     .then(response => resolve(response.data))
     .catch(error => reject(new Error(error.response.data.error)));
   })

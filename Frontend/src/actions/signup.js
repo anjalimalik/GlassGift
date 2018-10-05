@@ -42,20 +42,18 @@ function callSignupApi(state) {
       location: state.location,
     }
     if (state.tab === SIGNUP_TAB_DONOR) {
-      body.age = state.age;
-      body.gender = state.gender;
       axios.post('http://localhost:3000/donor/', body)
       .then(response => resolve(response.data))
-      .catch(error => reject(new Error(error.response.data.error)));
+      .catch(error => {console.log(error); reject(new Error("Error signing up"))});
     } else {
-      body.categories = state.categories;
+      body.category = state.category.value;
       body.description = state.description;
-      body.donationMin = state.donationMin;
-      body.donationMax = state.donationMax;
-      body.calendarLink = state.calendarLink;
+      body.minLimit = state.donationMin;
+      body.maxLimit = state.donationMax;
+      body.calLink = state.calendarLink;
       axios.post('http://localhost:3000/ngo/', body)
       .then(response => resolve(response.data))
-      .catch(error => reject(new Error(error.response.data.error)));
+      .catch(error => reject(new Error("Error signing up")));
     }
   });
 }

@@ -18,4 +18,15 @@ class Header extends Component {
   }
 }
 
+<a className="btn btn-link btn-bg pull-right"
+   onClick={e => {
+     e.preventDefault();
+     removeUserToken();
+
+   }}
+   href={"/login"}
+>
+  Logout
+</a>
+
 export default Header;

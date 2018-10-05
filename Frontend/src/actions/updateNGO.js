@@ -39,11 +39,11 @@ function callUpdateNGOApi(state) {
     if (!token) reject(new Error("No token!"));
     const body = {
       location: state.location,
-      categories: state.categories,
+      category: state.category,
       description: state.description,
-      donationMin: state.donationMin,
-      donationMax: state.donationMax,
-      calendarLink: state.calendarLink,
+      minLimit: state.donationMin,
+      maxLimit: state.donationMax,
+      calLink: state.calendarLink,
     };
     axios.put('http://localhost:3000/ngo/', body, { headers: { Authentication: token }})
     .then(response => resolve())

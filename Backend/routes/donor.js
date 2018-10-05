@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const uuidv4 = require('uuid/v4');
 const db = require('../database');
+const { sendConfirmationEmail } = require('../email');
 
 const router = express.Router();
 const saltRounds = 10;
@@ -11,7 +12,7 @@ router.post('/', async function(req, res) {
   const hash = bcrypt.hashSync(req.body.password, 10);
   const id = uuidv4();
   const emailId = uuidv4();
-  const emailConfirmation = `http://localhost:8080/confirmEmail?email=${emailId}`;
+  const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
   try {
     let query = `SELECT * FROM GGUser WHERE email = '${donor.email}'`;
@@ -21,13 +22,12 @@ router.post('/', async function(req, res) {
     query = `INSERT INTO GGUser(id, email, password, name, location, emailConfirmation, confirmed) VALUES ('${id}', '${donor.email}', '${hash}', '${donor.name}', '${donor.location}', '${emailId}', 'false')`;
     await db.pool.query(query);
 
-    query = `INSERT INTO DONOR(id, age, gender) VALUES ('${id}', '${donor.age}', '${donor.gender}')`
-    await db.pool.query(query)
+    // query = `INSERT INTO DONOR(id, age, gender) VALUES ('${id}', '${donor.age}', '${donor.gender}')`
+    // await db.pool.query(query)
 
     sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
 
     res.sendStatus(200);
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -42,9 +42,6 @@ router.put('/', async function (req, res) {
     if (!token) throw new Error('No token supplied');
 
     const decoded = jwt.verify(token, 'SECRETSECRETSECRET');
-
-
-
 
   } catch (error) {
     return res.status(500).json({ error: error.message });

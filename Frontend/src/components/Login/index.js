@@ -29,11 +29,10 @@ class Login extends Component {
   onSubmit(e) {
     e.preventDefault();
     const { email, password, rememberMe } = this.state;
-    // TODO validate email and password
     this.props.login(email, password, rememberMe)
     .then(() => {
       if (this.props.success) {
-        this.props.history.push('/');
+        this.props.history.push('/dashboard');
       }
     });
     this.setState({

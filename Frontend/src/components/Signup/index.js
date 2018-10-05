@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, Tabs, Tab, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
-import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR, GENDER_OPTIONS } from '../../constants';
+import { NGO_CATEGORIES, SIGNUP_TAB_DEFAULT, SIGNUP_TAB_NGO, SIGNUP_TAB_DONOR } from '../../constants';
 import { signup, signupClear } from '../../actions/signup';
 import './Signup.css';
 
@@ -16,20 +16,12 @@ const selectNGOOptions = Object.keys(NGO_CATEGORIES).map(key => {
   };
 });
 
-const selectGenderOptions = Object.keys(GENDER_OPTIONS).map(key => {
-  return {
-    value: key,
-    label: GENDER_OPTIONS[key],
-  };
-});
-
 class Signup extends Component {
 
   constructor(props) {
     super(props);
 
     this.onSubmit = this.onSubmit.bind(this);
-    this.onChangeTab = this.onChangeTab.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
 
     this.state = {
@@ -45,7 +37,7 @@ class Signup extends Component {
       description: '',
       minLimit: '',
       maxLimit: '',
-      categories: [],
+      category: null,
       calLink: '',
     };
   }
@@ -59,13 +51,9 @@ class Signup extends Component {
     this.props.signup(this.state)
     .then(() => {
       if (this.props.success) {
-        this.props.history.push(`/sentEmail=${this.state.email}`);
+        this.props.history.push(`/sentEmail?email=${this.state.email}`);
       }
     });
-  }
-
-  onChangeTab(tab) {
-    this.setState({ tab })
   }
 
   renderAlert() {
@@ -90,95 +78,9 @@ class Signup extends Component {
         {this.renderAlert()}
 
         <Tabs id="signup-tabs" animation={false}
-          activeKey={this.state.tab} onSelect={this.onChangeTab}
+          activeKey={this.state.tab} onSelect={tab => this.setState({ tab })}
         >
           <Tab eventKey={SIGNUP_TAB_DONOR} title="Donor">
-            <form onSubmit={this.onSubmit}>
-
-              <FormGroup bsSize="large">
-                <ControlLabel>Name</ControlLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  placeholder="John Smith..."
-                  value={this.state.name}
-                  onChange={e => this.setState({ name: e.target.value })}
-                />
-              </FormGroup>
-
-              <FormGroup bsSize="large">
-                <ControlLabel>Email</ControlLabel>
-                <FormControl
-                  autoFocus
-                  type="email"
-                  placeholder="johnsmith@email.com..."
-                  value={this.state.email}
-                  onChange={e => this.setState({ email: e.target.value })}
-                />
-              </FormGroup>
-
-              <FormGroup bsSize="large">
-                <ControlLabel>Password</ControlLabel>
-                <FormControl
-                  type="password"
-                  placeholder="Password"
-                  value={this.state.password}
-                  onChange={e => this.setState({ password: e.target.value })}
-                />
-                <br />
-                <FormControl
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={this.state.confPassword}
-                  onChange={e => this.setState({ confPassword: e.target.value })}
-                />
-              </FormGroup>
-
-              <FormGroup bsSize="large">
-                <ControlLabel>Age</ControlLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  placeholder="##"
-                  value={this.state.age}
-                  onChange={e => this.setState({ age: e.target.value })}
-                />
-
-              </FormGroup>
-              <FormGroup bsSize="large">
-                <ControlLabel>Gender</ControlLabel>
-                <Select value={this.state.gender}
-                options={selectGenderOptions}
-                onChange={gender => this.setState({ gender })}
-              />
-              </FormGroup>
-
-              <FormGroup bsSize="large">
-                <ControlLabel>Location</ControlLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  placeholder="(Optional)"
-                  value={this.state.location}
-                  onChange={e => this.setState({ location: e.target.value })}
-                />
-              </FormGroup>
-
-              <Button
-                block
-                bsSize="large"
-                type="submit"
-                bsStyle="primary"
-                disabled={this.props.pending}
-              >
-                Create Account
-                { this.props.pending ? <span className="loginButtonSpinner">
-                  <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
-              </Button>
-            </form>
-          </Tab>
-          <Tab eventKey={SIGNUP_TAB_NGO} title="NGO">
-            {/* Category, description */}
             <FormGroup bsSize="large">
               <ControlLabel>Name</ControlLabel>
               <FormControl
@@ -193,7 +95,61 @@ class Signup extends Component {
             <FormGroup bsSize="large">
               <ControlLabel>Email</ControlLabel>
               <FormControl
+                type="email"
+                placeholder="johnsmith@email.com..."
+                value={this.state.email}
+                onChange={e => this.setState({ email: e.target.value })}
+              />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Password</ControlLabel>
+              <FormControl
+                type="password"
+                placeholder="Password"
+                value={this.state.password}
+                onChange={e => this.setState({ password: e.target.value })}
+              />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Location</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="(Optional)"
+                value={this.state.location}
+                onChange={e => this.setState({ location: e.target.value })}
+              />
+            </FormGroup>
+
+            <Button
+              block
+              bsSize="large"
+              type="submit"
+              bsStyle="primary"
+              disabled={this.props.pending}
+              onClick={this.onSubmit}
+            >
+              Create Account
+              { this.props.pending ? <span className="loginButtonSpinner">
+                <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
+            </Button>
+          </Tab>
+          <Tab eventKey={SIGNUP_TAB_NGO} title="NGO">
+            <FormGroup bsSize="large">
+              <ControlLabel>Name</ControlLabel>
+              <FormControl
                 autoFocus
+                type="text"
+                placeholder="John Smith..."
+                value={this.state.name}
+                onChange={e => this.setState({ name: e.target.value })}
+              />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Email</ControlLabel>
+              <FormControl
                 type="email"
                 placeholder="johnsmith@email.com..."
                 value={this.state.email}
@@ -209,20 +165,13 @@ class Signup extends Component {
                 value={this.state.password}
                 onChange={e => this.setState({ password: e.target.value })}
               />
-              <br />
-              <FormControl
-                type="password"
-                placeholder="Confirm Password"
-                value={this.state.confPassword}
-                onChange={e => this.setState({ confPassword: e.target.value })}
-              />
             </FormGroup>
 
             <FormGroup bsSize="large">
-              <ControlLabel>Categories</ControlLabel>
-              <Select isMulti value={this.state.categories}
+              <ControlLabel>Category</ControlLabel>
+              <Select value={this.state.category}
                 options={selectNGOOptions}
-                onChange={categories => this.setState({ categories })}
+                onChange={category => this.setState({ category })}
               />
             </FormGroup>
 
@@ -239,7 +188,6 @@ class Signup extends Component {
             <FormGroup bsSize="large">
               <ControlLabel>Location</ControlLabel>
               <FormControl
-                autoFocus
                 type="text"
                 placeholder="(Optional)"
                 value={this.state.location}
@@ -250,7 +198,6 @@ class Signup extends Component {
             <FormGroup bsSize="large">
               <ControlLabel>Description</ControlLabel>
               <FormControl
-                autoFocus
                 type="text"
                 componentClass="textarea"
                 placeholder="(Optional)"
@@ -261,17 +208,15 @@ class Signup extends Component {
 
             <ControlLabel>Donation Limits (optional)</ControlLabel>
             <Form inline bsSize="sm">
-              <ControlLabel>Min:   </ControlLabel>{' '}
+              <ControlLabel>Min:</ControlLabel>
               <FormControl
-                autoFocus
                 type="text"
                 placeholder="$"
                 value={this.state.minLimit}
                 onChange={e => this.setState({ minLimit: e.target.value }) }
               />{' '}
-              <ControlLabel style={{ marginLeft: 20, }}>Max:   </ControlLabel>{' '}
+              <ControlLabel>Max:</ControlLabel>
               <FormControl
-                autoFocus
                 type="text"
                 placeholder="$$$"
                 value={this.state.maxLimit}
@@ -284,7 +229,6 @@ class Signup extends Component {
             <FormGroup bsSize="large">
               <ControlLabel>Calender Link</ControlLabel>
               <FormControl
-                autoFocus
                 type="text"
                 placeholder="(Optional)"
                 value={this.state.calLink}
@@ -292,13 +236,13 @@ class Signup extends Component {
                 />
             </FormGroup>
 
-
             <Button
               block
               bsSize="large"
               type="submit"
               bsStyle="primary"
               disabled={this.props.pending}
+              onClick={this.onSubmit}
             >
               Create Account
               { this.props.pending ? <span className="loginButtonSpinner">

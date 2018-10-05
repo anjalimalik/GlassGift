@@ -37,7 +37,7 @@ function callConfirmEmailApi(token) {
     const body = {
       token,
     };
-    axios.post('http://localhost:3000/confirm_email', body)
+    axios.post('http://localhost:3000/confirm_account', body)
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
