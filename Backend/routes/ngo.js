@@ -63,20 +63,24 @@ router.get('/search', async function (req, res) {
 	const basis = req.body.BasisOf;
 	const keyword = req.body.key;
 
+	let innerJoinQuery = 'SELECT name, email, location, category, description, calLink, notice, minLimit, maxLimit' + 
+						 'FROM GGUser' + 
+						 'INNER JOIN NGO' + 
+						 'ON GGUser.id = NGO.id';
 	switch(basis){
 		case 0:
-			//keyword
-			var rows = db.get("GGUser", "*", `name LIKE ${keyword} AND INNER JOIN NGO ON NGO.id = GGUser.id`);
+			//keywordwhere 
+			var rows = db.pool.query(innerJoinQuery + ` WHERE name LIKE \'%${keyword}%\'`);
 			res.status(200).send(JSON.stringify(rows));
 			break;
 		case 1:
 			//location
-			var rows = db.get("GGUser", "*", `location LIKE ${keyword} AND INNER JOIN NGO ON NGO.id = GGUser.id`);
+			var rows = db.pool.query(innerJoinQuery + ` WHERE location LIKE \'%${keyword}%\'`);
 			res.status(200).send(JSON.stringify(rows));
 			break;
 		case 2:
 			//category
-			var rows = db.get("NGO", "*", `category LIKE ${keyword} AND INNER JOIN GGUser ON GGUser.id = NGO.id`);
+			var rows = db.pool.query(innerJoinQuery + ` WHERE category = \'${keyword}\'`);
 			res.status(200).send(JSON.stringify(rows));
 			break;
 		default:
