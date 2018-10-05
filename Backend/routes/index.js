@@ -53,6 +53,7 @@ router.post('/reset_password', async function (req, res) {
 		await db.pool.query(query);
 
 		// TODO send email
+		
 
 		return res.sendStatus(200);
 	} catch (error) {
@@ -73,6 +74,25 @@ router.post('/confirm_password', async function (req, res) {
 		const hash = await bcrypt.hash(password, 10);
 
 		query = `UPDATE GGUser SET password = '${hash}' where id = '${id}'`;
+		await db.pool.query(query);
+
+		return res.sendStatus(200);
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
+});
+
+router.post('/confirm_account', async function (req, res) {
+	try {
+		const { token } = req.body;
+
+		let query = `SELECT * from GGUser where emailConfirmation = '${token}'`;
+		let dbResult = await db.pool.query(query);
+		if (dbResult.rows.length !== 1) throw new Error('Account doesn\'t exist');
+
+		const id = dbResult.rows[0].id;
+
+		query = `UPDATE GGUser SET confiremd = 'true' where id = '${id}'`;
 		await db.pool.query(query);
 
 		return res.sendStatus(200);

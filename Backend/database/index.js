@@ -22,7 +22,6 @@ async function get(table, cols, query) {
 
 async function insert(table, cols, vals) {
 	if (cols.length !== vals.length) throw "Different number of columns and values";
-	console.log(`INSERT INTO ${table} (${cols.join(", ")}) VALUES (${vals.join(", ")})`);
 	return await execute(`INSERT INTO ${table} (${cols.join(", ")}) VALUES (${vals.join(", ")})`);
 }
 
