@@ -20,5 +20,5 @@ export default combineReducers({
   getNGO,
   getNGONotice,
   confirmEmail,
-  //search,
+  search,
 });

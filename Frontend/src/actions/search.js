@@ -1,32 +1,61 @@
-export const SEARCH = 'SEARCH';
+import axios from 'axios';
 
-export function search(value) {
-  return {type: SEARCH, value};
-}
-/*
-// Testing function
-function callSearchApi(email, password, cb) {
-  setTimeout(() => {
-    if (email === 'admin@example.com' && password === 'admin') {
-      return cb(null);
-    }
-    return cb(new Error('Invalid email and/or password!'));
-  }, 500);
-}
+export const SEARCH_PENDING = 'SEARCH_PENDING';
+export const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
+export const SEARCH_ERROR = 'SEARCH_ERROR';
+export const SEARCH_CLEAR = 'SEARCH_CLEAR';
 
-
-export function search(email, password, rememberMe) {
-  return (dispatch) => {
-    dispatch(searchPending(true));
-
-    // todo
-    callSearchApi(email, password, (error) => {
-      if (!error) {
-        dispatch(searchSuccess(true));
-      } else {
-        dispatch(searchError(error));
-      }
-    });
+export function searchPending(pending) {
+  return {
+    type: SEARCH_PENDING,
+    payload: pending,
   };
 }
-*/
+
+export function searchSuccess(success) {
+  return {
+    type: SEARCH_SUCCESS,
+    payload: success,
+  };
+}
+
+export function searchError(error) {
+  return {
+    type: SEARCH_ERROR,
+    payload: error,
+  };
+}
+
+export function searchClear() {
+  return {
+    type: SEARCH_CLEAR,
+  };
+}
+
+function callSearchApi(BasisOf, Key) {
+  return new Promise((resolve, reject) => {
+    const body = {
+      BasisOf, 
+      Key,
+    };
+    axios.post('http://localhost:3000/api/search', body)
+    .then(response => resolve(response.data))
+    .catch(error => reject(new Error(error.response.data.error)));
+  })
+}
+
+export function search(BasisOf, Key) {
+  const request = callSearchApi(BasisOf, Key)
+  return (dispatch) => {
+    dispatch(searchPending(true));
+    return request
+    .then(response => {
+      dispatch({
+        type: 'SEARCH',
+        data: response.data
+      });
+      return response.data;
+    })
+    .catch(error => dispatch(searchError(error)));
+  };
+}

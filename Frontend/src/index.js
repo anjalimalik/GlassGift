@@ -20,8 +20,7 @@ import SentEmail from './components/SentEmail';
 import ConfirmEmail from './components/ConfirmEmail';
 import Dashboard from './components/Dashboard';
 import UnknownAccess from './components/UnknownAccess';
-//import Search from './components/Search';
-//import NgosList from './components/NgosList';
+import Search from './components/Search';
 
 // Font Awesome
 library.add(faSpinner);
@@ -49,6 +48,7 @@ ReactDOM.render(
         <Route exact path="/ngo/:id" component={NGOProfile} />
         <Route exact path="/sentEmail" component={SentEmail} />
         <Route exact path="/confirmEmail" component={ConfirmEmail} />
+        <Route exact path="/search" component={Search} />
       </div>
     </BrowserRouter>
   </Provider>,
