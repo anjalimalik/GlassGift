@@ -3,7 +3,7 @@ import {
   UPDATE_NGO_NOTICE_PENDING, UPDATE_NGO_NOTICE_SUCCESS, UPDATE_NGO_NOTICE_ERROR, UPDATE_NGO_NOTICE_CLEAR,
 } from '../../actions/updateNGONotice';
 
-describe('Update NGO Reducer', () => {
+describe('Update NGO Notice Reducer', () => {
   it('tests UPDATE_NGO_NOTICE_PENDING true', () => {
     const action = {
       type: UPDATE_NGO_NOTICE_PENDING,

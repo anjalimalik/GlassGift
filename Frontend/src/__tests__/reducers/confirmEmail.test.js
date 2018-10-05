@@ -3,7 +3,7 @@ import {
   CONFIRM_EMAIL_PENDING, CONFIRM_EMAIL_SUCCESS, CONFIRM_EMAIL_ERROR, CONFIRM_EMAIL_CLEAR,
 } from '../../actions/confirmEmail';
 
-describe('Forgot Password Reducer', () => {
+describe('Confirm Email Reducer', () => {
   it('tests CONFIRM_EMAIL_PENDING true', () => {
     const action = {
       type: CONFIRM_EMAIL_PENDING,
