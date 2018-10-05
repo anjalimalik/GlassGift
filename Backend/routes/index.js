@@ -48,10 +48,11 @@ router.post('/reset_password', async function (req, res) {
 
 		const emailId = uuidv4();
 		const emailConfirmation = `http://localhost:8080/confirmEmail?email=${emailId}`;
-		// TODO send email
 
 		query = `UPDATE GGUser SET resetPasswordToken = '${emailId}' where email = '${email}'`
+		await db.pool.query(query);
 
+		// TODO send email
 
 		return res.sendStatus(200);
 	} catch (error) {
@@ -62,6 +63,17 @@ router.post('/reset_password', async function (req, res) {
 router.post('/confirm_password', async function (req, res) {
 	try {
 		const { token, password } = req.body;
+
+		let query = `SELECT * from GGUser where resetPasswordToken = '${token}'`;
+		let dbResult = await db.pool.query(query);
+		if (dbResult.rows.length !== 1) throw new Error('Account doesn\'t exist');
+
+		const id = dbResult.rows[0].id;
+
+		const hash = await bcrypt.hash(password, 10);
+
+		query = `UPDATE GGUser SET password = '${hash}' where id = '${id}'`;
+		await db.pool.query(query);
 
 		return res.sendStatus(200);
 	} catch (error) {
