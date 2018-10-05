@@ -7,7 +7,7 @@ import {
 const mockStore = configureStore();
 const store = mockStore();
 
-describe('Signup Actions', () => {
+describe('Update NGO Actions', () => {
   beforeEach(() => {
     store.clearActions();
   });

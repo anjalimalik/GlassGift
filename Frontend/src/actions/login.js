@@ -45,10 +45,9 @@ function callLoginApi(email, password, cb) {
   })
 }
 
-
 export function login(email, password, rememberMe) {
-  const request = callLoginApi(email, password)
-  return (dispatch) => {
+  const request = callLoginApi(email, password);
+  return dispatch => {
     dispatch(loginPending(true));
     return request
     .then(response => {

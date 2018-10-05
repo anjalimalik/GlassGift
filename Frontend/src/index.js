@@ -15,7 +15,7 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
-import Profile from './components/Profile';
+import NGOProfile from './components/Profile/NGO';
 import SentEmail from './components/SentEmail';
 import ConfirmEmail from './components/ConfirmEmail';
 import Dashboard from './components/Dashboard';
@@ -45,7 +45,7 @@ ReactDOM.render(
         <Route exact path="/resetPassword" component={ResetPassword} />
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/unknownaccess" component={UnknownAccess} />
-        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/ngo/:id" component={NGOProfile} />
         <Route exact path="/sentEmail" component={SentEmail} />
         <Route exact path="/confirmEmail" component={ConfirmEmail} />
         <Route exact path="/search" component={Search} />

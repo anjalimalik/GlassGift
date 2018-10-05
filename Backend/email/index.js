@@ -84,4 +84,8 @@ async function sendForgotPasswordemail(email, token){
 	});
 }
 
+<<<<<<< HEAD
 module.exports = {sendIPemail, sendConfirmationEmail, sendForgotPasswordemail}
+=======
+module.exports = {sendIPemail, sendConfirmationEmail}
+>>>>>>> af49177b163f7649dd897ec9eeeada79cf662882

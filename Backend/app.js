@@ -3,7 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const indexRouter = require('./routes/index');
+const indexRouter = require('./routes/');
 const donorRouter = require('./routes/donor');
 const ngoRouter = require('./routes/ngo');
 
@@ -14,21 +14,14 @@ require('dotenv').config();
 const app = express();
 db.init();
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.set('trust proxy', true);
-
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(ipFilter);
 
 app.use('/', indexRouter);
 app.use('/donor', donorRouter);
 app.use('/ngo', ngoRouter);
 
+// app.use(ipFilter);
 app.use(error);
 app.use(fourOhFour);
 

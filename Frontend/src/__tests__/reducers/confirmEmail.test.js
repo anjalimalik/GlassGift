@@ -1,12 +1,12 @@
-import reducer from '../../reducers/signup';
+import reducer from '../../reducers/confirmEmail';
 import {
-  SIGNUP_PENDING, SIGNUP_SUCCESS, SIGNUP_ERROR, SIGNUP_CLEAR,
-} from '../../actions/signup';
+  CONFIRM_EMAIL_PENDING, CONFIRM_EMAIL_SUCCESS, CONFIRM_EMAIL_ERROR, CONFIRM_EMAIL_CLEAR,
+} from '../../actions/confirmEmail';
 
-describe('Signup Reducer', () => {
-  it('tests SIGNUP_PENDING true', () => {
+describe('Confirm Email Reducer', () => {
+  it('tests CONFIRM_EMAIL_PENDING true', () => {
     const action = {
-      type: SIGNUP_PENDING,
+      type: CONFIRM_EMAIL_PENDING,
       payload: true,
     };
     const expectedState = {
@@ -17,13 +17,13 @@ describe('Signup Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_PENDING false', () => {
+  it('tests CONFIRM_EMAIL_PENDING false', () => {
     const action = {
-      type: SIGNUP_PENDING,
+      type: CONFIRM_EMAIL_PENDING,
       payload: false,
     };
     const initialState = {
-      pending: false,
+      pending: true,
       success: false,
       error: null,
     };
@@ -35,9 +35,9 @@ describe('Signup Reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_SUCCESS true', () => {
+  it('tests CONFIRM_EMAIL_SUCCESS true', () => {
     const action = {
-      type: SIGNUP_SUCCESS,
+      type: CONFIRM_EMAIL_SUCCESS,
       payload: true,
     };
     const expectedState = {
@@ -48,10 +48,28 @@ describe('Signup Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_ERROR', () => {
-    const error = new Error('Error signing up!');
+  it('tests CONFIRM_EMAIL_SUCCESS false', () => {
     const action = {
-      type: SIGNUP_ERROR,
+      type: CONFIRM_EMAIL_SUCCESS,
+      payload: false,
+    };
+    const initialState = {
+      pending: false,
+      success: true,
+      error: null,
+    };
+    const expectedState = {
+      pending: false,
+      success: false,
+      error: null,
+    };
+    expect(reducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('tests CONFIRM_EMAIL_ERROR', () => {
+    const error = new Error('Error forgetting Password!');
+    const action = {
+      type: CONFIRM_EMAIL_ERROR,
       payload: error,
     };
     const expectedState = {
@@ -62,9 +80,9 @@ describe('Signup Reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
-  it('tests SIGNUP_CLEAR', () => {
+  it('tests CONFIRM_EMAIL_CLEAR', () => {
     const action = {
-      type: SIGNUP_CLEAR,
+      type: CONFIRM_EMAIL_CLEAR,
     };
     const initialState = {
       pending: false,
