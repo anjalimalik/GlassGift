@@ -3,6 +3,7 @@ const chaiHttp = require('chai-http')
 const server = require('../app')
 
 let should = chai.should()
+let expect = chai.expect;
 chai.use(chaiHttp)
 
 describe('Testing Actions on an NGO account', () => {
@@ -12,7 +13,7 @@ describe('Testing Actions on an NGO account', () => {
 	  location: "test NGO location",
   }
 
-  it('Test NGO registration', (done) => {
+  it('POST - Test NGO registration', (done) => {
     chai.request(server)
       .post('/ngo')
       .set('content-type', 'application/json')
@@ -20,23 +21,23 @@ describe('Testing Actions on an NGO account', () => {
       .end((err, res) => {
         if (err) console.error('Error: NGO registration failed')
         res.should.have.status(200) // 500 for error
+        expect(err).to.be.null;
         done()
       })
   })
 
-  it('Test duplicate NGO registration', (done) => {
+  it('POST - Test duplicate NGO registration', (done) => {
     chai.request(server)
       .post('/ngo')
       .set('content-type', 'application/json')
       .send(ngo)
       .end((err, res) => {
-        if (err) { console.error('Error: NGO duplicate registration failed') }
         res.body.should.have.property('error').that.equals('Already exists')
         done()
       })
   })
 
-  it('Test NGO login', (done) => {
+  it('POST - Test NGO login', (done) => {
     chai.request(server)
       .post('/login')
       .set('content-type', 'application/json')
@@ -50,6 +51,7 @@ describe('Testing Actions on an NGO account', () => {
         res.body.should.be.a('object')
         res.body.should.have.property('token')
         res.body.should.have.property('user')
+        expect(err).to.be.null;
 
         // store id and token from response for subsequent tests
         ngo.id = res.body.user.id
@@ -58,7 +60,7 @@ describe('Testing Actions on an NGO account', () => {
       })
   })
 
-  it('Test get NGO account information', (done) => {
+  it('GET - Test get NGO account information', (done) => {
     chai.request(server)
       .get('/ngo')
       .set('Authorization', ngo.token)
@@ -68,6 +70,7 @@ describe('Testing Actions on an NGO account', () => {
         if (err) console.error('Error: get NGO account failed')
         res.should.have.status(200)
         res.should.have.a('object') // should return ngo account object
+        expect(err).to.be.null;
         done()
       })
   })
@@ -85,33 +88,36 @@ describe('Testing Actions on an NGO account', () => {
     notice: "test",
   }
 
-  it('Test NGO Update Info', (done) => {
+  it('PUT - Test NGO Update Info', (done) => {
     chai.request(server)
-    .post('/ngo')
+    .put('/ngo/')
     .set('Authorization', ngo.token)
     .set('content-type', 'application/json')
     .send(ngoUpdate)
     .end((err, res) => {
       if (err) console.error('Error: NGO Update changes failed')
       res.should.have.status(200) // 500 for error
+      expect(err).to.be.null;
       done()
     })
   })
 
-  it('Test NGO Update Notice', (done) => {
+
+  it('PUT - Test NGO Update Notice', (done) => {
     chai.request(server)
-    .post('/ngo/notice')
+    .put('/ngo/notice')
     .set('Authorization', ngo.token)
     .set('content-type', 'application/json')
     .send(notice)
     .end((err, res) => {
       if (err) console.error('Error: NGO Update notice failed')
       res.should.have.status(200) 
+      expect(err).to.be.null;
       done()
     })
   })
 
-  it('Test NGO get Notice', (done) => {
+  it('GET - Test NGO get Notice', (done) => {
     chai.request(server)
       .get('/ngo/notice')
       .set('Authorization', ngo.token)
@@ -121,6 +127,7 @@ describe('Testing Actions on an NGO account', () => {
         if (err) console.error('Error: get notice failed')
         res.should.have.status(200)
         res.should.have.a('object') // should have notice in body
+        expect(err).to.be.null;
         done()
       })
   })
