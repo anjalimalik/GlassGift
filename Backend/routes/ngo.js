@@ -77,32 +77,25 @@ router.get('/', async function (req, res) {
 
 router.post('/search', async function (req, res) {
   try {
-    const basis = req.body.BasisOf;
-  	const keyword = req.body.Key;
+    const type = req.body.type;
+  	const keyword = req.body.keyword;
 
-  	let innerJoinQuery = 'SELECT NGO.id as id, name, email, location, category, description, calLink, notice, minLimit, maxLimit ' +
-						             'FROM GGUser ' +
-                         'INNER JOIN NGO ' +
-  				               'ON GGUser.id = NGO.id';
-    let dbResult
-  	switch(basis){
-    case 0:
+  	let innerJoinQuery = 'SELECT NGO.id as id, name, email, location, category, description, calLink, notice, minLimit, maxLimit FROM GGUser INNER JOIN NGO ON GGUser.id = NGO.id';
+    let dbResult;
+    if (type === '0') {
       //name
       dbResult = await db.pool.query(innerJoinQuery + ` WHERE name LIKE \'%${keyword}%\'`);
       return res.status(200).json(dbResult.rows);
-      break;
-    case 1:
+    } else if (type === '1') {
       //location
       dbResult = await db.pool.query(innerJoinQuery + ` WHERE location LIKE \'%${keyword}%\'`);
       return res.status(200).json(dbResult.rows);
-      break;
-    case 2:
+    } else if (type === '2') {
       //category
       dbResult = await db.pool.query(innerJoinQuery + ` WHERE category = \'${keyword}\'`);
       return res.status(200).json(dbResult.rows);
-      break;
-    default:
-      throw new Error('Couldn\'t match basis');
+    } else {
+      throw new Error('Couldn\'t match type');
   	}
   } catch (error) {
     console.log(error);

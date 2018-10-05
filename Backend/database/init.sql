@@ -60,5 +60,5 @@ create table if not exists RecurringDonation(
 
 create table if not exists UserIps(
     userId text references GGUser,
-    ip text unique primary key
+    ip text primary key
 )

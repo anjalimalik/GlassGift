@@ -21,7 +21,6 @@ import ConfirmEmail from './components/ConfirmEmail';
 import Dashboard from './components/Dashboard';
 import UnknownAccess from './components/UnknownAccess';
 import Search from './components/Search';
-import { removeUserToken } from './actions/utils';
 
 // Font Awesome
 library.add(faSpinner);
@@ -36,7 +35,7 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <div className="container-fluid">
-        <Header />        
+        <Header />
         <Route exact path="/" component={App} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/login" component={Login} />
