@@ -46,7 +46,7 @@ function callUpdateNGOApi(state) {
       calendarLink: state.calendarLink,
     };
     axios.put('http://localhost:3000/ngo/', body, { headers: { Authentication: token }})
-    .then(response => resolve(response.data))
+    .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
 }
@@ -56,7 +56,7 @@ export function updateNGO(state) {
   return dispatch => {
     dispatch(updateNGOPending(true));
     return request
-    .then(response => dispatch(updateNGOSuccess(response)))
+    .then(() => dispatch(updateNGOSuccess()))
     .catch(error => dispatch(updateNGOError(error)));
   };
 }

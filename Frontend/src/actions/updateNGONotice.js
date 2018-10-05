@@ -11,7 +11,7 @@ export function updateNGONoticePending(pending) {
     type: UPDATE_NGO_NOTICE_PENDING,
     payload: pending,
   };
-}``
+}
 
 export function updateNGONoticeSuccess(success) {
   return {
@@ -33,7 +33,7 @@ export function updateNGONoticeClear() {
   };
 }
 
-function callupdateNGONoticeApi(notice) {
+function callUpdateNGONoticeApi(notice) {
   return new Promise((resolve, reject) => {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
@@ -41,17 +41,17 @@ function callupdateNGONoticeApi(notice) {
       notice,
     };
     axios.put('http://localhost:3000/ngo/notice', body, { headers: { Authentication: token }})
-    .then(response => resolve(response.data))
+    .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
 }
 
 export function updateNGONotice(state) {
-  const request = callupdateNGONoticeApi(state);
+  const request = callUpdateNGONoticeApi(state);
   return dispatch => {
     dispatch(updateNGONoticePending(true));
     return request
-    .then(response => dispatch(updateNGONoticeSuccess(response)))
+    .then(() => dispatch(updateNGONoticeSuccess()))
     .catch(error => dispatch(updateNGONoticeError(error)));
   };
 }

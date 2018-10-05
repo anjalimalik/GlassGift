@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getUserToken } from './utils';
 
 export const GET_NGO_NOTICE_PENDING = 'GET_NGO_NOTICE_PENDING';
 export const GET_NGO_NOTICE_SUCCESS = 'GET_NGO_NOTICE_SUCCESS';
@@ -11,7 +10,7 @@ export function getNGONoticePending(pending) {
     type: GET_NGO_NOTICE_PENDING,
     payload: pending,
   };
-}``
+}
 
 export function getNGONoticeSuccess(success) {
   return {
@@ -33,21 +32,16 @@ export function getNGONoticeClear() {
   };
 }
 
-function callgetNGONoticeApi(notice) {
+function callGetNGONoticeApi(id) {
   return new Promise((resolve, reject) => {
-    const token = getUserToken();
-    if (!token) reject(new Error("No token!"));
-    const body = {
-      notice,
-    };
-    axios.get('http://localhost:3000/ngo/notice', body, { headers: { Authentication: token }})
+    axios.get(`http://localhost:3000/ngo/notice?id=${id}`)
     .then(response => resolve(response.data))
     .catch(error => reject(new Error(error.response.data.error)));
   });
 }
 
-export function getNGONotice(state) {
-  const request = callgetNGONoticeApi(state);
+export function getNGONotice(id) {
+  const request = callGetNGONoticeApi(id);
   return dispatch => {
     dispatch(getNGONoticePending(true));
     return request

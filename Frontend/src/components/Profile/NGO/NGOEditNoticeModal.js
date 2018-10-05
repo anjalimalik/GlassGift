@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { updateNGO, updateNGOClear } from '../../actions/updateNGO';
+import { updateNGO, updateNGOClear } from '../../../actions/updateNGO';
 
 
 class NGOEditNoticeModal extends Component {

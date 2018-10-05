@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getUserToken } from './utils';
 
 export const GET_NGO_PENDING = 'GET_NGO_PENDING';
 export const GET_NGO_SUCCESS = 'GET_NGO_SUCCESS';
@@ -33,21 +32,21 @@ export function getNGOClear() {
   };
 }
 
-function callgetNGOApi(id) {
+function callGetNGOApi(id) {
   return new Promise((resolve, reject) => {
-    const token = getUserToken();
-    if (!token) reject(new Error("No token!"));
-    const body = {
-      id,
-    };
-    axios.get('http://localhost:3000/ngo/', { headers: { Authentication: token }})
+    axios.get(`http://localhost:3000/ngo/?id=${id}`)
     .then(response => resolve(response.data))
-    .catch(error => reject(new Error(error.response.data.error)));
+    .catch(error => {
+      if (error.response && error.response.error) {
+        reject(new Error(error.response.data.error));
+      }
+      reject(new Error('Network Error'));
+    });
   });
 }
 
 export function getNGO(id) {
-  const request = callgetNGOApi(id);
+  const request = callGetNGOApi(id);
   return dispatch => {
     dispatch(getNGOPending(true));
     return request
