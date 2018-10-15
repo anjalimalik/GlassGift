@@ -9,7 +9,7 @@ var transporter = nodemailer.createTransport({
 	}
 });
 
-async function sendConfirmationEmail(email, name, confirmationLink, type) {
+async function sendConfirmationEmail(email, name, confirmationToken, type) {
 	var body = `Dear ${name},\n\nWelcome to GlassGift!\n Before we get started, we need you to follow the link`+
 			   ` posted below:\n\n\t${confirmationLink}\n\nOnce you navigate to this page you will finish your` +
 			   ` registration as a new ${(type === 0 ? "NGO" : "donor")} on GlassGift. Thanks!!!\n\n`+
