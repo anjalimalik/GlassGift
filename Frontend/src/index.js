@@ -9,8 +9,9 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
+import { getUserId } from './actions/utils';
 import Header from './components/Shared/Header';
-import App from './components/App';
+import Entry from './components/Entry';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
@@ -31,22 +32,32 @@ const store = createStore(
   applyMiddleware(thunk),
 );
 
+function requireAuth(nextState, replace, next) {
+  const userId = getUserId();
+  if (!userId) {
+    replace({
+      pathname: '/'
+    });
+  }
+  next();
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <div className="container-fluid">
         <Header />
-        <Route exact path="/" component={App} />
+        <Route exact path="/" component={Entry} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />
         <Route exact path="/resetPassword" component={ResetPassword} />
-        <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/dashboard" component={Dashboard} onEnter={requireAuth} />
         <Route exact path="/unknownaccess" component={UnknownAccess} />
-        <Route exact path="/profile/:id" component={Profile} />
+        <Route exact path="/profile/:id" component={Profile} onEnter={requireAuth} />
         <Route exact path="/sentEmail" component={SentEmail} />
         <Route exact path="/confirmEmail" component={ConfirmEmail} />
-        <Route exact path="/search" component={Search} />
+        <Route exact path="/search" component={Search} onEnter={requireAuth} />
       </div>
     </BrowserRouter>
   </Provider>,

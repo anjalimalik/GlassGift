@@ -99,7 +99,6 @@ class Profile extends Component {
         {NGO_CATEGORIES[this.props.get.success.category]}
         <h4>Description</h4>
         {this.props.get.success.description || 'No description listed'}
-        
         <h2>Notice</h2>
         {this.props.getNotice.success.notice}
 
