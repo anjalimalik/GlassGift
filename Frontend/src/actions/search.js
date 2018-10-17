@@ -4,7 +4,6 @@ export const SEARCH_PENDING = 'SEARCH_PENDING';
 export const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
 export const SEARCH_ERROR = 'SEARCH_ERROR';
 export const SEARCH_CLEAR = 'SEARCH_CLEAR';
-export const SEARCH = 'SEARCH';
 
 export function searchPending(pending) {
   return {
@@ -33,30 +32,25 @@ export function searchClear() {
   };
 }
 
-function callSearchApi(BasisOf, Key) {
+function callSearchApi(type, keyword) {
   return new Promise((resolve, reject) => {
+    console.log(type);
     const body = {
-      BasisOf, 
-      Key,
+      type,
+      keyword,
     };
-    axios.post('http://localhost:3000/api/search', body)
+    axios.post('http://localhost:3000/ngo/search', body)
     .then(response => resolve(response.data))
-    .catch(error => reject(new Error(error.response.data.error)));
-  })
+    .catch(error => reject(new Error('Error searching')));
+  });
 }
 
 export function search(BasisOf, Key) {
   const request = callSearchApi(BasisOf, Key)
-  return (dispatch) => {
+  return dispatch => {
     dispatch(searchPending(true));
     return request
-    .then(response => {
-      dispatch({
-        type: SEARCH,
-        data: response.data
-      });
-      return response.data;
-    })
+    .then(response => dispatch(searchSuccess(response)))
     .catch(error => dispatch(searchError(error)));
   };
 }
