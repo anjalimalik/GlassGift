@@ -62,3 +62,11 @@ create table if not exists UserIps(
     userId text references GGUser,
     ip text
 )
+
+create table if not exists PaymentInfo(
+    userId text references GGUser,
+    ccNumber int,
+    cvv int,
+    expirationDate timestamp,
+    ccName text
+)
