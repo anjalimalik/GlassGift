@@ -113,7 +113,7 @@
 ```
 
 ### Account
-* All of these routes expect HTTP header Authentication containg the JWT for auth.
+* All of these routes expect HTTP header Authorization containg the JWT for auth.
 
 ##### GET /api/account
 > Fetches current user's account

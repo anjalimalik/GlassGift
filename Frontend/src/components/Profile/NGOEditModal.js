@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NGO_CATEGORIES } from '../../constants';
 import { updateNGO, updateNGOClear } from '../../actions/updateNGO';
 
+
 const selectNGOOptions = Object.keys(NGO_CATEGORIES).map(key => {
   return {
     value: key,
@@ -21,11 +22,14 @@ class NGOEditModal extends Component {
     super(props);
 
     this.onSaveChanges = this.onSaveChanges.bind(this);
-    this.onCategoriesChange = this.onCategoriesChange.bind(this);
 
     this.state = {
-      location: '',
-      categories: this.props.categories || [],
+      location: this.props.location || '',
+      category: { value: `${this.props.category}`, label: NGO_CATEGORIES[this.props.category] },
+      description: this.props.description || '',
+      minLimit: this.props.donationMin || null,
+      maxLimit: this.props.donationMax || null,
+      calLink: this.props.calendarLink || '',
     };
   }
 
@@ -33,10 +37,6 @@ class NGOEditModal extends Component {
     this.props.updateNGO(this.state).then(() => {
       this.props.onChangeVisibility(false)
     });
-  }
-
-  onCategoriesChange(categories) {
-    this.setState({ categories });
   }
 
   render() {
@@ -54,19 +54,57 @@ class NGOEditModal extends Component {
             <FormGroup bsSize="large">
               <ControlLabel>Location</ControlLabel>
               <FormControl
-                autoFocus
                 type="text"
                 placeholder={this.props.location}
                 value={this.state.location}
-                onChange={(e) => { this.setState({ location: e.target.value }) }}
+                onChange={e => this.setState({ location: e.target.value })}
               />
             </FormGroup>
 
             <FormGroup bsSize="large">
               <ControlLabel>Categories</ControlLabel>
-              <Select isMulti value={this.state.categories}
-                options={selectNGOOptions} onChange={this.onCategoriesChange}
+              <Select value={this.state.categories}
+                options={selectNGOOptions} onChange={category => this.setState({ category })}
               />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Description</ControlLabel>
+              <FormControl
+                type="text"
+                componentClass="textarea"
+                placeholder="(Optional)"
+                value={this.state.description}
+                onChange={e => this.setState({ description: e.target.value }) }
+                />
+            </FormGroup>
+
+            <ControlLabel>Donation Limits (optional)</ControlLabel>
+            <FormGroup bsSize="large">
+              <ControlLabel>Min:</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="$"
+                value={this.state.minLimit}
+                onChange={e => this.setState({ minLimit: e.target.value }) }
+              />
+              <ControlLabel>Max:</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="$$$"
+                value={this.state.maxLimit}
+                onChange={e => this.setState({ maxLimit: e.target.value }) }
+              />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Calender Link</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="(Optional)"
+                value={this.state.calLink}
+                onChange={e => this.setState({ calLink: e.target.value }) }
+                />
             </FormGroup>
           </Modal.Body>
 

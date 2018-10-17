@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { saveUserToken } from './utils';
+import { saveUserToken, saveUserId } from './utils';
 
 export const LOGIN_PENDING = 'LOGIN_PENDING';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -39,20 +39,20 @@ function callLoginApi(email, password, cb) {
       email,
       password,
     };
-    axios.post('http://localhost:3000/api/auth/login', body)
+    axios.post('http://localhost:3000/login', body)
     .then(response => resolve(response.data))
     .catch(error => reject(new Error(error.response.data.error)));
   })
 }
 
-
 export function login(email, password, rememberMe) {
-  const request = callLoginApi(email, password)
-  return (dispatch) => {
+  const request = callLoginApi(email, password);
+  return dispatch => {
     dispatch(loginPending(true));
     return request
     .then(response => {
       saveUserToken(response.token);
+      saveUserId(response.user.id);
       dispatch(loginSuccess(response));
     })
     .catch(error => dispatch(loginError(error)));

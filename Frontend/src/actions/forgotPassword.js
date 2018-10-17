@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const FORGOT_PASSWORD_PENDING = 'FORGOT_PASSWORD_PENDING';
 export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
 export const FORGOT_PASSWORD_ERROR = 'FORGOT_PASSWORD_ERROR';
@@ -30,23 +32,24 @@ export function forgotPasswordClear() {
   };
 }
 
-// Testing function
-function callForgotPasswordApi(cb) {
-  setTimeout(() => {
-    return cb(new Error('Error forgetting Password!'));
-  }, 500);
+function callForgotPasswordApi(email) {
+  return new Promise((resolve, reject) => {
+    const body = {
+      email,
+    };
+    axios.post('http://localhost:3000/reset_password', body)
+    .then(response => resolve())
+    .catch(error => reject(new Error(error.response.data.error)));
+  });
 }
 
 
-export function forgotPassword() {
-  return (dispatch) => {
+export function forgotPassword(email) {
+  const request = callForgotPasswordApi(email);
+  return dispatch => {
     dispatch(forgotPasswordPending(true));
-    callForgotPasswordApi((error) => {
-      if (!error) {
-        dispatch(forgotPasswordSuccess(true));
-      } else {
-        dispatch(forgotPasswordError(error));
-      }
-    });
+    return request
+    .then(() => dispatch(forgotPasswordSuccess(true)))
+    .catch(error => dispatch(forgotPasswordError(error)));
   };
 }

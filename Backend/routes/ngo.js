@@ -2,85 +2,146 @@ const express = require('express');
 const bcrypt = require("bcryptjs");
 var jwt = require('jsonwebtoken');
 const db = require('../database');
-var uuid = require('uuid/v3');
-const email = require('./email')
+var uuidv4 = require('uuid/v4');
+const { sendConfirmationEmail } = require('../email');
+
 
 const router = express.Router();
 const saltRounds = 10;
 
 router.post('/', async function(req, res) {
-    const ngo = req.body;
-    const hash = bcryptjs.hashSync(req.body.password, 10);
-    var id = uuid(ngo.email, uuid.DNS);
-    var emailConfirmation = `http://localhost:8080/confirmEmail?email=${id}`;
+    try {
+      const ngo = req.body;
+      const hash = await bcrypt.hash(req.body.password, 10);
+      const id = uuidv4();
+      const emailId = uuidv4();
+      const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
-    await db.insert("GGUser",
-        ["id","email", "password", "name", "location", "emailConfirmation", "confirmed"],
-        [id, ngo.email, hash, ngo.name, ngo.location, emailConfirmation, false]);
-    await db.insert("NGO",
-        ["id", "emailTemplate", "description", "calLink", "notice", "minLimit", "maxLimit"],
-        [id, ngo.emailTemplate, ngo.description, ngo.calLink, ngo.notice, ngo.minLimit, ngo.maxLimit]);
-    
-    email.sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
-    res.status(200);
+      let query = `SELECT * FROM GGUser WHERE email = '${ngo.email}'`;
+      let dbResult = await db.pool.query(query);
+      if (dbResult.rows.length !== 0) throw new Error('Already exists');
+
+      query = `INSERT INTO GGUser(id, email, password, name, location, emailConfirmation, confirmed) VALUES ('${id}', '${ngo.email}', '${hash}', '${ngo.name}', '${ngo.location}', '${emailId}', 'false')`;
+      await db.pool.query(query);
+
+      query = `INSERT INTO NGO(id, description, category, calLink, minLimit, maxLimit) VALUES ('${id}', '${ngo.description}', '${ngo.category}', '${ngo.calLink}', '${ngo.minLimit || 0}', '${ngo.maxLimit || 0}')`;
+      await db.pool.query(query)
+
+      sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
+
+      res.sendStatus(200);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: error.message });
+    }
 });
 
 router.put('/', async function (req, res) {
-	const changes = req.body;
-	const id_req = `id = ${changes.values.id}`;
-	let rows = await db.get("NGO", ["id"], `id = ${changes.id}`);
-	if (rows.length === 0) {
-		res.status(500).send(`No NGO with id ${changes.id} found`);
-	} else {
-		for (let i = 0; i < changes.names.length && i < changes.values.length; i++) {
-			await db.modify("NGO", changes.names[i], changes.values[i], id_req);
-		}
-		rows = await db.get("NGO", ["id"], `id = ${changes.id}`);
-		res.send(JSON.stringify(rows));
-	}
+  try {
+    const changes = req.body;
+
+    const token = req.get('Authorization');
+    if (!token) throw new Error('No token supplied');
+
+    const decoded = jwt.verify(token, 'SECRETSECRETSECRET');
+
+    let query = `UPDATE GGUser SET location = '${changes.location}' WHERE id = '${decoded.id}'`;
+    await db.pool.query(query);
+
+    console.log(changes);
+
+    query = `UPDATE NGO SET description = '${changes.description}', category = '${changes.category}', calLink = '${changes.calendarLink}', minLimit = '${changes.minLimit || 0}', maxLimit = '${changes.maxLimit || 0}' WHERE id = '${decoded.id}'`;
+    await db.pool.query(query);
+
+    return res.sendStatus(200);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
-router.get('/search', async function (req, res) {
-	const basis = req.body.BasisOf;
-	const keyword = req.body.key;
+router.get('/', async function (req, res) {
+  try {
+    const id = req.query.id;
 
-	switch(basis){
-		case 0:
-			//keyword 
-			var rows = db.get("GGUser", "*", `name LIKE ${keyword} AND INNER JOIN NGO ON NGO.id = GGUser.id`);
-			res.status(200).send(JSON.stringify(rows));
-			break;
-		case 1:
-			//location
-			var rows = db.get("GGUser", "*", `location LIKE ${keyword} AND INNER JOIN NGO ON NGO.id = GGUser.id`);
-			res.status(200).send(JSON.stringify(rows));
-			break;
-		case 2:
-			//category
-			var rows = db.get("NGO", "*", `category LIKE ${keyword} AND INNER JOIN GGUser ON GGUser.id = NGO.id`);
-			res.status(200).send(JSON.stringify(rows));
-			break;
-		default:
-			res.status(500).send('The search criteria did not match what was offered.');
-			break;
-	}
+    const query = 'SELECT NGO.id as id, name, email, location, category, description, calLink, notice, minLimit, maxLimit FROM GGUser INNER JOIN NGO ON GGUser.id = NGO.id';
+    const dbResult = await db.pool.query(query);
+    if (dbResult.rows.length !== 1) throw new Error("NGO not found!");
+
+    return res.status(200).json(dbResult.rows[0]);
+
+  } catch (error) {
+     console.log(error);
+     return res.status(500).json({ error: error.message });
+   }
+});
+
+router.post('/search', async function (req, res) {
+  try {
+    const type = req.body.type;
+  	const keyword = req.body.keyword;
+
+  	let innerJoinQuery = 'SELECT NGO.id as id, name, email, location, category, description, calLink, notice, minLimit, maxLimit FROM GGUser INNER JOIN NGO ON GGUser.id = NGO.id';
+    let dbResult;
+    if (type === '0') {
+      //name
+      dbResult = await db.pool.query(innerJoinQuery + ` WHERE name LIKE \'%${keyword}%\'`);
+      return res.status(200).json(dbResult.rows);
+    } else if (type === '1') {
+      //location
+      dbResult = await db.pool.query(innerJoinQuery + ` WHERE location LIKE \'%${keyword}%\'`);
+      return res.status(200).json(dbResult.rows);
+    } else if (type === '2') {
+      //category
+      dbResult = await db.pool.query(innerJoinQuery + ` WHERE category = \'${keyword}\'`);
+      return res.status(200).json(dbResult.rows);
+    } else {
+      throw new Error('Couldn\'t match type');
+  	}
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 router.get('/notice', async function (req, res) {
-	const NGOuser = req.body;
-	const rows = await db.get("NGO", ["id"], `id = ${NGOuser.id}`);
-	if (rows.length === 0) {
-		res.status(500).send(`NGO with id ${NGOuser.id} not found`);
-	} else if (rows.length > 1) {
-		res.status(500).send(`Several NGOs with id ${NGOuser.id} found`);
-	} else {
-		res.send(JSON.stringify(rows));
-	}
+
+  try {
+    const id = req.query.id;
+
+    const query = `SELECT notice FROM NGO WHERE id = '${id}'`;
+    const dbResult = await db.pool.query(query);
+    if (dbResult.rows.length !== 1) throw new Error('Account doesn\'t exist');
+
+		const dbUser = dbResult.rows[0];
+
+    res.status(200).json({ notice: dbUser.notice });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 router.put('/notice', async function(req, res) {
-    await db.modify('NGO', 'notice', req.body.notice, `id = ${req.body.id}`);
-    res.status(200);
+  try {
+    const notice = req.body.notice;
+
+    const token = req.get('Authorization');
+    if (!token) throw new Error('No token supplied');
+
+    const decoded = jwt.verify(token, 'SECRETSECRETSECRET');
+
+    let query = `UPDATE NGO SET notice = '${notice}' WHERE id = '${decoded.id}'`;
+    await db.pool.query(query);
+
+    return res.sendStatus(200);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;

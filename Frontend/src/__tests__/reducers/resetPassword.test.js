@@ -3,7 +3,7 @@ import {
   RESET_PASSWORD_PENDING, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_ERROR, RESET_PASSWORD_CLEAR,
 } from '../../actions/resetPassword';
 
-describe('Forgot Password Reducer', () => {
+describe('Reset Password Reducer', () => {
   it('tests RESET_PASSWORD_PENDING true', () => {
     const action = {
       type: RESET_PASSWORD_PENDING,

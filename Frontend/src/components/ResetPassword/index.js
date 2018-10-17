@@ -14,13 +14,10 @@ class ResetPassword extends Component {
 
     this.onSubmit = this.onSubmit.bind(this);
 
-    // Get token from query params
     const params = new URLSearchParams(props.location.search);
-
     this.state = {
       token: params.get('token'),
       password: '',
-      confPassword: '',
     };
   }
 
@@ -30,9 +27,13 @@ class ResetPassword extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    const { password, confPassword } = this.state;
-    // TODO validation
-    this.props.resetPassword(password, confPassword);
+    const { password, token } = this.state;
+    this.props.resetPassword(password, token)
+    .then(() => {
+      if (this.props.success) {
+        this.props.history.push(`/login`);
+      }
+    });
   }
 
   renderAlert() {
@@ -63,12 +64,6 @@ class ResetPassword extends Component {
               placeholder="New Password"
               value={this.state.password}
               onChange={(e) => { this.setState({ password: e.target.value }) }}
-            />
-            <FormControl
-              type="password"
-              placeholder="Confirm Password"
-              value={this.state.confPassword}
-              onChange={(e) => { this.setState({ confPassword: e.target.value }) }}
             />
           </FormGroup>
 
