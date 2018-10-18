@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const indexRouter = require('./routes/');
 const donorRouter = require('./routes/donor');
+const donationRouter = require('./routes/donations');
 const ngoRouter = require('./routes/ngo');
 
 const db = require('./database');
@@ -22,5 +23,6 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/donor', donorRouter);
 app.use('/ngo', ngoRouter);
+app.use('/donation', donorRouter);
 
 module.exports = app;
