@@ -23,6 +23,6 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/donor', donorRouter);
 app.use('/ngo', ngoRouter);
-app.use('/donation', donorRouter);
+app.use('/donation', donationRouter);
 
 module.exports = app;

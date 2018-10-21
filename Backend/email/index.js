@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
 
 async function sendConfirmationEmail(email, name, confirmationToken, type) {
 	var body = `Dear ${name},\n\nWelcome to GlassGift!\n Before we get started, we need you to follow the link`+
-			   ` posted below:\n\n\t${confirmationLink}\n\nOnce you navigate to this page you will finish your` +
+			   ` posted below:\n\n\t${confirmationToken}\n\nOnce you navigate to this page you will finish your` +
 			   ` registration as a new ${(type === 0 ? "NGO" : "donor")} on GlassGift. Thanks!!!\n\n`+
 			   `Best Regards,\nThe GlassGift Team\n\n`+
 			   `P.S.: Please don't respond to this email, we won\'t see it.\n`;
@@ -93,6 +93,13 @@ async function sendDonationConfirmationEmail(email, amount, NGOname, date, donat
 		`email us at glassgiftteam@gmail.com, however, please add an URGENT Tag to the email. Otherwise we will not `+ 
 		`see the email\n\nBest Regards,\nThe GlassGift Team\n\n`;
 
+	var mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: email,
+		subject: 'GlassGift: Donation Sent!',
+		text: body
+	};
+
 	transporter.sendMail(mailoptions, function(err, info){
 		if(err){
 			return console.error(err);
@@ -102,4 +109,4 @@ async function sendDonationConfirmationEmail(email, amount, NGOname, date, donat
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail}
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail}
