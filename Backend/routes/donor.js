@@ -14,24 +14,19 @@ router.post('/', async function (req, res) {
 	const emailId = uuidv4();
 	const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
-	try {
-		let query = `SELECT * FROM GGUser WHERE email = '${donor.email}'`;
-		let dbResult = await db.pool.query(query);
-		if (dbResult.rows.length !== 0) throw new Error('Already exists');
-
-		query = `INSERT INTO GGUser(id, email, password, username, location, emailConfirmation, confirmed) VALUES ('${id}', '${donor.email}', '${hash}', '${donor.name}', '${donor.location}', '${emailId}', 'false')`;
-		await db.pool.query(query);
-
-		// query = `INSERT INTO DONOR(id, age, gender) VALUES ('${id}', '${donor.age}', '${donor.gender}')`
-		// await db.pool.query(query)
-
-		sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
-
-		res.sendStatus(200);
-	} catch (error) {
-		console.log(error);
+	let query = `SELECT * FROM GGUser WHERE email = '${donor.email}'`;
+	let dbResult = await db.pool.query(query);
+	if (dbResult.rows.length !== 0) {
+		console.log('Already exists');
 		return res.status(500).json({error: 'Internal server error'});
 	}
+
+	query = `INSERT INTO GGUser(id, email, password, username, location, emailConfirmation, confirmed) VALUES
+ 				('${id}', '${donor.email}', '${hash}', '${donor.name}', '${donor.location}', '${emailId}', 'false')`;
+	await db.pool.query(query);
+	sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
+
+	res.sendStatus(200);
 });
 
 router.put('/', async function (req, res) {
@@ -57,7 +52,7 @@ router.put('/', async function (req, res) {
 	// }
 });
 
-router.post('/payment_method', async function(req, res) {
+router.post('/payment_method', async function (req, res) {
 
 });
 
