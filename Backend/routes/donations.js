@@ -3,7 +3,7 @@ const db = require('../database');
 const router = express.Router();
 
 router.post('/', async function (req, res) {
-	const donation = req.body;
+	const donation = req.body.donation;
 
 	let query = `SELECT minLimit, maxLimit FROM NGO WHERE id = '${donation.ngoId}'`;
 	const results = await db.pool.query(query);
@@ -17,6 +17,12 @@ router.post('/', async function (req, res) {
 		[donation.donorId, donation.ngoId, donation.anonymity, donation.message, donation.donationType,
 			donation.honoredUserId, donation.honoredUserName, donation.date]);
 	res.status(200);
+});
+
+router.post('/scheduled', async function(req, res) {
+	const donation = req.body.donation;
+	// use stripe api to schedule
+	// insert in DB for record?
 });
 
 module.exports = router;

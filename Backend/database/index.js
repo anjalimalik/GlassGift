@@ -12,8 +12,9 @@ async function directQuery(query) {
     return await execute(directQuery);
 }
 
-async function init() {
-    return await execute(fs.readFileSync('./database/init.sql', 'utf-8'));
+function init() {
+    execute(fs.readFileSync('./database/init.sql', 'utf-8'))
+	    .then(() => console.log("Database initialized"));
 }
 
 async function get(table, cols, query) {

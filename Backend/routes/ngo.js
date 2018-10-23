@@ -19,10 +19,10 @@ router.post('/', async function (req, res) {
 		let dbResult = await db.pool.query(query);
 		if (dbResult.rows.length !== 0) throw new Error('Already exists');
 
-		query = `INSERT INTO GGUser(id, email, password, name, location, emailConfirmation, confirmed) VALUES ('${id}', '${ngo.email}', '${hash}', '${ngo.name}', '${ngo.location}', '${emailId}', 'false')`;
+		query = `INSERT INTO GGUser(id, email, password, username, location, emailConfirmation, confirmed) VALUES ('${id}', '${ngo.email}', '${hash}', '${ngo.name}', '${ngo.location}', '${emailId}', 'false')`;
 		await db.pool.query(query);
 
-		query = `INSERT INTO NGO(id, description, category, calLink, minLimit, maxLimit) VALUES ('${id}', '${ngo.description}', '${ngo.category}', '${ngo.calLink}', '${ngo.minLimit || 0}', '${ngo.maxLimit || 0}')`;
+		query = `INSERT INTO NGO(id, description, ngoCategory, calLink, minLimit, maxLimit) VALUES ('${id}', '${ngo.description}', '${ngo.category}', '${ngo.calLink}', '${ngo.minLimit || 0}', '${ngo.maxLimit || 0}')`;
 		await db.pool.query(query);
 
 		sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
@@ -84,7 +84,7 @@ router.post('/search', async function (req, res) {
 		const LOCATION = 1;
 		const CATEGORY = 2;
 
-		let innerJoinQuery = 'SELECT NGO.id as id, name, email, location, category, description, calLink, notice, minLimit, maxLimit FROM GGUser INNER JOIN NGO ON GGUser.id = NGO.id';
+		let innerJoinQuery = 'SELECT NGO.id as id, username, email, location, ngoCategory, description, calLink, notice, minLimit, maxLimit FROM GGUser INNER JOIN NGO ON GGUser.id = NGO.id';
 		let dbResult;
 		if (type === NAME) {
 			dbResult = await db.pool.query(innerJoinQuery + ` WHERE name LIKE \'%${keyword}%\'`);
@@ -142,7 +142,7 @@ router.put('/notice', async function (req, res) {
 	}
 });
 
-router.post('/limit/max', async function(req, res) {
+router.post('/limit/max', async function (req, res) {
 	try {
 		const limit = req.body.limit;
 
@@ -162,7 +162,7 @@ router.post('/limit/max', async function(req, res) {
 	}
 });
 
-router.post('/limit/min', async function(req, res) {
+router.post('/limit/min', async function (req, res) {
 	try {
 		const limit = req.body.limit;
 

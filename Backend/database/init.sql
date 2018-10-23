@@ -2,7 +2,7 @@ create table if not exists GGUser(
   id text unique primary key,
   email text,
   password text,
-  name text,
+  username text,
   location text,
   emailConfirmation text,
   confirmed boolean,
@@ -65,6 +65,7 @@ create table if not exists UserIps(
 
 create table if not exists PaymentInfo(
     userId text references GGUser,
+    address text,
     ccNumber int,
     cvv int,
     expirationDate timestamp,

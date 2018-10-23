@@ -2,10 +2,10 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const uuidv4 = require('uuid/v4');
 const db = require('../database');
+const jwt = require("jsonwebtoken");
 const {sendConfirmationEmail} = require('../email');
 
 const router = express.Router();
-const saltRounds = 10;
 
 router.post('/', async function (req, res) {
 	const donor = req.body;
@@ -19,7 +19,7 @@ router.post('/', async function (req, res) {
 		let dbResult = await db.pool.query(query);
 		if (dbResult.rows.length !== 0) throw new Error('Already exists');
 
-		query = `INSERT INTO GGUser(id, email, password, name, location, emailConfirmation, confirmed) VALUES ('${id}', '${donor.email}', '${hash}', '${donor.name}', '${donor.location}', '${emailId}', 'false')`;
+		query = `INSERT INTO GGUser(id, email, password, username, location, emailConfirmation, confirmed) VALUES ('${id}', '${donor.email}', '${hash}', '${donor.name}', '${donor.location}', '${emailId}', 'false')`;
 		await db.pool.query(query);
 
 		// query = `INSERT INTO DONOR(id, age, gender) VALUES ('${id}', '${donor.age}', '${donor.gender}')`
@@ -55,6 +55,10 @@ router.put('/', async function (req, res) {
 	//
 	// 	res.status(200);
 	// }
+});
+
+router.post('/payment_method', async function(req, res) {
+
 });
 
 module.exports = router;

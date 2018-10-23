@@ -3,9 +3,8 @@ const router = express.Router();
 const db = require('../database');
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
-var jwt = require('jsonwebtoken');
-const { sendForgotPasswordEmail, sendIPEmail } = require('../email');
-const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+const {sendForgotPasswordEmail, sendIPEmail} = require('../email');
 
 router.post('/login', async function (req, res) {
 	try {
@@ -32,8 +31,8 @@ router.post('/login', async function (req, res) {
 		}
 
 		const j = jwt.sign({
-  		exp: Math.floor(Date.now() / 1000) + (60 * 60),
-  		id: dbUser.id,
+			exp: Math.floor(Date.now() / 1000) + (60 * 60),
+			id: dbUser.id,
 		}, 'SECRETSECRETSECRET');
 
 		return res.status(200).json({
@@ -46,7 +45,7 @@ router.post('/login', async function (req, res) {
 		});
 
 	} catch (error) {
-		return res.status(500).json({ error: error.message });
+		return res.status(500).json({error: error.message});
 	}
 });
 
@@ -70,13 +69,13 @@ router.post('/reset_password', async function (req, res) {
 		return res.sendStatus(200);
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({ error: error.message });
+		return res.status(500).json({error: error.message});
 	}
 });
 
 router.post('/confirm_password', async function (req, res) {
 	try {
-		const { token, password } = req.body;
+		const {token, password} = req.body;
 
 		let query = `SELECT * from GGUser where resetPasswordToken = '${token}'`;
 		let dbResult = await db.pool.query(query);
@@ -92,13 +91,13 @@ router.post('/confirm_password', async function (req, res) {
 		return res.sendStatus(200);
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({ error: error.message });
+		return res.status(500).json({error: error.message});
 	}
 });
 
 router.post('/confirm_account', async function (req, res) {
 	try {
-		const { token } = req.body;
+		const {token} = req.body;
 
 		let query = `SELECT * from GGUser where emailConfirmation = '${token}'`;
 		let dbResult = await db.pool.query(query);
@@ -111,7 +110,7 @@ router.post('/confirm_account', async function (req, res) {
 
 		return res.sendStatus(200);
 	} catch (error) {
-		return res.status(500).json({ error: error.message });
+		return res.status(500).json({error: error.message});
 	}
 });
 
