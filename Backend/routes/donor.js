@@ -8,13 +8,13 @@ const router = express.Router();
 const saltRounds = 10;
 
 router.post('/', async function(req, res) {
-  const donor = req.body;
-  const hash = bcrypt.hashSync(req.body.password, 10);
-  const id = uuidv4();
-  const emailId = uuidv4();
-  const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
-
   try {
+    const donor = req.body;
+    const hash = bcrypt.hashSync(req.body.password, 10);
+    const id = uuidv4();
+    const emailId = uuidv4();
+    const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
+    
     let query = `SELECT * FROM GGUser WHERE email = '${donor.email}'`;
     let dbResult = await db.pool.query(query);
     if (dbResult.rows.length !== 0) throw new Error('Already exists');
@@ -22,8 +22,8 @@ router.post('/', async function(req, res) {
     query = `INSERT INTO GGUser(id, email, password, name, location, emailConfirmation, confirmed) VALUES ('${id}', '${donor.email}', '${hash}', '${donor.name}', '${donor.location}', '${emailId}', 'false')`;
     await db.pool.query(query);
 
-    // query = `INSERT INTO DONOR(id, age, gender) VALUES ('${id}', '${donor.age}', '${donor.gender}')`
-    // await db.pool.query(query)
+    query = `INSERT INTO DONOR(id, age, gender) VALUES ('${id}', '${donor.age}', '${donor.gender}')`
+    await db.pool.query(query)
 
     sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
 
@@ -55,6 +55,19 @@ router.put('/', async function (req, res) {
   //
 	// 	res.status(200);
 	// }
+});
+
+router.post('/search', async function (req, res) {
+  try {
+    const keyword = req.body.keyword;
+
+    let innerJoinQuery = 'SELECT Donor.id as id, name, email, paymentData, age, gender FROM GGUser INNER JOIN Donor ON GGUser.id = Donor.id';
+    let dbResult = await db.pool.query(innerJoinQuery + ` WHERE name LIKE \'%${keyword}%\'`);
+    return res.status(200).json(dbResult.rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;

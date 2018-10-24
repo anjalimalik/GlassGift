@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
 
 async function sendConfirmationEmail(email, name, confirmationToken, type) {
 	var body = `Dear ${name},\n\nWelcome to GlassGift!\n Before we get started, we need you to follow the link`+
-			   ` posted below:\n\n\t${confirmationLink}\n\nOnce you navigate to this page you will finish your` +
+			   ` posted below:\n\n\t${confirmationToken}\n\nOnce you navigate to this page you will finish your` +
 			   ` registration as a new ${(type === 0 ? "NGO" : "donor")} on GlassGift. Thanks!!!\n\n`+
 			   `Best Regards,\nThe GlassGift Team\n\n`+
 			   `P.S.: Please don't respond to this email, we won\'t see it.\n`;
@@ -84,4 +84,29 @@ async function sendForgotPasswordEmail(email, resetPasswordLink){
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail}
+//Add sending donation Id. 
+async function sendDonationConfirmationEmail(email, amount, NGOname, date, donationId){
+	var body = `Dear User,\n\n\tHello from GlassGift! This is a confirmation, of the following donation completed`+
+		`on your account:\n\nDonation id: ${donationId}\nAmount: \$${amount}\nPaid out to NGO: ${NGOname}\nDate: ${date}\n\n`+
+		`If you do not remember copmleting this transaction, we would highly reccomend resetting your `+
+		`password. If this problem persists, we would highly reccomend contacting our team. You can go ahead and `+
+		`email us at glassgiftteam@gmail.com, however, please add an URGENT Tag to the email. Otherwise we will not `+ 
+		`see the email\n\nBest Regards,\nThe GlassGift Team\n\n`;
+
+	var mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: email,
+		subject: 'GlassGift: Donation Sent!',
+		text: body
+	};
+
+	transporter.sendMail(mailoptions, function(err, info){
+		if(err){
+			return console.error(err);
+		}else{
+			return console.log('Email sent' + info.response);
+		}
+	});
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail}
