@@ -14,6 +14,7 @@ class CheckoutForm extends Component {
     this.state = {
       amount: '',
       message: '',
+      anon: false,
     }
 
     this.renderAlert = this.renderAlert.bind(this);
@@ -34,10 +35,14 @@ class CheckoutForm extends Component {
   async submit(ev) {
     let { token } = await this.props.stripe.createToken({ name: getUserId() });
     this.props.donate({
-      token,
-      amount: this.state.amount,
-      message: this.state.message,
+      // ngoId, anon, message, type, honorid, honorname, amount, stripeToken
       ngoId: this.props.ngoId,
+      anon: this.state.anon,
+      type: 0,
+      honorid: null,
+      honorname: null,
+      amount: this.state.amount,
+      stripeToken: token,
     })
     .then(() => { if (this.props.donate.success) this.props.onChangeVisibility(false) });
   }
@@ -65,7 +70,12 @@ class CheckoutForm extends Component {
           onChange={e => this.setState({ message: e.target.value })}
         />
 
-        <Checkbox>Anonymous</Checkbox>
+        <Checkbox
+          defaultChecked={this.state.anon}
+          onChange={e => { this.setState({ anon: e.target.checked }) }}
+        >
+          Anonymous
+        </Checkbox>
 
         <CardElement />
 
