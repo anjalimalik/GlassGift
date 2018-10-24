@@ -11,15 +11,25 @@ router.post('/', async function (req, res) {
 
     	const donId = uuidv4();
 
+        const donorId = req.get('Authorization');
+
+        let query0 = `SELECT email FROM GGUser WHERE id = '${donorId}'`;
+
+        const emailWrapper = await db.pool.query(query0);
+        if(emailWrapper.rows.length === 0) throw new Error(`User with id ${donorId} not found`);
+
+        let donorEmail = emailWrapper.rows[0].email;
+
+        console.log(donorEmail);
 
     	let query = `INSERT INTO Donation(id, donorid, ngoid, anon, message, type, honorid, honorname, created, amount) VALUES`
-    			+` ('${donId}','${donation.donorId}', '${donation.ngoId}', '${donation.anon}', '${donation.message}', `
+    			+` ('${donId}','${donorId}', '${donation.ngoId}', '${donation.anon}', '${donation.message}', `
     			+`'${donation.type}', '${donation.honorid}', '${donation.honorname}', 'now()',`
     			+` '${donation.amount}')`;
         await db.pool.query(query);
 
 
-        let message = `Donation of \$${donation.amount} from donor: ${donation.donorId} to ngo : ${donation.ngoId}`
+        let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
         			  +`\nMessage: '${donation.message}'`;
 
         // let innerJoinQuery = `SELECT * FROM GGUser WHERE id = '${donation.donorId}'`;
@@ -38,10 +48,10 @@ router.post('/', async function (req, res) {
         	description: message,
         	source: token,
         	metadata: {donation_id: donId}, 
-        	receipt_email: donation.donorEmail, 
+        	receipt_email: donorEmail, 
         });
 
-        sendDonationConfirmationEmail(donation.donorEmail, donation.amount, donation.ngoName, donation.date, donId);
+        sendDonationConfirmationEmail(donorEmail, donation.amount, donation.ngoName, donation.date, donId);
 
     	return res.sendStatus(200);
     }catch (error) {

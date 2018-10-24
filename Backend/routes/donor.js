@@ -61,7 +61,7 @@ router.post('/search', async function (req, res) {
   try {
     const keyword = req.body.keyword;
 
-    let innerJoinQuery = 'SELECT Donor.id as id, name, email, paymentData, age, gender FROM GGUser INNER JOIN Donor ON GGUser.id = Donor.id';
+    let innerJoinQuery = 'SELECT Donor.id as id, name, email FROM GGUser INNER JOIN Donor ON GGUser.id = Donor.id';
     let dbResult = await db.pool.query(innerJoinQuery + ` WHERE name LIKE \'%${keyword}%\'`);
     return res.status(200).json(dbResult.rows);
   } catch (error) {
