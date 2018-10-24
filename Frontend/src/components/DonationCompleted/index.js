@@ -28,6 +28,7 @@ export default class DonationCompleted extends Component {
       
         <hr />
         <h3 className="text-warning">Share your contributions!</h3>
+
         <hr />
       </div>
     );
