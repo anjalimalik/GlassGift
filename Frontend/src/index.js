@@ -6,6 +6,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
@@ -21,9 +22,11 @@ import ConfirmEmail from './components/ConfirmEmail';
 import Dashboard from './components/Dashboard';
 import UnknownAccess from './components/UnknownAccess';
 import Search from './components/Search';
+import DonationCompleted from './components/DonationCompleted';
 
 // Font Awesome
-library.add(faSpinner);
+library.add(faSpinner, faFacebook, faTwitter);
+
 
 const store = createStore(
   rootReducer,
@@ -47,6 +50,7 @@ ReactDOM.render(
         <Route exact path="/sentEmail" component={SentEmail} />
         <Route exact path="/confirmEmail" component={ConfirmEmail} />
         <Route exact path="/search" component={Search} />
+        <Route exact path="/donationcompleted" component={DonationCompleted} />
       </div>
     </BrowserRouter>
   </Provider>,
