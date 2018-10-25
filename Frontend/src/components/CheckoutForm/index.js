@@ -34,6 +34,7 @@ class CheckoutForm extends Component {
 
   async submit(ev) {
     let { token } = await this.props.stripe.createToken({ name: getUserId() });
+    if (!token) return;
     this.props.donate({
       // ngoId, anon, message, type, honorid, honorname, amount, stripeToken
       ngoId: this.props.ngoId,
