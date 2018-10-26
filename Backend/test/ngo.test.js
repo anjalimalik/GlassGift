@@ -2,56 +2,41 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app');
 
-let should = chai.should();
 let expect = chai.expect;
 chai.use(chaiHttp);
 
-// test('Search filters filter results', () => {
-// 	const unfiltered = {}; // TODO
-// 	const filtered = {}; // TODO
-//
-// 	expect(filtered).not.toEqual(unfiltered);
-// });
-//
-// test('Logging in works', () => {
-// 	const user = {}; // TODO
-// 	const requestedUser = {}; // TODO
-//
-// 	expect(user).toEqual(requestedUser);
-// });
-
-describe('Testing Actions on an NGO account', () => {
-    let ngo = {
+describe('Testing Actions on an NGO account', function() {
+    const ngo = {
         email: 'testngo@gmail.com',
         password: 'testngo',
         location: "test NGO location",
     };
 
-    it('POST - Test NGO registration', (done) => {
+    it('POST - Test NGO registration', function(done) {
         chai.request(server)
             .post('/ngo')
             .set('content-type', 'application/json')
             .send(ngo)
-            .end((err, res) => {
+            .end(function(err, res) {
                 if (err) console.error('Error: NGO registration failed');
-                res.should.have.status(200); // 500 for error
-                expect(err).to.be.null;
-                done()
+                expect(res).to.have.property('status', 200); // 500 for error
+                expect(err).to.be(null);
+                done();
             })
     });
 
-    it('POST - Test duplicate NGO registration', (done) => {
+    it('POST - Test duplicate NGO registration', function(done) {
         chai.request(server)
             .post('/ngo')
             .set('content-type', 'application/json')
             .send(ngo)
-            .end((err, res) => {
-                res.body.should.have.property('error').that.equals('Already exists');
-                done()
+            .end(function(err, res) {
+                expect(res.body).to.have.property('error', 'Already exists');
+                done();
             })
     });
 
-    it('POST - Test NGO login', (done) => {
+    it('POST - Test NGO login', function(done) {
         chai.request(server)
             .post('/login')
             .set('content-type', 'application/json')
@@ -59,13 +44,13 @@ describe('Testing Actions on an NGO account', () => {
                 email: ngo.email,
                 password: ngo.password
             })
-            .end((err, res) => {
+            .end(function(err, res) {
                 if (err) console.error('Error: NGO login');
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.should.have.property('token');
-                res.body.should.have.property('user');
-                expect(err).to.be.null;
+                expect(res).to.have.property('status', 200);
+                expect(res.body).to.be.a('object');
+                expect(res.body).to.have.property('token');
+                expect(res.body).to.have.property('user');
+                expect(err).to.be(null);
 
                 // store id and token from response for subsequent tests
                 ngo.id = res.body.user.id;
@@ -74,13 +59,13 @@ describe('Testing Actions on an NGO account', () => {
             })
     });
 
-    it('GET - Test get NGO account information', (done) => {
+    it('GET - Test get NGO account information', function(done) {
         chai.request(server)
             .get('/ngo')
             .set('Authorization', ngo.token)
             .query({id: ngo.id})
             .send()
-            .end((err, res) => {
+            .end(function(err, res) {
                 if (err) console.error('Error: get NGO account failed');
                 res.should.have.status(200);
                 res.should.have.a('object'); // should return ngo account object
@@ -102,13 +87,13 @@ describe('Testing Actions on an NGO account', () => {
         notice: "test",
     };
 
-    it('PUT - Test NGO Update Info', (done) => {
+    it('PUT - Test NGO Update Info', function(done) {
         chai.request(server)
             .put('/ngo/')
             .set('Authorization', ngo.token)
             .set('content-type', 'application/json')
             .send(ngoUpdate)
-            .end((err, res) => {
+            .end(function(err, res) {
                 if (err) console.error('Error: NGO Update changes failed');
                 res.should.have.status(200); // 500 for error
                 expect(err).to.be.null;
@@ -116,14 +101,13 @@ describe('Testing Actions on an NGO account', () => {
             })
     });
 
-
-    it('PUT - Test NGO Update Notice', (done) => {
+    it('PUT - Test NGO Update Notice', function(done) {
         chai.request(server)
             .put('/ngo/notice')
             .set('Authorization', ngo.token)
             .set('content-type', 'application/json')
             .send(notice)
-            .end((err, res) => {
+            .end(function(err, res) {
                 if (err) console.error('Error: NGO Update notice failed');
                 res.should.have.status(200);
                 expect(err).to.be.null;
@@ -131,13 +115,13 @@ describe('Testing Actions on an NGO account', () => {
             })
     });
 
-    it('GET - Test NGO get Notice', (done) => {
+    it('GET - Test NGO get Notice', function(done) {
         chai.request(server)
             .get('/ngo/notice')
             .set('Authorization', ngo.token)
             .query({id: ngo.id}) // query has user id
             .send() // empty body
-            .end((err, res) => {
+            .end(function(err, res) {
                 if (err) console.error('Error: get notice failed');
                 res.should.have.status(200);
                 res.should.have.a('object'); // should have notice in body
@@ -146,4 +130,17 @@ describe('Testing Actions on an NGO account', () => {
             })
     })
 
+    it('Search filters filter results', function() {
+        const unfiltered = {}; // TODO
+        const filtered = {}; // TODO
+
+        expect(filtered).not.toEqual(unfiltered);
+    });
+
+    it('Logging in works', function() {
+        const user = {}; // TODO
+        const requestedUser = {}; // TODO
+
+        expect(user).toEqual(requestedUser);
+    });
 });

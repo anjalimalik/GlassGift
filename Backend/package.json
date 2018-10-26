@@ -5,7 +5,7 @@
   "homepage": "/Backend/",
   "scripts": {
     "start": "node ./bin/www",
-    "test": "jest"
+    "test": "mocha"
   },
   "dependencies": {
     "bcrypt": "^3.0.1",
@@ -19,13 +19,11 @@
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "jsonwebtoken": "^8.3.0",
+    "mocha": "^5.2.0",
     "morgan": "~1.9.0",
     "nodemailer": "^4.6.8",
     "pg": "^7.4.3",
     "pug": "^2.0.3",
     "uuid": "^3.3.2"
-  },
-  "devDependencies": {
-    "jest": "^23.6.0"
   }
 }
