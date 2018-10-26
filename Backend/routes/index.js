@@ -9,8 +9,7 @@ const {sendForgotPasswordEmail, sendIPEmail} = require('../email');
 router.post('/login', async function (req, res) {
 	const user = req.body;
 
-	let query = `SELECT * from GGUser where email = '${user.email}'`;
-	let dbResult = await db.pool.query(query);
+	let dbResult = await db.get('GGUser', '*', `email = '${user.email}'`);
 	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
 	const dbUser = dbResult.rows[0];
@@ -21,12 +20,10 @@ router.post('/login', async function (req, res) {
 	if (!dbUser.confirmed) return res.status(500).json({error: "Not confirmed"});
 
 	// Check IP
-	query = `SELECT ip from UserIps where userId = '${dbUser.id}'`;
-	dbResult = await db.pool.query(query);
+	dbResult = await db.get('UserIps', ['ip'], `userId = '${dbUser.id}'`);
 	if (!dbResult.rows.find(row => row.ip === req.ip)) {
 		sendIPEmail(dbUser.email, req.ip);
-		query = `INSERT INTO UserIps(userId, ip) VALUES ('${dbUser.id}', '${req.ip}')`;
-		await db.pool.query(query);
+		await db.insert('UserIps', ['userId', 'ip'], [dbUser.id, req.ip]);
 	}
 
 	const j = jwt.sign({
@@ -48,8 +45,7 @@ router.post('/reset_password', async function (req, res) {
 	console.log(req.body);
 	const email = req.body.email;
 
-	let query = `SELECT * from GGUser where email = '${email}'`;
-	let dbResult = await db.pool.query(query);
+	let dbResult = await db.get('GGUser', '*', `email = '${email}'`);
 	if (dbResult.rows.length !== 1) {
 		console.log("Account doesn't exist");
 		return res.status(500).json({error: "Account doesn't exist"});
@@ -58,9 +54,7 @@ router.post('/reset_password', async function (req, res) {
 	const emailId = uuidv4();
 	const emailConfirmation = `http://localhost:8080/resetPassword?token=${emailId}`;
 
-	query = `UPDATE GGUser SET resetPasswordToken = '${emailId}' where email = '${email}'`;
-	await db.pool.query(query);
-
+	await db.modify('GGUser', 'resetPasswordToken', emailId, `email = '${email}'`);
 	await sendForgotPasswordEmail('noahster11@gmail.com', emailConfirmation);
 
 	return res.sendStatus(200);
@@ -69,8 +63,7 @@ router.post('/reset_password', async function (req, res) {
 router.post('/confirm_password', async function (req, res) {
 	const {token, password} = req.body;
 
-	let query = `SELECT * from GGUser where resetPasswordToken = '${token}'`;
-	let dbResult = await db.pool.query(query);
+	let dbResult = await db.get('GGUser', '*', `resetPasswordToken = '${token}'`);
 	if (dbResult.rows.length !== 1) {
 		console.log("Account doesn't exist");
 		return res.status(500).json({error: "Account doesn't exist"});
@@ -79,8 +72,7 @@ router.post('/confirm_password', async function (req, res) {
 	const id = dbResult.rows[0].id;
 	const hash = await bcrypt.hash(password, 10);
 
-	query = `UPDATE GGUser SET password = '${hash}' where id = '${id}'`;
-	await db.pool.query(query);
+	await db.modify('GGUser', 'password', hash, `id = '${id}'`);
 
 	return res.sendStatus(200);
 });
@@ -88,14 +80,11 @@ router.post('/confirm_password', async function (req, res) {
 router.post('/confirm_account', async function (req, res) {
 	const {token} = req.body;
 
-	let query = `SELECT * from GGUser where emailConfirmation = '${token}'`;
-	let dbResult = await db.pool.query(query);
+	let dbResult = await db.get('GGUser', '*', `emailConfirmation = '${token}'`);
 	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
 	const id = dbResult.rows[0].id;
-
-	query = `UPDATE GGUser SET confirmed = 'true' where id = '${id}'`;
-	await db.pool.query(query);
+	await db.modify('GGUser', 'confirmed', 'true', `id = '${id}'`);
 
 	return res.sendStatus(200);
 });

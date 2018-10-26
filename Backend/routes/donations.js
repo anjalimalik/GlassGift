@@ -9,7 +9,7 @@ router.post('/', async function (req, res) {
 	const results = await db.pool.query(query);
 
 	if (donation.amount > results.maxLimit || donation.amount < results.minLimit) {
-		throw Error("Outside range");
+		return res.status(500).json({error: "Outside range"});
 	}
 
 	await db.insert('Donation',
