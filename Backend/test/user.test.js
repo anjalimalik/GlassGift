@@ -6,11 +6,13 @@ describe('Users', function() {
         const result = {}; // TODO request with X-Forwarded-For bad IP
         const expectedError = {};
 
-        expect(result).to.equal(expectedError);
+        expect(result).to.deep.equal(expectedError);
     });
 
     it('Editing profile information changes the resulting API route', function() {
-        const user = {}; // TODO
+        const user = {
+            id
+        }; // TODO
         // TODO add user
 
         const changes = {}; // TODO
@@ -18,7 +20,7 @@ describe('Users', function() {
 
         const newUser = {}; // TODO
 
-        expect(newUser).not.to.equal(user);
-        expect(newUser).to.equal(Object.assign(user, changes));
+        expect(newUser).not.to.deep.equal(user);
+        expect(newUser).to.deep.equal(Object.assign(user, changes));
     });
 });

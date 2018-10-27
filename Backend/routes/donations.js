@@ -4,11 +4,10 @@ const router = express.Router();
 
 router.post('/', async function (req, res) {
 	const donation = req.body.donation;
+	const limits = await db.get('NGO', ['minLimit', 'maxLimit'], `id = '${donation.ngoId}'`);
 
-	let query = `SELECT minLimit, maxLimit FROM NGO WHERE id = '${donation.ngoId}'`;
-	const results = await db.pool.query(query);
-
-	if (donation.amount > results.maxLimit || donation.amount < results.minLimit) {
+	if ((limits.maxLimit && donation.amount > limits.maxLimit) ||
+		(limits.minLimit && donation.amount < limits.minLimit)) {
 		return res.status(500).json({error: "Outside range"});
 	}
 

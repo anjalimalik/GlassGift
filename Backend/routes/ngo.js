@@ -13,7 +13,7 @@ router.post('/', async function (req, res) {
 	const emailId = uuidv4();
 	const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
-	let dbResult = await db.get('GGUser', '*', `email = '${ngo.email}'`);
+	let dbResult = await db.get('GGUser', ['*'], `email = '${ngo.email}'`);
 	if (dbResult.rows.length !== 0) {
 		console.log('Already exists');
 		return res.status(500).json({error: 'Already exists'});

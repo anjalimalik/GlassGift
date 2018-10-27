@@ -21,9 +21,9 @@ describe('Testing Search', function () {
                 expect(res).to.have.property('status', 200);
                 expect(res).to.be.an('object');
                 expect(err).to.be(null);
-                //res.body[0].should.have.property('id');  // if not matching?
-                //res.body[0].should.have.property('name');
-                done()
+                expect(res.body[0]).to.have.property('id');  // if not matching?
+                expect(res.body[0]).to.have.property('name');
+                done();
             });
     });
 });

@@ -5,6 +5,8 @@ const cors = require('cors');
 const indexRouter = require('./routes/');
 const donorRouter = require('./routes/donor');
 const ngoRouter = require('./routes/ngo');
+const donationRouter = require('./routes/donations');
+const subscriptionRouter = require('./routes/subscription');
 
 const db = require('./database');
 const auth = require('./auth');
@@ -21,5 +23,7 @@ app.use(auth.checkAuthToken);
 app.use('/', indexRouter);
 app.use('/donor', donorRouter);
 app.use('/ngo', ngoRouter);
+app.use('/donation', donationRouter);
+app.use('/subscription', subscriptionRouter);
 
 module.exports = app;

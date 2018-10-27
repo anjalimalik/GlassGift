@@ -13,7 +13,7 @@ router.post('/', async function (req, res) {
 	const emailId = uuidv4();
 	const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
-	let dbResult = await db.get('GGUser', '*', `email = '${donor.email}'`);
+	let dbResult = await db.get('GGUser', ['*'], `email = '${donor.email}'`);
 	if (dbResult.rows.length !== 0) {
 		console.log('Already exists');
 		return res.status(500).json({error: 'Internal server error'});
@@ -41,6 +41,7 @@ router.put('/', async function (req, res) {
 
 router.post('/payment_method', async function (req, res) {
 	const paymentMethod = req.body.paymentMethod;
+
 });
 
 module.exports = router;

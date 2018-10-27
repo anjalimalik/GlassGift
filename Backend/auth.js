@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 function checkAuthToken(req, res, next) {
-	if (['/login', '/reset_password', '/confirm_password', '/confirm_account'].contains(req.originalUrl)) next();
+	if (['/login', '/reset_password', '/confirm_password', '/confirm_account'].includes(req.originalUrl)) next();
 
 	const token = req.get('Authorization');
 	if (!token) res.status(500).json({error: 'No token supplied'});
