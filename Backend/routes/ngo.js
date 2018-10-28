@@ -14,7 +14,7 @@ router.post('/', async function (req, res) {
 	const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
 	let dbResult = await db.get('GGUser', ['*'], `email = '${ngo.email}'`);
-	if (dbResult.rows.length !== 0) {
+	if (dbResult.length !== 0) {
 		console.log('Already exists');
 		return res.status(500).json({error: 'Already exists'});
 	}

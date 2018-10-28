@@ -5,7 +5,7 @@ const server = require('../app');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-xdescribe('Testing Reset Password, Confirm Password, and Confirm Account', function() {
+describe('Testing Reset Password, Confirm Password, and Confirm Account', function() {
     const user = {
         email: 'test@gmail.com',
         password: 'test',
@@ -13,7 +13,7 @@ xdescribe('Testing Reset Password, Confirm Password, and Confirm Account', funct
         token: ''
     };
 
-    it('POST - Test Reset Password', function() {
+    it('POST - Test Reset Password', function(done) {
         chai.request(server)
             .post('/reset_password')
             .set('content-type', 'application/json')
@@ -22,6 +22,7 @@ xdescribe('Testing Reset Password, Confirm Password, and Confirm Account', funct
                 if (err) console.error('Error: Reset password failed');
                 expect(res).to.have.property('status', 200);
                 expect(err).to.be(null);
+                done();
             });
     });
 

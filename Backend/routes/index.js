@@ -10,7 +10,7 @@ router.post('/login', async function (req, res) {
 	const user = req.body;
 
 	let dbResult = await db.get('GGUser', ['*'], `email = '${user.email}'`);
-	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
 	const dbUser = dbResult.rows[0];
 
@@ -46,7 +46,7 @@ router.post('/reset_password', async function (req, res) {
 	const email = req.body.email;
 
 	let dbResult = await db.get('GGUser', ['*'], `email = '${email}'`);
-	if (dbResult.rows.length !== 1) {
+	if (dbResult.length !== 1) {
 		console.log("Account doesn't exist");
 		return res.status(500).json({error: "Account doesn't exist"});
 	}
@@ -64,7 +64,7 @@ router.post('/confirm_password', async function (req, res) {
 	const {token, password} = req.body;
 
 	let dbResult = await db.get('GGUser', ['*'], `resetPasswordToken = '${token}'`);
-	if (dbResult.rows.length !== 1) {
+	if (dbResult.length !== 1) {
 		console.log("Account doesn't exist");
 		return res.status(500).json({error: "Account doesn't exist"});
 	}
@@ -81,7 +81,7 @@ router.post('/confirm_account', async function (req, res) {
 	const {token} = req.body;
 
 	let dbResult = await db.get('GGUser', ['*'], `emailConfirmation = '${token}'`);
-	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
 	const id = dbResult.rows[0].id;
 	await db.modify('GGUser', 'confirmed', 'true', `id = '${id}'`);

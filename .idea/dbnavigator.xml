@@ -24,29 +24,26 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="29f7b914-79cd-4ec0-8792-a294e7c6b047">
-        <schema name="information_schema" object-types="view" />
-        <schema name="pg_catalog" object-types="table, view" />
-        <schema name="public" object-types="column, table, view" />
+      <connection connection-id="e7222127-c0e4-4463-966f-0acfcab67a9a">
+        <schema name="pg_catalog" object-types="table" />
+        <schema name="public" object-types="table" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="29f7b914-79cd-4ec0-8792-a294e7c6b047">
+    <connection id="e7222127-c0e4-4463-966f-0acfcab67a9a">
       <console name="GlassGift" type="STANDARD" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="29f7b914-79cd-4ec0-8792-a294e7c6b047">
-      <session name="Session 1" id="eea3de1a-135b-4905-9413-c6cb6a3acf97" />
-    </connection>
+    <connection id="e7222127-c0e4-4463-966f-0acfcab67a9a" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/Backend/database/drop.sql" connection-id="29f7b914-79cd-4ec0-8792-a294e7c6b047" session-id="MAIN" current-schema="information_schema" />
-    <mapping file-url="file://$PROJECT_DIR$/Backend/database/init.sql" connection-id="29f7b914-79cd-4ec0-8792-a294e7c6b047" session-id="eea3de1a-135b-4905-9413-c6cb6a3acf97" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/Backend/database/drop.sql" connection-id="" session-id="MAIN" current-schema="" />
+    <mapping file-url="file://$PROJECT_DIR$/Backend/database/init.sql" connection-id="e7222127-c0e4-4463-966f-0acfcab67a9a" session-id="MAIN" current-schema="GLASSGIFT" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
@@ -64,19 +61,17 @@
     <filters />
   </component>
   <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
-    <recently-used-interfaces>
-      <mapping database-type="POSTGRES" interface-id="ac44594d-d667-447c-9959-81d836d1d7a9" />
-    </recently-used-interfaces>
+    <recently-used-interfaces />
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="29f7b914-79cd-4ec0-8792-a294e7c6b047" active="true">
+      <connection id="e7222127-c0e4-4463-966f-0acfcab67a9a" active="true">
         <database>
           <name value="GlassGift" />
           <description value="" />
           <database-type value="POSTGRES" />
           <config-type value="BASIC" />
-          <database-version value="9.5" />
+          <database-version value="10.5" />
           <driver-source value="BUILTIN" />
           <driver-library value="" />
           <driver value="" />
@@ -284,7 +279,6 @@
           <content-type name="JSPx" enabled="true" />
           <content-type name="ASP" enabled="true" />
           <content-type name="YAML" enabled="true" />
-          <content-type name="Bash" enabled="true" />
         </content-types>
       </qualified-text-editor>
       <record-navigation>
@@ -468,9 +462,7 @@
         <prompt-execution value="false" />
       </statement-execution>
       <script-execution>
-        <command-line-interfaces>
-          <value id="ac44594d-d667-447c-9959-81d836d1d7a9" name="PostgreSQL terminal" executable-path="/usr/bin/psql" database-type="POSTGRES" />
-        </command-line-interfaces>
+        <command-line-interfaces />
         <execution-timeout value="300" />
       </script-execution>
       <method-execution>

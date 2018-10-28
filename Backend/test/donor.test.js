@@ -5,7 +5,7 @@ const server = require('../app');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-xdescribe('Testing registering donor account', function() {
+describe('Testing registering donor account', function() {
     const donor = {
         email: 'test@gmail.com',
         password: 'test',

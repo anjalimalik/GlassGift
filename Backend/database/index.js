@@ -1,7 +1,11 @@
 const {Pool} = require('pg');
 const fs = require('fs');
 
-const pool = new Pool();
+const pool = new Pool({
+	user: 'glassgift',
+	password: 'glassgift',
+	database: 'glassgift'
+});
 
 async function execute(query) {
 	const result = await pool.query(query);
@@ -9,8 +13,9 @@ async function execute(query) {
 }
 
 function init() {
-    execute(fs.readFileSync('./database/init.sql', 'utf-8'))
-	    .then(() => console.log("Database initialized"));
+    execute(fs.readFileSync(__dirname + '/init.sql', 'utf-8'))
+	    .then(() => console.log("Database initialized"))
+	    .catch(() => console.error("Something went wrong in database initialization :("));
 }
 
 async function get(table, cols, query) {

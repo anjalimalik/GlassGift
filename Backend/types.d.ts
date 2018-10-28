@@ -14,9 +14,14 @@ export interface Donation {
     date: object;
 }
 
+export interface PaymentMethod {
+
+}
+
 export interface Body {
     subscription?: Subscription;
     donation?: Donation;
+    paymentMethod?: PaymentMethod;
 }
 
 declare namespace Express {
