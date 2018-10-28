@@ -24,8 +24,13 @@ export interface Body {
     paymentMethod?: PaymentMethod;
 }
 
+export interface DecodedToken {
+    id: string;
+}
+
 declare namespace Express {
     export interface Request {
-        body: Body
+        body: Body;
+        decodedToken: DecodedToken;
     }
 }
