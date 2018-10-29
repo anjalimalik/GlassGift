@@ -12,10 +12,16 @@ export interface Donation {
     honoredUserId: string;
     honoredUserName: string;
     date: object;
+    frequency: number;
 }
 
 export interface PaymentMethod {
-
+    userId: string;
+    address: string;
+    ccNumber: number;
+    cvv: number;
+    expirationDate: Date;
+    ccName: string;
 }
 
 export interface Body {

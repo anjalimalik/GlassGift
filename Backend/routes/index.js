@@ -12,7 +12,7 @@ router.post('/login', async function (req, res) {
 	let dbResult = await db.get('GGUser', ['*'], `email = '${user.email}'`);
 	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	const dbUser = dbResult.rows[0];
+	const dbUser = dbResult[0];
 
 	const match = await bcrypt.compare(user.password, dbUser.password);
 	if (!match) return res.status(500).json({error: "Wrong password"});
@@ -46,15 +46,12 @@ router.post('/reset_password', async function (req, res) {
 	const email = req.body.email;
 
 	let dbResult = await db.get('GGUser', ['*'], `email = '${email}'`);
-	if (dbResult.length !== 1) {
-		console.log("Account doesn't exist");
-		return res.status(500).json({error: "Account doesn't exist"});
-	}
+	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
 	const emailId = uuidv4();
 	const emailConfirmation = `http://localhost:8080/resetPassword?token=${emailId}`;
 
-	await db.modify('GGUser', 'resetPasswordToken', emailId, `email = '${email}'`);
+	await db.modify('GGUser', ['resetPasswordToken'], [emailId], `email = '${email}'`);
 	await sendForgotPasswordEmail('noahster11@gmail.com', emailConfirmation);
 
 	return res.sendStatus(200);
@@ -64,10 +61,7 @@ router.post('/confirm_password', async function (req, res) {
 	const {token, password} = req.body;
 
 	let dbResult = await db.get('GGUser', ['*'], `resetPasswordToken = '${token}'`);
-	if (dbResult.length !== 1) {
-		console.log("Account doesn't exist");
-		return res.status(500).json({error: "Account doesn't exist"});
-	}
+	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
 	const id = dbResult.rows[0].id;
 	const hash = await bcrypt.hash(password, 10);

@@ -1,4 +1,4 @@
-create table if not exists GGUser(
+create table if not exists gguser(
   id text unique primary key,
   email text,
   password text,
@@ -10,8 +10,8 @@ create table if not exists GGUser(
   resetPasswordExp text
 );
 
-create table if not exists NGO(
-  id text unique primary key references GGUser,
+create table if not exists ngo(
+  id text unique primary key references gguser,
   emailTemplate text,
   description text,
   calLink text,
@@ -21,53 +21,52 @@ create table if not exists NGO(
   maxLimit bigint
 );
 
-create table if not exists Donor(
-  id text unique primary key references GGUser,
-  paymentData text,
+create table if not exists donor(
+  id text unique primary key references gguser,
   age integer,
   gender text
 );
 
-create table if not exists Searches(
-  id text unique primary key references GGUser,
+create table if not exists searches(
+  id text unique primary key references gguser,
   term text
 );
 
-create table if not exists Subscriptions(
-  donorId text references Donor,
-  ngoId text references NGO
+create table if not exists subscriptions(
+  donorId text references donor,
+  ngoId text references ngo
 );
 
-create table if not exists Donation(
+create table if not exists donation(
   id text unique primary key,
-  donorId text references Donor,
-  ngoId text references NGO,
+  donorId text references donor,
+  ngoId text references ngo,
   amount bigint,
   message text,
-  anon boolean,
+  anonymous boolean,
   type smallint,
-  honorId text,
-  honorName text,
+  honoredUserId text,
+  honoredUserName text,
   created timestamp
 );
 
-create table if not exists RecurringDonation(
+create table if not exists recurringdonation(
   id text unique primary key,
-  donationId text references Donation,
+  donationId text references donation,
   updated timestamp,
   frequency integer
 );
 
-create table if not exists UserIps(
-    userId text references GGUser,
+create table if not exists userips(
+    userId text references gguser,
     ip text
-)
+);
 
-create table if not exists PaymentInfo(
-    userId text references GGUser,
+create table if not exists paymentinfo(
+    userId text references gguser,
     address text,
     ccNumber int,
     cvv int,
     expirationDate timestamp,
     ccName text
-)
+);

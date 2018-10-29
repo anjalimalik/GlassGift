@@ -12,7 +12,7 @@ describe('Testing Actions on an NGO account', function() {
         location: "test NGO location",
     };
 
-    it('POST - Test NGO registration', function() {
+    it('POST - Test NGO registration', function(done) {
         chai.request(server)
             .post('/ngo')
             .set('content-type', 'application/json')
@@ -20,21 +20,25 @@ describe('Testing Actions on an NGO account', function() {
             .end(function(err, res) {
                 if (err) console.error('Error: NGO registration failed');
                 expect(res).to.have.property('status', 200); // 500 for error
-                expect(err).to.be(null);
+                expect(err).to.be.null;
+
+                done();
             });
     });
 
-    it('POST - Test duplicate NGO registration', function() {
+    it('POST - Test duplicate NGO registration', function(done) {
         chai.request(server)
             .post('/ngo')
             .set('content-type', 'application/json')
             .send(ngo)
             .end(function(err, res) {
                 expect(res.body).to.have.property('error', 'Already exists');
+
+                done();
             });
     });
 
-    it('POST - Test NGO login', function() {
+    it('POST - Test NGO login', function(done) {
         chai.request(server)
             .post('/login')
             .set('content-type', 'application/json')
@@ -48,15 +52,17 @@ describe('Testing Actions on an NGO account', function() {
                 expect(res.body).to.be.a('object');
                 expect(res.body).to.have.property('token');
                 expect(res.body).to.have.property('user');
-                expect(err).to.be(null);
+                expect(err).to.be.null;
 
                 // store id and token from response for subsequent tests
                 ngo.id = res.body.user.id;
                 ngo.token = res.body.token;
+
+                done();
             });
     });
 
-    it('GET - Test get NGO account information', function() {
+    it('GET - Test get NGO account information', function(done) {
         chai.request(server)
             .get('/ngo')
             .set('Authorization', ngo.token)
@@ -65,8 +71,10 @@ describe('Testing Actions on an NGO account', function() {
             .end(function(err, res) {
                 if (err) console.error('Error: get NGO account failed');
                 expect(res).to.have.property('status', 200);
-                expect(res).to.have.a('object'); // should return ngo account object
-                expect(err).to.be(null);
+                expect(res).to.have.an('object'); // should return ngo account object
+                expect(err).to.be.null;
+
+                done();
             });
     });
 
@@ -83,7 +91,7 @@ describe('Testing Actions on an NGO account', function() {
         notice: "test",
     };
 
-    it('PUT - Test NGO Update Info', function() {
+    it('PUT - Test NGO Update Info', function(done) {
         chai.request(server)
             .put('/ngo/')
             .set('Authorization', ngo.token)
@@ -92,11 +100,13 @@ describe('Testing Actions on an NGO account', function() {
             .end(function(err, res) {
                 if (err) console.error('Error: NGO Update changes failed');
                 expect(res).to.have.property('status', 200); // 500 for error
-                expect(err).to.be(null);
+                expect(err).to.be.null;
+
+                done();
             });
     });
 
-    it('PUT - Test NGO Update Notice', function() {
+    it('PUT - Test NGO Update Notice', function(done) {
         chai.request(server)
             .put('/ngo/notice')
             .set('Authorization', ngo.token)
@@ -105,11 +115,13 @@ describe('Testing Actions on an NGO account', function() {
             .end(function(err, res) {
                 if (err) console.error('Error: NGO Update notice failed');
                 expect(res).to.have.property('status', 200);
-                expect(err).to.be(null);
+                expect(err).to.be.null;
+
+                done();
             });
     });
 
-    it('GET - Test NGO get Notice', function() {
+    it('GET - Test NGO get Notice', function(done) {
         chai.request(server)
             .get('/ngo/notice')
             .set('Authorization', ngo.token)
@@ -119,7 +131,9 @@ describe('Testing Actions on an NGO account', function() {
                 if (err) console.error('Error: get notice failed');
                 expect(res).to.have.property('status', 200);
                 expect(res).to.have.a('object'); // should have notice in body
-                expect(err).to.be(null);
+                expect(err).to.be.null;
+
+                done();
             });
     });
 

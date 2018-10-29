@@ -9,18 +9,16 @@ const router = express.Router();
 router.post('/', async function (req, res) {
 	const donor = req.body;
 	const hash = bcrypt.hashSync(req.body.password, 10);
-	const id = uuidv4();
+	const id = donor.id || uuidv4();
 	const emailId = uuidv4();
 	const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
 	let dbResult = await db.get('GGUser', ['*'], `email = '${donor.email}'`);
-	if (dbResult.length !== 0) {
-		console.log('Already exists');
-		return res.status(500).json({error: 'Internal server error'});
-	}
+	if (dbResult.length !== 0) return res.status(500).json({error: 'Already exists'});
 
 	await db.insert('GGUser', ['id', 'email', 'password', 'username', 'location', 'emailConfirmation', 'confirmed'],
 		[id, donor.email, hash, donor.name, donor.location, emailId, 'false']);
+	await db.insert('Donor', ['id', 'age', 'gender'], [id, donor.age || 0, donor.gender || ""]);
 	sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
 
 	res.sendStatus(200);
@@ -42,6 +40,12 @@ router.put('/', async function (req, res) {
 router.post('/payment_method', async function (req, res) {
 	const paymentMethod = req.body.paymentMethod;
 
+	await db.insert('PaymentInfo',
+		['userId', 'address', 'ccNumber', 'cvv', 'expirationDate', 'ccName'],
+		[paymentMethod.userId, paymentMethod.address, paymentMethod.ccNumber, paymentMethod.cvv,
+			paymentMethod.expirationDate, paymentMethod.ccName]);
+
+	res.sendStatus(200);
 });
 
 module.exports = router;

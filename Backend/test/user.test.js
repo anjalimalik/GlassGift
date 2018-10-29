@@ -11,7 +11,7 @@ describe('Users', function() {
 
     it('Editing profile information changes the resulting API route', function() {
         const user = {
-            id
+            id: 0
         }; // TODO
         // TODO add user
 

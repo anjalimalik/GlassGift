@@ -13,9 +13,9 @@ async function execute(query) {
 }
 
 function init() {
-    execute(fs.readFileSync(__dirname + '/init.sql', 'utf-8'))
+    execute(fs.readFileSync(__dirname + '/init.sql', 'utf-8').replace(/\n/g, ''))
 	    .then(() => console.log("Database initialized"))
-	    .catch(() => console.error("Something went wrong in database initialization :("));
+	    .catch((e) => console.error(e, "Something went wrong in database initialization :("));
 }
 
 async function get(table, cols, query) {
@@ -25,7 +25,7 @@ async function get(table, cols, query) {
 
 async function insert(table, cols, values) {
 	if (cols.length !== values.length) throw "Different number of columns and values";
-	return await execute(`INSERT INTO ${table}(${cols.join(", ")}) VALUES (${values.join(", ")})`);
+	return await execute(`INSERT INTO ${table}(${cols.join(", ")}) VALUES (${values.map(c => `'${c}'`).join(", ")})`);
 }
 
 async function modify(table, props, values, qualifier) {

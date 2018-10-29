@@ -9,15 +9,12 @@ const router = express.Router();
 router.post('/', async function (req, res) {
 	const ngo = req.body;
 	const hash = await bcrypt.hash(req.body.password, 10);
-	const id = uuidv4();
+	const id = ngo.id || uuidv4();
 	const emailId = uuidv4();
 	const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
 
 	let dbResult = await db.get('GGUser', ['id'], `email = '${ngo.email}'`);
-	if (dbResult.length !== 0) {
-		console.log('Already exists');
-		return res.status(500).json({error: 'Already exists'});
-	}
+	if (dbResult.length !== 0) return res.status(500).json({error: 'Already exists'});
 
 	await db.insert('GGUser', ['id', 'email', 'password', 'username', 'location', 'emailConfirmation', 'confirmed'],
 		[id, ngo.email, hash, ngo.name, ngo.location, emailId, 'false']);
@@ -45,10 +42,7 @@ router.get('/', async function (req, res) {
 	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
 		['NGO.id as id', 'username', 'email', 'location', 'category', 'description',
 			'calLink', 'notice', 'minLimit', 'maxLimit']);
-	if (dbResult.rows.length !== 1) {
-		console.log("NGO not found!");
-		return res.status(500).json({error: "NGO not found!"});
-	}
+	if (dbResult.rows.length !== 1) return res.status(500).json({error: "NGO not found!"});
 
 	return res.status(200).json(dbResult.rows[0]);
 });
@@ -68,7 +62,6 @@ router.post('/search', async function (req, res) {
 			where = `category = \'${keyword}\'`;
 			break;
 		default:
-			console.log("Couldn't match type");
 			return res.status(500).json({error: "Couldn't match type"});
 	}
 
@@ -80,10 +73,7 @@ router.post('/search', async function (req, res) {
 
 router.get('/notice', async function (req, res) {
 	const dbResult = await db.get('NGO', ['notice'], `id = '${req.query.id}'`);
-	if (dbResult.rows.length !== 1) {
-		console.log("Account doesn't exist");
-		return res.status(500).json({error: "Account doesn't exist"});
-	}
+	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
 	const dbUser = dbResult.rows[0];
 	res.status(200).json({notice: dbUser.notice});

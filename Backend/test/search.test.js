@@ -13,16 +13,17 @@ describe('Testing Search', function () {
 
     it('POST - Test Searching NGOs', function (done) {
         chai.request(server)
-            .post('/search')
+            .post('/ngo/search')
             .set('content-type', 'application/json')
             .send(search)
             .end(function (err, res) {
                 if (err) console.error('Error: Search NGOs failed');
                 expect(res).to.have.property('status', 200);
                 expect(res).to.be.an('object');
-                expect(err).to.be(null);
+                expect(err).to.be.null;
                 expect(res.body[0]).to.have.property('id');  // if not matching?
                 expect(res.body[0]).to.have.property('name');
+
                 done();
             });
     });
