@@ -22,9 +22,11 @@ import ConfirmEmail from './components/ConfirmEmail';
 import Dashboard from './components/Dashboard';
 import UnknownAccess from './components/UnknownAccess';
 import Search from './components/Search';
+import DonationCompleted from './components/DonationCompleted';
 
 // Font Awesome
 library.add(faSpinner);
+
 
 const store = createStore(
   rootReducer,
@@ -58,6 +60,7 @@ ReactDOM.render(
         <Route exact path="/sentEmail" component={SentEmail} />
         <Route exact path="/confirmEmail" component={ConfirmEmail} />
         <Route exact path="/search" component={Search} onEnter={requireAuth} />
+        <Route exact path="/donationcompleted" component={DonationCompleted} />
       </div>
     </BrowserRouter>
   </Provider>,
