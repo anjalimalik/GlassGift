@@ -8,13 +8,12 @@ const transporter = nodeMailer.createTransport({
 	}
 });
 
-async function sendConfirmationEmail(email, name, confirmationLink, type) {
-	const body = `Dear ${name},\n\nWelcome to GlassGift!\n Before we get started, we need you to follow the link` +
-		` posted below:\n\n\t${confirmationLink}\n\nOnce you navigate to this page you will finish your` +
-		` registration as a new ${(type === 0 ? "NGO" : "donor")} on GlassGift. Thanks!!!\n\n` +
-		`Best Regards,\nThe GlassGift Team\n\n` +
-		`P.S.: Please don't respond to this email, we won\'t see it.\n`;
-
+async function sendConfirmationEmail(email, name, confirmationToken, type) {
+	var body = `Dear ${name},\n\nWelcome to GlassGift!\n Before we get started, we need you to follow the link`+
+			   ` posted below:\n\n\t${confirmationLink}\n\nOnce you navigate to this page you will finish your` +
+			   ` registration as a new ${(type === 0 ? "NGO" : "donor")} on GlassGift. Thanks!!!\n\n`+
+			   `Best Regards,\nThe GlassGift Team\n\n`+
+			   `P.S.: Please don't respond to this email, we won\'t see it.\n`;
 
 	const mailOptions = {
 		from: 'glassgiftteam@gmail.com',
