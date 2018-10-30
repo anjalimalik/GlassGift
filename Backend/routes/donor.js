@@ -15,7 +15,7 @@ router.post('/', async function (req, res) {
 
 	let dbResult = await db.get('GGUser', ['*'], `email = '${donor.email}'`);
 	if (dbResult.length !== 0) return res.status(500).json({error: 'Already exists'});
-
+  
 	await db.insert('GGUser', ['id', 'email', 'password', 'username', 'location', 'emailConfirmation', 'confirmed'],
 		[id, donor.email, hash, donor.name, donor.location, emailId, 'false']);
 	await db.insert('Donor', ['id', 'age', 'gender'], [id, donor.age || 0, donor.gender || ""]);
@@ -46,6 +46,18 @@ router.post('/payment_method', async function (req, res) {
 			paymentMethod.expirationDate, paymentMethod.ccName]);
 
 	res.sendStatus(200);
+  
+router.post('/search', async function (req, res) {
+  try {
+    const keyword = req.body.keyword;
+
+    let innerJoinQuery = 'SELECT Donor.id as id, name, email FROM GGUser INNER JOIN Donor ON GGUser.id = Donor.id';
+    let dbResult = await db.pool.query(innerJoinQuery + ` WHERE name LIKE \'%${keyword}%\'`);
+    return res.status(200).json(dbResult.rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;

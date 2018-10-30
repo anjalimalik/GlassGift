@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const indexRouter = require('./routes/');
 const donorRouter = require('./routes/donor');
+const donationRouter = require('./routes/donations');
 const ngoRouter = require('./routes/ngo');
 const donationRouter = require('./routes/donations');
 const subscriptionRouter = require('./routes/subscription');
