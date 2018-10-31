@@ -3,7 +3,6 @@ const db = require('../database');
 const uuidv4 = require('uuid/v4');
 const stripe = require('stripe')('sk_test_qQerTxPScIJqfK5Cx30E5U5O');
 const router = express.Router();
-const uuidv4 = require('uuid/v4');
 const {sendDonationConfirmationEmail} = require('../email');
 
 router.post('/', async function (req, res) {
@@ -16,17 +15,16 @@ router.post('/', async function (req, res) {
 	}
 
     const donorId = req.get('Authorization');
+    const donId = uuidv4();
 
 	await db.insert('Donation',
 		['id', 'donorId', 'ngoId', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
-		[uuidv4(), donorId, donation.ngoId, donation.anonymity || false, donation.message || "", donation.donationType || 0,
+		[donId, donorId, donation.ngoId, donation.anonymity || false, donation.message || "", donation.donationType || 0,
 			donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
 //	res.status(200);
   
 //     try{
 //     	const donation = req.body;
-
-//     	const donId = uuidv4();
 
          let emailWrapper = await db.get('GGUser', 'email', `id = ${donorId}`);
          if(emailWrapper.rows.length === 0) throw new Error(`User with id ${donorId} not found`);
@@ -64,7 +62,10 @@ router.post('/', async function (req, res) {
          	receipt_email: donorEmail, 
          });
 
-         sendDonationConfirmationEmail(donorEmail, donation.amount, donation.ngoName, donation.date, donId);
+         let stringAmount = (donation.amount/100) + "." 
+                + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
+
+         sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, donation.date, donId);
 
      	return res.sendStatus(200);
 //     }catch (error) {

@@ -46,6 +46,7 @@ router.post('/payment_method', async function (req, res) {
 			paymentMethod.expirationDate, paymentMethod.ccName]);
 
 	res.sendStatus(200);
+});
   
 router.post('/search', async function (req, res) {
   try {
