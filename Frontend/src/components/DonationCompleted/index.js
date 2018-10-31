@@ -6,7 +6,6 @@ import {
   FacebookIcon, TwitterIcon, LinkedinIcon, EmailIcon,
 } from 'react-share';
 import ReactToPrint from "react-to-print";
-import PropTypes from "prop-types";
 
 class ReceiptToPrint extends React.Component {
   render() {
