@@ -15,25 +15,23 @@ router.post('/', async function (req, res) {
 		return res.status(500).json({error: "Outside range"});
 	}
 
+    const donorId = req.get('Authorization');
+
 	await db.insert('Donation',
 		['id', 'donorId', 'ngoId', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
-		[uuidv4(), donation.donorId, donation.ngoId, donation.anonymity || false, donation.message || "", donation.donationType || 0,
+		[uuidv4(), donorId, donation.ngoId, donation.anonymity || false, donation.message || "", donation.donationType || 0,
 			donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
-	res.status(200);
+//	res.status(200);
   
 //     try{
 //     	const donation = req.body;
 
 //     	const donId = uuidv4();
 
-//         const donorId = req.get('Authorization');
+         let emailWrapper = await db.get('GGUser', 'email', `id = ${donorId}`);
+         if(emailWrapper.rows.length === 0) throw new Error(`User with id ${donorId} not found`);
 
-//         let query0 = `SELECT email FROM GGUser WHERE id = '${donorId}'`;
-
-//         const emailWrapper = await db.pool.query(query0);
-//         if(emailWrapper.rows.length === 0) throw new Error(`User with id ${donorId} not found`);
-
-//         let donorEmail = emailWrapper.rows[0].email;
+         let donorEmail = emailWrapper.rows[0].email;
 
 //         console.log(donorEmail);
 
@@ -44,8 +42,8 @@ router.post('/', async function (req, res) {
 //         await db.pool.query(query);
 
 
-//         let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
-//         			  +`\nMessage: '${donation.message}'`;
+         let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
+         			  +`\nMessage: '${donation.message}'`;
 
         // let innerJoinQuery = `SELECT * FROM GGUser WHERE id = '${donation.donorId}'`;
 
@@ -55,20 +53,20 @@ router.post('/', async function (req, res) {
 
         // let dbResult2 = await db.pool.query(innerJoinQuery2);
 
-//         const token = req.body.stripeToken;
+         const token = req.body.stripeToken;
 
-//         const charge = stripe.charges.create({
-//         	amount: donation.amount,
-//         	currency: donation.currency,
-//         	description: message,
-//         	source: token,
-//         	metadata: {donation_id: donId}, 
-//         	receipt_email: donorEmail, 
-//         });
+         const charge = stripe.charges.create({
+         	amount: donation.amount,
+         	currency: donation.currency,
+         	description: message,
+         	source: token,
+         	metadata: {donation_id: donId}, 
+         	receipt_email: donorEmail, 
+         });
 
-//         sendDonationConfirmationEmail(donorEmail, donation.amount, donation.ngoName, donation.date, donId);
+         sendDonationConfirmationEmail(donorEmail, donation.amount, donation.ngoName, donation.date, donId);
 
-//     	return res.sendStatus(200);
+     	return res.sendStatus(200);
 //     }catch (error) {
 //         console.log(error);
 //         return res.status(500).json({ error: error.message });
