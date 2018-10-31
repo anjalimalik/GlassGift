@@ -52,7 +52,7 @@ class CheckoutForm extends Component {
 
   handleDonationTypes(e) {
     if (this.state.type !== '1' || this.state.type !== '2') {
-        this.props.donateError("Invalid input for name of the person being honored or remembered through this donation.");
+        donateError("Invalid input for name of the person being honored or remembered through this donation.");
         return;
     }
     this.setState({ honorname: e.target.value })
