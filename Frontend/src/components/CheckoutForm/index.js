@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Alert, CardElement, injectStripe } from 'react-stripe-elements';
 import { Button, Checkbox, FormControl, FormGroup, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { donate, donateClear } from '../../actions/donate';
+import { donate, donateClear, donateError } from '../../actions/donate';
 import { getUserId } from '../../actions/utils';
 
 class CheckoutForm extends Component {
@@ -52,7 +52,7 @@ class CheckoutForm extends Component {
 
   handleDonationTypes(e) {
     if (this.state.type !== '1' || this.state.type !== '2') {
-        this.props.donate.error = "Invalid input for name of the person being honored or remembered through this donation. ";
+        this.props.donateError("Invalid input for name of the person being honored or remembered through this donation.");
         return;
     }
     this.setState({ honorname: e.target.value })
