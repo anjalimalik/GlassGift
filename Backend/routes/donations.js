@@ -2,76 +2,70 @@ const express = require('express');
 const db = require('../database');
 const uuidv4 = require('uuid/v4');
 const stripe = require('stripe')('sk_test_qQerTxPScIJqfK5Cx30E5U5O');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
-const {sendDonationConfirmationEmail} = require('../email');
+const {sendDonationConfirmationEmail, sendDonationReceiptEmail} = require('../email');
 
 router.post('/', async function (req, res) {
-	const donation = req.body.donation;
+	const donation = req.body;
 	const limits = await db.get('NGO', ['minLimit', 'maxLimit'], `id = '${donation.ngoId}'`);
 
-	if ((limits.maxLimit && donation.amount > limits.maxLimit) ||
-		(limits.minLimit && donation.amount < limits.minLimit)) {
+	if ((limits[0].maxLimit && donation.amount / 100 > limits[0].maxlimit) ||
+		(limits[0].minlimit && donation.amount / 100 < limits[0].minlimit)) {
 		return res.status(500).json({error: "Outside range"});
 	}
 
-    const donorId = req.get('Authorization');
-    const donId = uuidv4();
+  const donId = uuidv4();
+
+	const authorization = req.get('Authorization');
+	if (!authorization) return res.status(500).json({error: 'No token supplied'});
+
+	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+	const donorId = decoded.id;
 
 	await db.insert('Donation',
-		['id', 'donorId', 'ngoId', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
-		[donId, donorId, donation.ngoId, donation.anonymity || false, donation.message || "", donation.donationType || 0,
+		['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
+		[donId, donorId, donation.ngoId, donation.amount, donation.anonymity || false, donation.message || "", donation.donationType || 0,
 			donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
-//	res.status(200);
-  
-//     try{
-//     	const donation = req.body;
 
-         let emailWrapper = await db.get('GGUser', 'email', `id = ${donorId}`);
-         if(emailWrapper.rows.length === 0) throw new Error(`User with id ${donorId} not found`);
-
-         let donorEmail = emailWrapper.rows[0].email;
-
-//         console.log(donorEmail);
-
-//     	let query = `INSERT INTO Donation(id, donorid, ngoid, anon, message, type, honorid, honorname, created, amount) VALUES`
-//     			+` ('${donId}','${donorId}', '${donation.ngoId}', '${donation.anon}', '${donation.message}', `
-//     			+`'${donation.type}', '${donation.honorid}', '${donation.honorname}', 'now()',`
-//     			+` '${donation.amount}')`;
-//         await db.pool.query(query);
+	let dbResult = await db.pool.query(`SELECT email FROM GGUser WHERE id = '${donorId}'`);
+	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	let donorEmail = dbResult.rows[0].email;
 
 
-         let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
-         			  +`\nMessage: '${donation.message}'`;
 
-        // let innerJoinQuery = `SELECT * FROM GGUser WHERE id = '${donation.donorId}'`;
+  let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
+   			  +`\nMessage: '${donation.message}'`;
 
-        // let dbResult = await db.pool.query(innerJoinQuery);
+ 	const token = req.body.stripeToken;
 
-        // let innerJoinQuery2 = `SELECT * FROM GGUser WHERE id = '${donation.ngoId}'`;
+ 	const charge = await stripe.charges.create({
+   	amount: donation.amount,
+	 	currency: 'usd',
+	 	description: message,
+	 	source: 'tok_visa',
+	 	metadata: {donation_id: donId},
+		receipt_email: donorEmail,
+   });
 
-        // let dbResult2 = await db.pool.query(innerJoinQuery2);
+   let stringAmount = (donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
 
-         const token = req.body.stripeToken;
+	 const ngoName = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`)
+	 const date = new Date();
 
-         const charge = stripe.charges.create({
-         	amount: donation.amount,
-         	currency: donation.currency,
-         	description: message,
-         	source: token,
-         	metadata: {donation_id: donId}, 
-         	receipt_email: donorEmail, 
-         });
+   sendDonationConfirmationEmail(donorEmail, stringAmount, ngoName[0].username, date.toLocaleString(), donId);
 
-         let stringAmount = (donation.amount/100) + "." 
-                + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
-
-         sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, donation.date, donId);
-
-     	return res.sendStatus(200);
-//     }catch (error) {
-//         console.log(error);
-//         return res.status(500).json({ error: error.message });
-//     }
+ 	 return res.status(200).json({
+		 id: donId.id,
+		 donorEmail,
+		 ngoId: donation.ngoId,
+		 ngoName: ngoName[0].username,
+		 amount: charge.amount,
+		 created: charge.created,
+		 description: charge.description,
+		 metadata: charge.metadata,
+		 status: charge.status,
+	 });
 });
 
 router.post('/scheduled', async function(req, res) {
@@ -89,5 +83,30 @@ router.post('/scheduled', async function(req, res) {
 
     res.sendStatus(500);
 });
+
+router.post('/email', async function(req, res) {
+	const donationID = req.body.id;
+
+	const dbResult = await db.pool.query(`select gguser_donor.email, donation.amount, gguser_ngo.username, donation.created from donation inner join ngo on donation.ngoId = ngo.id inner join donor on donation.donorId = donor.id inner join gguser as gguser_donor on donor.id = gguser_donor.id inner join gguser as gguser_ngo on ngo.id = gguser_ngo.id where donation.id = '${donationID}'`);
+	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Donation doesn't exist"});
+
+	await sendDonationReceiptEmail(dbResult.rows[0].email, dbResult.rows[0].amount, dbResult.rows[0].username, dbResult.rows[0].created);
+
+	res.sendStatus(200);
+
+
+	// const authorization = req.get('Authorization');
+	// if (!authorization) return res.status(500).json({error: 'No token supplied'});
+	// const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+	// const donorId = decoded.id;
+	//
+	// let dbResult = await db.pool.query(`SELECT * FROM donation WHERE id = '${donationID}'`);
+	// if (dbResult.rows.length !== 1) return res.status(500).json({error: "Donation doesn't exist"});
+	// const { ngoId, amount, created } = dbResult[0];
+	//
+	// dbResult = await db.pool.query(`SELECT username FROM GGUser WHERE id = ${ngoId}`);
+	// if (dbResult.rows.length !== 1) return res.status(500).json({error: "NGO doesn't exist"});
+	// const ngoName = dbResult[0].username;
+})
 
 module.exports = router;

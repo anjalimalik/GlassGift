@@ -1,35 +1,41 @@
 import React, { Component } from 'react';
-//import { Button } from 'react-bootstrap';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import './donationCompleted.css';
 import {
   FacebookShareButton, LinkedinShareButton, TwitterShareButton, EmailShareButton,
   FacebookIcon, TwitterIcon, LinkedinIcon, EmailIcon,
 } from 'react-share';
-import ReactToPrint from "react-to-print";
+import ReactToPrint from 'react-to-print';
+import { donationEmail } from '../../actions/donationEmail';
 
 class ReceiptToPrint extends React.Component {
   render() {
     return (
       <div>
-                  <h3>Donation Receipt</h3>
-                  <p>Amount: </p>
-                  <p>Ngo Name: </p>
-                  <p>Date/Time: </p>
+        <h3>Donation Receipt</h3>
+        <p>Amount: ${this.props.amount}</p>
+        <p>NGO Name: {this.props.ngoName}</p>
+        <p>Date: {this.props.date.toLocaleString()}</p>
       </div>
     );
   }
 }
 
-export default class DonationCompleted extends Component {
+class DonationCompleted extends Component {
 
   constructor(props) {
     super(props);
 
-    const params = new URLSearchParams(props.location.search);
+    const p = props.location.state;
 
     this.state = {
-      donationID: params.get('donationID'),
-      email: params.get('email'),
+      donationID: p.metadata.donation_id,
+      email: p.donorEmail,
+      ngoId: p.ngoId,
+      ngoName: p.ngoName,
+      amount: p.amount / 100,
+      created: new Date(p.created * 1000)
     };
   }
 
@@ -45,12 +51,15 @@ export default class DonationCompleted extends Component {
         <br />
         <br />
 
-        <h4>Click  
-          <ReactToPrint trigger={() => <a href="#"> here to Print</a>}
-          content={() => this.componentRef}
-          /> a copy of your reciept or <a onClick={() => this.props.history.push('/')}>here to Email</a> it to {this.state.email}.</h4>
-          
-        <div style={{display:'none'}}><ReceiptToPrint ref={el => (this.componentRef = el)} /> </div>
+        <h4>Click <ReactToPrint trigger={() => <a>here to Print</a>} content={() => this.componentRef}/> a copy of your reciept or <a onClick={() => this.props.donationEmail({ id: this.state.donationID })}>here to Email</a> it to {this.state.email}.</h4>
+
+        <div style={{display:'none'}}>
+          <ReceiptToPrint ref={el => (this.componentRef = el)}
+            amount={this.state.amount}
+            ngoName={this.state.ngoName}
+            date={this.state.created}
+          />
+        </div>
 
         <hr />
         <h3 className="text-warning">Share your contributions!</h3>
@@ -91,7 +100,6 @@ export default class DonationCompleted extends Component {
                 size={32}
                 round />
             </EmailShareButton>
-
           </div>
         </div>
 
@@ -100,3 +108,19 @@ export default class DonationCompleted extends Component {
     );
   }
 }
+
+function mapStateToProps({ donationEmail }) {
+  return {
+    pending: donationEmail.pending,
+    success: donationEmail.success,
+    error: donationEmail.error,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    donationEmail,
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DonationCompleted);

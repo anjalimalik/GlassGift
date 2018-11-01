@@ -82,13 +82,13 @@ async function sendForgotPasswordEmail(email, resetPasswordLink) {
 	});
 }
 
-//Add sending donation Id. 
+//Add sending donation Id.
 async function sendDonationConfirmationEmail(email, amount, NGOname, date, donationId){
 	var body = `Dear User,\n\n\tHello from GlassGift! This is a confirmation, of the following donation completed`+
 		`on your account:\n\nDonation id: ${donationId}\nAmount: \$${amount}\nPaid out to NGO: ${NGOname}\nDate: ${date}\n\n`+
 		`If you do not remember copmleting this transaction, we would highly reccomend resetting your `+
 		`password. If this problem persists, we would highly reccomend contacting our team. You can go ahead and `+
-		`email us at glassgiftteam@gmail.com, however, please add an URGENT Tag to the email. Otherwise we will not `+ 
+		`email us at glassgiftteam@gmail.com, however, please add an URGENT Tag to the email. Otherwise we will not `+
 		`see the email\n\nBest Regards,\nThe GlassGift Team\n\n`;
 
 	var mailoptions = {
@@ -107,4 +107,23 @@ async function sendDonationConfirmationEmail(email, amount, NGOname, date, donat
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail}
+async function sendDonationReceiptEmail(email, amount, ngoName, date) {
+	const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
+
+	const mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: email,
+		subject: 'GlassGift: Donation Receipt',
+		text: body,
+	};
+
+	transporter.sendMail(mailoptions, (err, info) => {
+		if (err) {
+			return console.error(err);
+		} else {
+			return console.log('Email sent' + info.response)
+		}
+	});
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendDonationReceiptEmail}

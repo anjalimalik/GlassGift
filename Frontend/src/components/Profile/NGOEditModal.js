@@ -27,8 +27,8 @@ class NGOEditModal extends Component {
       location: this.props.location || '',
       category: { value: `${this.props.category}`, label: NGO_CATEGORIES[this.props.category] },
       description: this.props.description || '',
-      minLimit: this.props.donationMin || null,
-      maxLimit: this.props.donationMax || null,
+      minLimit: this.props.minLimit || null,
+      maxLimit: this.props.maxLimit || null,
       calLink: this.props.calendarLink || '',
     };
   }
@@ -63,7 +63,7 @@ class NGOEditModal extends Component {
 
             <FormGroup bsSize="large">
               <ControlLabel>Categories</ControlLabel>
-              <Select value={this.state.categories}
+              <Select value={this.state.category}
                 options={selectNGOOptions} onChange={category => this.setState({ category })}
               />
             </FormGroup>

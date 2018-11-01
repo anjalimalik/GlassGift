@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
-import { getUserId } from '../../actions/utils';
+import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
@@ -22,6 +22,7 @@ class Profile extends Component {
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
+    this.renderButtons = this.renderButtons.bind(this);
 
     this.state = {
       ngoDonateModalVis: false,
@@ -31,8 +32,8 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    this.props.getNGO(getUserId());
-    this.props.getNGONotice(getUserId());
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
   }
 
   onChangeNGODonateModalVisibility(ngoDonateModalVis) {
@@ -41,14 +42,14 @@ class Profile extends Component {
 
   onChangeNGOEditModalVisibility(ngoEditModalVis) {
     this.setState({ngoEditModalVis});
-    this.props.getNGO(getUserId());
-    this.props.getNGONotice(getUserId());
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
   }
 
   onChangeNGOEditNoticeModalVisibility(ngoEditNoticeModalVis) {
     this.setState({ngoEditNoticeModalVis});
-    this.props.getNGO(getUserId());
-    this.props.getNGONotice(getUserId());
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
   }
 
   renderAlert() {
@@ -78,6 +79,26 @@ class Profile extends Component {
     }
   }
 
+  renderButtons() {
+
+    const id = getUserId();
+
+    if (id === this.props.match.params.id) {
+      return (
+        <div>
+          <Button onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
+          <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Button onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+        </div>
+      );
+    }
+  }
+
   render() {
 
     if (this.props.get.pending || this.props.getNotice.pending) {
@@ -91,43 +112,41 @@ class Profile extends Component {
     return (
       <div className="NGOProfile">
         {this.renderAlert()}
-        <PageHeader>Profile</PageHeader>
+        <PageHeader>{this.props.get.success.username}</PageHeader>
 
-        <Button onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
-
-        <br />
-
-        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
-        <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+        {this.renderButtons()}
 
         <h2>Information</h2>
-        <h4>Name:</h4>
-        {this.props.get.success.name}
-        <h4>Email:</h4>
-        {this.props.get.success.email}
-        <h4>Location</h4>
-        {this.props.get.success.location || 'No location listed'}
-        <h4>Category</h4>
-        {NGO_CATEGORIES[this.props.get.success.category]}
-        <h4>Description</h4>
-        {this.props.get.success.description || 'No description listed'}
-        <h2>Notice</h2>
-        {this.props.getNotice.success.notice}
+        <h4>Email: {this.props.get.success.email}</h4>
+
+        <h4>Location: {this.props.get.success.location || 'No location listed'}</h4>
+
+        <h4>Category: {NGO_CATEGORIES[this.props.get.success.category]}</h4>
+
+        <h4>Description: {this.props.get.success.description || 'No description listed'}</h4>
+
+        <h2>Notice: {this.props.getNotice.success.notice || 'No notice listed'}</h2>
+
 
         <NGODonateModal
           visibility={this.state.ngoDonateModalVis}
           onChangeVisibility={this.onChangeNGODonateModalVisibility}
           ngoId={this.props.match.params.id}
+          minLimit={this.props.get.success.minlimit}
+          maxLimit={this.props.get.success.maxlimit}
         />
 
         <NGOEditModal
           location={this.props.get.success.location}
           category={this.props.get.success.category}
           description={this.props.get.success.description}
+          minLimit={this.props.get.success.minlimit}
+          maxLimit={this.props.get.success.maxlimit}
           calendarLink={this.props.get.success.callink}
           visibility={this.state.ngoEditModalVis}
           onChangeVisibility={this.onChangeNGOEditModalVisibility}
         />
+
         <NGOEditNoticeModal
           notice={this.props.getNotice.success.notice}
           visibility={this.state.ngoEditNoticeModalVis}

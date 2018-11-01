@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PageHeader, Button } from 'react-bootstrap';
-import { getUserId } from '../../actions/utils';
+import { getUserId } from '../../utils';
 
 class Dashboard extends Component {
 

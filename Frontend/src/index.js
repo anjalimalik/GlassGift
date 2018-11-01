@@ -9,7 +9,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
-import { getUserId } from './actions/utils';
+import { getUserId } from './utils';
 import Header from './components/Shared/Header';
 import Entry from './components/Entry';
 import Signup from './components/Signup';

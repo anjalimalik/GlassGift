@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { removeUserToken, getUserToken, getUserId } from '../../../actions/utils';
+import { removeUserToken, getUserToken, getUserId } from '../../../utils';
 import { LinkContainer } from 'react-router-bootstrap';
 
 

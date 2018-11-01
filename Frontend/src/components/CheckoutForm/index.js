@@ -1,36 +1,27 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, CardElement, injectStripe } from 'react-stripe-elements';
-import { Button, Checkbox, FormControl, FormGroup, InputGroup } from 'react-bootstrap';
+import { CardElement, injectStripe } from 'react-stripe-elements';
+import { Button, Checkbox, FormControl, FormGroup, InputGroup, ControlLabel } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { donate, donateClear, donateError } from '../../actions/donate';
-import { getUserId } from '../../actions/utils';
+import { getUserId } from '../../utils';
 
 class CheckoutForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      amount: '',
+      amount: '0',
       message: '',
       anon: false,
+      save: false,
+      type: 0,
     }
 
     this.handleDonationTypes = this.handleDonationTypes.bind(this);
-    this.renderAlert = this.renderAlert.bind(this);
     this.submit = this.submit.bind(this);
-  }
-
-  renderAlert() {
-    if (this.props.donate.error) {
-      return (
-        <Alert bsStyle="danger" onDismiss={this.props.donateClear}>
-          <h4>There was an error donating</h4>
-          <p>{this.props.donate.error}</p>
-        </Alert>
-      );
-    }
   }
 
   async submit(ev) {
@@ -38,16 +29,15 @@ class CheckoutForm extends Component {
     if (!token) return;
 
     this.props.donate({
-      // ngoId, anon, message, type, honorid, honorname, amount, stripeToken
       ngoId: this.props.ngoId,
       anon: this.state.anon,
       type: this.state.type,
-      //honorid: null, // not needed
-      honorname: this.name.honorname,
-      amount: this.state.amount,
+      honorname: this.state.honorname,
+      message: this.state.message,
+      amount: parseInt(this.state.amount, 10) * 100,
       stripeToken: token,
     })
-    .then(() => { if (this.props.donate.success) this.props.onChangeVisibility(false) });
+    .then(() => { if (this.props.success) this.props.history.push('/donationcompleted', this.props.success) });
   }
 
   handleDonationTypes(e) {
@@ -59,10 +49,15 @@ class CheckoutForm extends Component {
   }
 
   render() {
+
+    const minMaxColor = this.props.error ? 'red' : 'black';
+
     return (
       <div className="CheckoutForm">
-        {this.renderAlert()}
         <FormGroup>
+          <ControlLabel style={{color: minMaxColor}}>
+            Min: {this.props.minLimit} Max: {this.props.maxLimit}
+          </ControlLabel>
           <InputGroup>
             <InputGroup.Addon>$</InputGroup.Addon>
             <FormControl
@@ -74,18 +69,28 @@ class CheckoutForm extends Component {
           </InputGroup>
         </FormGroup>
 
-        <select value={this.state.type} onChange={e => this.setState({ type: e.target.value })}>
-          <option selected value="0">On own behalf</option>
-          <option value="1">In Honor Of</option>
-          <option value="2">In Memory Of</option>
-        </select>
+        <FormGroup>
+          <FormControl componentClass="select"
+            placeholder={this.state.type} onChange={e => this.setState({ type: parseInt(e.target.value, 10) })}
+          >
+            <option value={0}>On own behalf</option>
+            <option value={1}>In Honor Of</option>
+            <option value={2}>In Memory Of</option>
+          </FormControl>
+        </FormGroup>
 
-        <FormControl
-          type="text"
-          placeholder="Name of the person honored/remembered"
-          value={this.state.honorname}
-          onChange={e => this.handleDonationTypes(e)}
-        />
+        {(() => {
+          if (this.state.type !== 0) {
+            return (
+              <FormControl
+                type="text"
+                placeholder="Name of the person honored/remembered"
+                value={this.state.honorname}
+                onChange={e => this.handleDonationTypes(e)}
+              />
+            )
+          }
+        })()}
 
         <FormControl
           type="text"
@@ -101,12 +106,22 @@ class CheckoutForm extends Component {
           Anonymous
         </Checkbox>
 
-        <CardElement />
+        <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
+          <CardElement />
+        </div>
+
+        <Checkbox
+          defaultChecked={this.state.save}
+          onChange={e => { this.setState({ save: e.target.checked }) }}
+          style={{paddingBottom: '10px'}}
+        >
+          Save payment info
+        </Checkbox>
 
         <Button onClick={() => this.props.onChangeVisibility(false)}>Close</Button>
         <Button
           bsStyle="primary"
-          disabled={this.props.donate.pending}
+          disabled={this.props.pending}
           onClick={this.submit}
         >
           Donate
@@ -120,7 +135,9 @@ class CheckoutForm extends Component {
 
 function mapStateToProps({ donate }) {
   return {
-    donate: donate,
+    pending: donate.pending,
+    success: donate.success,
+    error: donate.error,
   };
 }
 
@@ -128,7 +145,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     donate,
     donateClear,
-  });
+  }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectStripe(CheckoutForm));
+export default connect(mapStateToProps, mapDispatchToProps)(injectStripe(withRouter(CheckoutForm)));

@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { search, searchClear } from '../../actions/search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader } from 'react-bootstrap';
+import {
+  Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
+  Table
+ } from 'react-bootstrap';
+import { NGO_CATEGORIES } from '../../constants';
 import '../Login/Login.css';
 
 
@@ -17,14 +22,13 @@ constructor(props) {
   this.renderAlert = this.renderAlert.bind(this);
 
   this.state = {
-    type: '0',
+    type: 0,
     keyword: '',
   };
 }
 
 onSubmit(e) {
   e.preventDefault();
-  console.log(this.state);
   const { type, keyword } = this.state;
   this.props.search(type, keyword)
   .then(() => {
@@ -44,28 +48,34 @@ componentWillUnmount() {
 }
 
 renderNGOList() {
+  if (!this.props.success && !this.props.error && !this.props.pending) return null;
+
   if (!this.props.success || this.props.rows.length === 0) {
     return <p>No NGOs found...</p>;
   }
 
   return (
-    <table className="table table-hover">
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Location</th>
-      </tr>
-      {this.props.rows.map(ngo => {
-        return (
-          <tr key={ngo.id}>
-            <td>{ngo.name}</td>
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Location</th>
+          <th>Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        {this.props.rows.map(ngo =>
+          <tr key={ngo.id} onClick={() => this.props.history.push(`/profile/${ngo.id}`)}>
+            <td>{ngo.username}</td>
             <td>{ngo.description}</td>
             <td>{ngo.location}</td>
+            <td>{NGO_CATEGORIES[ngo.category]}</td>
           </tr>
-        )
-      })}
-    </table>
-  )
+        )}
+      </tbody>
+    </Table>
+  );
 }
 
 renderAlert() {
@@ -87,9 +97,10 @@ render() {
 
      <PageHeader>Search</PageHeader>
       <form onSubmit={this.onSubmit}>
-        <FormGroup bsSize="med">
+        <FormGroup bsSize="lg">
           <ControlLabel>Search: </ControlLabel>
           <FormControl
+            autoFocus
             type="text"
             placeholder="Type to search for NGOs"
             value={this.state.keyword}
@@ -97,31 +108,37 @@ render() {
            />
         </FormGroup>
 
-      <br />
-        <FormGroup>
-       <label style={{ marginRight: 10,}} for="keyword">keyword </label>
-       <input style={{ marginRight: 50,}} type="radio" name="basisof" value="keywordword" onChange={(e) => { this.setState({ type: '0' }) }}/>
+        <div style={{paddingBottom: '20px'}}>
+          <ButtonToolbar>
+            <ToggleButtonGroup type="radio" name="searchType" defaultValue={0}
+            onChange={type => this.setState({ type })}
+            >
+              <ToggleButton value={0}>Keyword</ToggleButton>
+              <ToggleButton value={1}>Location</ToggleButton>
+              <ToggleButton value={2}>Category</ToggleButton>
+            </ToggleButtonGroup>
+          </ButtonToolbar>
+        </div>
 
-       <label style={{ marginRight: 10,}} for="Location">Location </label>
-       <input style={{ marginRight: 50,}} type="radio" name="basisof" value="Location" onChange={(e) => { this.setState({ type: '1' }) }}/>
-
-       <label style={{ marginRight: 10,}} for="Category">Category </label>
-       <input style={{ marginRight: 50,}} type="radio" name="basisof" value="Category" onChange={(e) => { this.setState({ type: '2' }) }}/>
-       </FormGroup>
-
-        <Button
-          block
-          bsSize="large"
-          type="submit"
-          bsStyle="primary"
-         disabled={this.props.pending}
-       >
-         Search
-         { this.props.pending ? <span className="loginButtonSpinner">
-           <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
-       </Button>
+        <div>
+          <Button
+            block
+            bsSize="large"
+            type="submit"
+            bsStyle="primary"
+           disabled={this.props.pending}
+         >
+           Search
+           { this.props.pending ? <span className="loginButtonSpinner">
+             <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
+         </Button>
+       </div>
      </form>
-     {this.renderNGOList()}
+
+     <div style={{paddingTop: '20px'}}>
+      {this.renderNGOList()}
+     </div>
+
     </div>
   );
 }
@@ -143,4 +160,4 @@ function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Search));
