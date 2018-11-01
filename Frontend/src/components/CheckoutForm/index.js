@@ -3,10 +3,11 @@ import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CardElement, injectStripe } from 'react-stripe-elements';
-import { Button, Checkbox, FormControl, FormGroup, InputGroup, ControlLabel } from 'react-bootstrap';
+import { Button, Checkbox, FormControl, FormGroup, InputGroup, ControlLabel, ButtonToolbar, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import { donate, donateClear, donateError } from '../../actions/donate';
-import { getUserId } from '../../utils';
+import { getUserId, getUserToken } from '../../utils';
 
 class CheckoutForm extends Component {
   constructor(props) {
@@ -16,12 +17,21 @@ class CheckoutForm extends Component {
       amount: '0',
       message: '',
       anon: false,
-      save: false,
       type: 0,
+      previous: false,
+      saved: 0,
     }
 
     this.handleDonationTypes = this.handleDonationTypes.bind(this);
     this.submit = this.submit.bind(this);
+    this.renderCardInput = this.renderCardInput.bind(this);
+  }
+
+  componentDidMount() {
+    const token = getUserToken();
+    axios.get('http://localhost:3000/donation/prev', { headers: { Authorization: token }})
+    .then(response => this.setState({ previous: true }))
+    .catch(error => this.setState({ previous: false }));
   }
 
   async submit(ev) {
@@ -46,6 +56,34 @@ class CheckoutForm extends Component {
         return;
     }
     this.setState({ honorname: e.target.value })
+  }
+
+  renderCardInput() {
+    if (!this.state.previous) {
+      return (
+          <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
+            <CardElement />
+          </div>
+      );
+    }
+
+    let input = !this.state.saved ? <CardElement /> : null;
+
+    return (
+      <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
+        <div style={{paddingBottom: '10px'}}>
+          <ButtonToolbar>
+            <ToggleButtonGroup type="radio" name="searchType" defaultValue={0}
+            onChange={saved => this.setState({ saved })}
+            >
+              <ToggleButton value={0}>New CC</ToggleButton>
+              <ToggleButton value={1}>Use Previous</ToggleButton>
+            </ToggleButtonGroup>
+          </ButtonToolbar>
+        </div>
+        {input}
+      </div>
+    );
   }
 
   render() {
@@ -106,17 +144,7 @@ class CheckoutForm extends Component {
           Anonymous
         </Checkbox>
 
-        <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
-          <CardElement />
-        </div>
-
-        <Checkbox
-          defaultChecked={this.state.save}
-          onChange={e => { this.setState({ save: e.target.checked }) }}
-          style={{paddingBottom: '10px'}}
-        >
-          Save payment info
-        </Checkbox>
+        {this.renderCardInput()}
 
         <Button onClick={() => this.props.onChangeVisibility(false)}>Close</Button>
         <Button

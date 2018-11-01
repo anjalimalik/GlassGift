@@ -38,14 +38,29 @@ router.post('/', async function (req, res) {
    			  +`\nMessage: '${donation.message}'`;
 
  	const token = req.body.stripeToken;
+	let customerId;
+
+	dbResult = await db.pool.query(`SELECT stripeCustomerId FROM paymentinfo WHERE userId = '${donorId}'`);
+	if (dbResult.rows.length === 1) {
+		customerId = dbResult.rows[0].stripecustomerid;
+	} else {
+		const customer = await stripe.customers.create({
+			source: token.id,
+			email: 'test@gmail.com',
+		});
+
+		customerId = customer.id;
+
+		await db.pool.query(`INSERT INTO paymentinfo VALUES ('${donorId}', '${customerId}')`);
+	}
+
 
  	const charge = await stripe.charges.create({
    	amount: donation.amount,
 	 	currency: 'usd',
 	 	description: message,
-	 	source: 'tok_visa',
-	 	metadata: {donation_id: donId},
-		receipt_email: donorEmail,
+	 	customer: customerId,
+	 	metadata: { donation_id: donId },
    });
 
    let stringAmount = (donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
@@ -66,6 +81,17 @@ router.post('/', async function (req, res) {
 		 metadata: charge.metadata,
 		 status: charge.status,
 	 });
+});
+
+router.get('/prev', async function(req, res) {
+	const authorization = req.get('Authorization');
+	if (!authorization) return res.status(500).json({error: 'No token supplied'});
+	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+	const donorId = decoded.id;
+
+	const donor = await db.pool.query(`SELECT * FROM paymentinfo WHERE userId = '${donorId}'`);
+	if (donor.rows.length > 0) return res.sendStatus(200);
+	return res.sendStatus(500);
 });
 
 router.post('/scheduled', async function(req, res) {
@@ -93,20 +119,6 @@ router.post('/email', async function(req, res) {
 	await sendDonationReceiptEmail(dbResult.rows[0].email, dbResult.rows[0].amount, dbResult.rows[0].username, dbResult.rows[0].created);
 
 	res.sendStatus(200);
-
-
-	// const authorization = req.get('Authorization');
-	// if (!authorization) return res.status(500).json({error: 'No token supplied'});
-	// const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
-	// const donorId = decoded.id;
-	//
-	// let dbResult = await db.pool.query(`SELECT * FROM donation WHERE id = '${donationID}'`);
-	// if (dbResult.rows.length !== 1) return res.status(500).json({error: "Donation doesn't exist"});
-	// const { ngoId, amount, created } = dbResult[0];
-	//
-	// dbResult = await db.pool.query(`SELECT username FROM GGUser WHERE id = ${ngoId}`);
-	// if (dbResult.rows.length !== 1) return res.status(500).json({error: "NGO doesn't exist"});
-	// const ngoName = dbResult[0].username;
 })
 
 module.exports = router;

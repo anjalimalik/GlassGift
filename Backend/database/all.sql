@@ -81,9 +81,5 @@ create table if not exists userips(
 
 create table if not exists paymentinfo(
     userId text references gguser,
-    address text,
-    ccNumber int,
-    cvv int,
-    expirationDate timestamp,
-    ccName text
+    stripeCustomerId text
 );
