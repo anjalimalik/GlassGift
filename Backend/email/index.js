@@ -107,4 +107,31 @@ async function sendDonationConfirmationEmail(email, amount, NGOname, date, donat
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail}
+async function sendReceiptEmail(donation, ngoEmail, donorEmail){
+	var body = `Here is your receipt from GlassGift:\n\n` +
+			`Donation id: ${donation.id}\nNGO ID: ${donation.ngoId}\nDonor ID: ${donation.donorId}\n`+
+			`Amount: \$${(donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100)}\n`+
+			`Message: "${donation.message}"\n\n` +
+			`Total: \$${(donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100)}\n\n` +
+			`If there is an issue with this, please email us with an URGENT tag and we will send you the stripe receipt,`+
+			`you can also contact the ngo you donated to with this email: ${ngoEmail}. Thank you for using GlassGift!`+
+			`\n\nBest Regards,\nThe GlassGift Team\n\n`;
+
+	var mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: donorEmail,
+		subject: `GlassGift: Receipt for donation ${donation.id}`,
+		text: body
+	};
+
+	transporter.sendMail(mailoptions, function(err, info){
+		if(err){
+			return console.error(err);
+		}else{
+			return console.log('Email sent' + info.response);
+		}
+	});
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail}
+
