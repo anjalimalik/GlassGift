@@ -3,7 +3,7 @@ const db = require('../database');
 const router = express.Router();
 
 router.post('/', async function (req, res) {
-	const subscription = req.body;
+	const subscription = req.body.subscription;
 
 	await db.insert('Subscriptions',
 		['donorId', 'ngoId'],
