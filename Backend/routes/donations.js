@@ -3,10 +3,10 @@ const db = require('../database');
 const uuidv4 = require('uuid/v4');
 const stripe = require('stripe')('sk_test_qQerTxPScIJqfK5Cx30E5U5O');
 const router = express.Router();
-const {sendDonationConfirmationEmail} = require('../email');
+const {sendDonationConfirmationEmail, sendReceiptEmail} = require('../email');
 
 router.post('/', async function (req, res) {
-	const donation = req.body.donation;
+	const donation = req.body;
 	const limits = await db.get('NGO', ['minLimit', 'maxLimit'], `id = '${donation.ngoId}'`);
 
 	if ((limits.maxLimit && donation.amount > limits.maxLimit) ||
@@ -26,10 +26,10 @@ router.post('/', async function (req, res) {
 //     try{
 //     	const donation = req.body;
 
-         let emailWrapper = await db.get('GGUser', 'email', `id = ${donorId}`);
-         if(emailWrapper.rows.length === 0) throw new Error(`User with id ${donorId} not found`);
+         let emailWrapper = await db.get('GGUser', ['email'] , `id = '${donorId}'`);
+         if(emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
 
-         let donorEmail = emailWrapper.rows[0].email;
+         let donorEmail = emailWrapper[0].email;
 
 //         console.log(donorEmail);
 
@@ -60,14 +60,14 @@ router.post('/', async function (req, res) {
          	source: token,
          	metadata: {donation_id: donId}, 
          	receipt_email: donorEmail, 
+         }, function(err, charge){
+            return res.status(200).json(charge);
          });
 
          let stringAmount = (donation.amount/100) + "." 
                 + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
 
          sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, donation.date, donId);
-
-     	return res.sendStatus(200);
 //     }catch (error) {
 //         console.log(error);
 //         return res.status(500).json({ error: error.message });
@@ -88,6 +88,31 @@ router.post('/scheduled', async function(req, res) {
 		[uuidv4(), donationId, new Date().toString(), donation.frequency]);
 
     res.sendStatus(500);
+});
+
+router.post('/emailReceipt', async function(req, res) {
+    try{
+        const donId = req.body.donId;
+
+        let donData = await db.get('Donation', ['*'], `id = '${donId}'`);
+        if(donData.length === 0) throw new Error(`Donation with id ${donId} not found`);
+
+        let donation = donData[0];
+        
+        let ngoSearch = await db.get('GGUser', ['email'], `id = ${donation.ngoId}`);
+        if(ngoSearch.length === 0) throw new Error(`Ngo with id ${donation.ngoId} not found`);
+
+        let donorSearch = await db.get('GGUser', ['email'], `id = ${donation.donorId}`);
+        if(donorSearch.length === 0) throw new Error(`Donor with id ${donation.donorId} not found`);
+
+        sendReceiptEmail(donation, ngoSearch[0].email, donorSearch[0].email);
+
+        return res.sendStatus(200);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({ error: error.message });
+    }
+
 });
 
 module.exports = router;
