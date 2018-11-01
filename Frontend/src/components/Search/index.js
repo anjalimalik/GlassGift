@@ -17,7 +17,7 @@ constructor(props) {
   this.renderAlert = this.renderAlert.bind(this);
 
   this.state = {
-    type: '',
+    type: '0',
     keyword: '',
   };
 }
