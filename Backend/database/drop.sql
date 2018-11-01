@@ -1,17 +1,17 @@
-drop table if exists GGUser cascade;
+drop table if exists gguser cascade;
 
-drop table if exists NGO cascade;
+drop table if exists ngo cascade;
 
-drop table if exists NGOCategories cascade;
+drop table if exists ngocategories cascade;
 
-drop table if exists Donor cascade;
+drop table if exists donor cascade;
 
-drop table if exists Searches cascade;
+drop table if exists searches cascade;
 
-drop table if exists Subscriptions cascade;
+drop table if exists subscriptions cascade;
 
-drop table if exists Donation cascade;
+drop table if exists donation cascade;
 
-drop table if exists RecurringDonation cascade;
+drop table if exists recurringfonation cascade;
 
-drop table if exists UserIps cascade;
+drop table if exists userips cascade;
