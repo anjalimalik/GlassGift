@@ -20,6 +20,7 @@ class CheckoutForm extends Component {
       type: 0,
       previous: false,
       saved: 0,
+      recurring: 0,
     }
 
     this.handleDonationTypes = this.handleDonationTypes.bind(this);
@@ -145,6 +146,18 @@ class CheckoutForm extends Component {
         </Checkbox>
 
         {this.renderCardInput()}
+
+        <FormGroup>
+          <FormControl componentClass="select"
+            placeholder={this.state.recurring} onChange={e => this.setState({ recurring: parseInt(e.target.value, 10) })}
+          >
+            <option value={0}>Don't recur</option>
+            <option value={1}>Every day</option>
+            <option value={2}>Every week</option>
+            <option value={3}>Every month</option>
+            <option value={4}>Every year</option>
+          </FormControl>
+        </FormGroup>
 
         <Button onClick={() => this.props.onChangeVisibility(false)}>Close</Button>
         <Button
