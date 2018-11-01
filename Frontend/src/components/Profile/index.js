@@ -7,6 +7,7 @@ import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
 import { getUserId } from '../../actions/utils';
+import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
 import { NGO_CATEGORIES } from '../../constants';
@@ -17,11 +18,13 @@ class Profile extends Component {
   constructor(props) {
     super(props);
 
+    this.onChangeNGODonateModalVisibility = this.onChangeNGODonateModalVisibility.bind(this);
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
 
     this.state = {
+      ngoDonateModalVis: false,
       ngoEditModalVis: false,
       ngoEditNoticeModalVis: false,
     };
@@ -30,6 +33,10 @@ class Profile extends Component {
   componentDidMount() {
     this.props.getNGO(getUserId());
     this.props.getNGONotice(getUserId());
+  }
+
+  onChangeNGODonateModalVisibility(ngoDonateModalVis) {
+    this.setState({ngoDonateModalVis});
   }
 
   onChangeNGOEditModalVisibility(ngoEditModalVis) {
@@ -85,6 +92,11 @@ class Profile extends Component {
       <div className="NGOProfile">
         {this.renderAlert()}
         <PageHeader>Profile</PageHeader>
+
+        <Button onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+
+        <br />
+
         <Button onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
         <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
 
@@ -99,10 +111,14 @@ class Profile extends Component {
         {NGO_CATEGORIES[this.props.get.success.category]}
         <h4>Description</h4>
         {this.props.get.success.description || 'No description listed'}
-        
         <h2>Notice</h2>
         {this.props.getNotice.success.notice}
 
+        <NGODonateModal
+          visibility={this.state.ngoDonateModalVis}
+          onChangeVisibility={this.onChangeNGODonateModalVisibility}
+          ngoId={this.props.match.params.id}
+        />
 
         <NGOEditModal
           location={this.props.get.success.location}
