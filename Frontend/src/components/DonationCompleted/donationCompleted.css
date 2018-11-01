@@ -1,0 +1,20 @@
+.nline {
+    white-space: pre-line;
+}
+
+.network {
+    vertical-align: top;
+    display: inline-block;
+    margin-right: 30px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+  
+.network_share-button {
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+  
+.network_share-button:hover:not(:active) {
+    opacity: 0.75;
+}

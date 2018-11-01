@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Jumbotron, Button, } from 'react-bootstrap';
 
-class App extends Component {
+class Entry extends Component {
   render() {
     return (
-      <div className="App">
+      <div className="Entry">
         <Jumbotron className="text-center"><h1>Glass Gift</h1></Jumbotron>
         <div className="text-center well" style={{ maxWidth: 500, margin: '70px auto 10px' }}>
 
@@ -21,4 +21,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Entry;

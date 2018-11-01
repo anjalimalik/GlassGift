@@ -9,6 +9,7 @@ import getNGO from './getNGO';
 import getNGONotice from './getNGONotice';
 import confirmEmail from './confirmEmail';
 import search from './search';
+import donate from './donate';
 
 export default combineReducers({
   login,
@@ -21,4 +22,5 @@ export default combineReducers({
   getNGONotice,
   confirmEmail,
   search,
+  donate,
 });
