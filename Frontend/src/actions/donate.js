@@ -35,7 +35,7 @@ export function donateClear() {
 function callDonateApi(body) {
   return new Promise((resolve, reject) => {
     axios.post('http://localhost:3000/donation/', body)
-    .then(response => resolve())
+    .then(response => resolve(response.data))
     .catch(error => { reject(new Error(error.response.data.error || 'Network Error'))});
   });
 }

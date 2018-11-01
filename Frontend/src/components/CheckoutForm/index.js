@@ -47,7 +47,17 @@ class CheckoutForm extends Component {
       amount: this.state.amount,
       stripeToken: token,
     })
-    .then(() => { if (this.props.donate.success) this.props.onChangeVisibility(false) });
+    .then(() => { 
+      if (this.props.donate.success) {
+        this.props.onChangeVisibility(false); 
+        //this.props.history.push('/donationcompleted'); /* ?email=${this.state.email} */ 
+        this.props.history.push({
+         pathname: '/donationcompleted',
+         search: null,
+         state: { detail:  this.props.donate.success } //response.data
+        })
+      } 
+    });
   }
 
   handleDonationTypes(e) {

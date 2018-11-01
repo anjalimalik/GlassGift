@@ -11,10 +11,10 @@ class ReceiptToPrint extends React.Component {
   render() {
     return (
       <div>
-                  <h3>Donation Receipt</h3>
-                  <p>Amount: </p>
-                  <p>Ngo Name: </p>
-                  <p>Date/Time: </p>
+         <h3>Donation Receipt </h3>
+         <p>Amount: </p>
+         <p>Ngo Name: </p>
+         <p>Date/Time: </p>
       </div>
     );
   }
@@ -25,16 +25,13 @@ export default class DonationCompleted extends Component {
   constructor(props) {
     super(props);
 
-    const params = new URLSearchParams(props.location.search);
-
     this.state = {
-      donationID: params.get('donationID'),
-      email: params.get('email'),
+      detail: this.props.location.state.detail,
     };
   }
 
   render() {
-    const shareUrl = 'http://github.com';
+    const shareUrl = 'http://github.com/anjalimalik/Glassgift';
     const post = 'I donated on GlassGift!'; // get more details using donation id?
 
     return (
