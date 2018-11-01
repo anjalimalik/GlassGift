@@ -1,26 +1,27 @@
-drop table if exists GGUser cascade;
+drop table if exists gguser cascade;
 
-drop table if exists NGO cascade;
+drop table if exists ngo cascade;
 
-drop table if exists NGOCategories cascade;
+drop table if exists donor cascade;
 
-drop table if exists Donor cascade;
+drop table if exists searches cascade;
 
-drop table if exists Searches cascade;
+drop table if exists subscriptions cascade;
 
-drop table if exists Subscriptions cascade;
+drop table if exists donation cascade;
 
-drop table if exists Donation cascade;
+drop table if exists recurringdonation cascade;
 
-drop table if exists RecurringDonation cascade;
+drop table if exists userips cascade;
 
-drop table if exists UserIps cascade;
+drop table if exists userips paymentinfo;
 
-create table if not exists GGUser(
+
+create table if not exists gguser(
   id text unique primary key,
   email text,
   password text,
-  name text,
+  username text,
   location text,
   emailConfirmation text,
   confirmed boolean,
@@ -28,8 +29,8 @@ create table if not exists GGUser(
   resetPasswordExp text
 );
 
-create table if not exists NGO(
-  id text unique primary key references GGUser,
+create table if not exists ngo(
+  id text unique primary key references gguser,
   emailTemplate text,
   description text,
   calLink text,
@@ -39,44 +40,52 @@ create table if not exists NGO(
   maxLimit bigint
 );
 
-create table if not exists Donor(
-  id text unique primary key references GGUser,
-  paymentData text,
+create table if not exists donor(
+  id text unique primary key references gguser,
   age integer,
   gender text
 );
 
-create table if not exists Searches(
-  id text unique primary key references GGUser,
+create table if not exists searches(
+  id text unique primary key references gguser,
   term text
 );
 
-create table if not exists Subscriptions(
-  donorId text references Donor,
-  ngoId text references NGO
+create table if not exists subscriptions(
+  donorId text references donor,
+  ngoId text references ngo
 );
 
-create table if not exists Donation(
+create table if not exists donation(
   id text unique primary key,
-  donorId text references Donor,
-  ngoId text references NGO,
+  donorId text references donor,
+  ngoId text references ngo,
   amount bigint,
   message text,
-  anon boolean,
+  anonymous boolean,
   type smallint,
-  honorId text,
-  honorName text,
+  honoredUserId text,
+  honoredUserName text,
   created timestamp
 );
 
-create table if not exists RecurringDonation(
+create table if not exists recurringdonation(
   id text unique primary key,
-  donationId text references Donation,
+  donationId text references donation,
   updated timestamp,
   frequency integer
 );
 
-create table if not exists UserIps(
-    userId text references GGUser,
+create table if not exists userips(
+    userId text references gguser,
     ip text
+);
+
+create table if not exists paymentinfo(
+    userId text references gguser,
+    address text,
+    ccNumber int,
+    cvv int,
+    expirationDate timestamp,
+    ccName text
 );
