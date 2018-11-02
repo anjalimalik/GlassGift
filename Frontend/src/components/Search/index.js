@@ -56,7 +56,7 @@ renderNGOList() {
 
   return (
     <Table striped bordered hover>
-      <thead>
+      <thead className="header">
         <tr>
           <th>Name</th>
           <th>Description</th>
@@ -91,14 +91,13 @@ renderAlert() {
 
 render() {
   return (
-    <div className="Search center-block">
+    <div className="Search center-block text-center" style={{width:'70%'}}>
 
     {this.renderAlert()}
 
      <PageHeader>Search</PageHeader>
       <form onSubmit={this.onSubmit}>
         <FormGroup bsSize="lg">
-          <ControlLabel>Search: </ControlLabel>
           <FormControl
             autoFocus
             type="text"
@@ -120,12 +119,12 @@ render() {
           </ButtonToolbar>
         </div>
 
-        <div>
+        <div style={{ marginBottom: '15px'}}>
           <Button
             block
             bsSize="large"
             type="submit"
-            bsStyle="primary"
+            bsStyle="info"
            disabled={this.props.pending}
          >
            Search
@@ -133,6 +132,7 @@ render() {
              <FontAwesomeIcon icon="spinner" size="1x" spin/></span> : null }
          </Button>
        </div>
+       <hr />
      </form>
 
      <div style={{paddingTop: '20px'}}>

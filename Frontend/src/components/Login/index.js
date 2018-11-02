@@ -93,7 +93,7 @@ class Login extends Component {
                 Remember me
               </Checkbox>
             </Col>
-            <Col sm={6}>
+            <Col sm={6} className="text-right">
               <LinkContainer to={`/forgotPassword?email=${this.state.email}`}>
                 <Button bsStyle="link">Forgot Password</Button>
               </LinkContainer>
