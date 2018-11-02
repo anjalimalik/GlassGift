@@ -27,7 +27,7 @@ class ConfirmEmail extends Component {
   render() {
     if (this.props.error) {
       return (
-        <div className="SentEmail center-block">
+        <div className="SentEmail center-block text-center">
           <Alert bsStyle="danger" onDismiss={null}>
             <p>{this.props.error}</p>
           </Alert>
@@ -37,7 +37,7 @@ class ConfirmEmail extends Component {
 
     if (this.props.pending) {
       return (
-        <div className="SentEmail center-block">
+        <div className="SentEmail center-block text-center">
           <FontAwesomeIcon icon="spinner" size="5x" spin/>
         </div>
       );
@@ -45,7 +45,7 @@ class ConfirmEmail extends Component {
 
     if (this.props.success) {
       return (
-        <div className="SentEmail center-block">
+        <div className="SentEmail center-block text-center">
           <Alert bsStyle="success">
             <p>Successfully confirmed account! Please <Link to="/login">Login</Link> now!</p>
           </Alert>

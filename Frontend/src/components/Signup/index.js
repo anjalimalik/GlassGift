@@ -72,8 +72,8 @@ class Signup extends Component {
       <div className="Signup center-block">
         <PageHeader>Signup</PageHeader>
 
-        <p><strong>Pick Donor</strong> if you want to donate to a good cause.</p>
-        <p><strong>Pick NGO</strong> if you're an NGO that wants to show yourself.</p>
+        <p className="text-muted"><strong>Pick Donor</strong> if you want to donate to a good cause.</p>
+        <p className="text-muted"><strong>Pick NGO</strong> if you're an NGO that wants to show yourself.</p>
 
         {this.renderAlert()}
 
@@ -81,6 +81,7 @@ class Signup extends Component {
           activeKey={this.state.tab} onSelect={tab => this.setState({ tab })}
         >
           <Tab eventKey={SIGNUP_TAB_DONOR} title="Donor">
+            <br />
             <FormGroup bsSize="large">
               <ControlLabel>Name</ControlLabel>
               <FormControl
@@ -136,6 +137,7 @@ class Signup extends Component {
             </Button>
           </Tab>
           <Tab eventKey={SIGNUP_TAB_NGO} title="NGO">
+            <br />
             <FormGroup bsSize="large">
               <ControlLabel>Name</ControlLabel>
               <FormControl
@@ -238,6 +240,7 @@ class Signup extends Component {
 
             <Button
               block
+              style={{ marginBottom: '20%'}}
               bsSize="large"
               type="submit"
               bsStyle="primary"

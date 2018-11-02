@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, Button, PageHeader } from 'react-bootstrap';
+import { Alert, Button, PageHeader, Label, ButtonGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
@@ -11,6 +11,8 @@ import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
 import { NGO_CATEGORIES } from '../../constants';
+import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
+import './Profile.css';
 
 
 class Profile extends Component {
@@ -86,8 +88,10 @@ class Profile extends Component {
     if (id === this.props.match.params.id) {
       return (
         <div>
-          <Button onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
-          <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+          <ButtonGroup>
+            <Button bsStyle="info" onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
+            <Button bsStyle="info" onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+          </ButtonGroup>
         </div>
       );
     } else {
@@ -103,30 +107,49 @@ class Profile extends Component {
 
     if (this.props.get.pending || this.props.getNotice.pending) {
       return (
-        <div className="NGOProfile">
+        <div className="NGOProfile text-center">
           <FontAwesomeIcon icon="spinner" size="6x" spin/>
         </div>
       );
     }
 
     return (
-      <div className="NGOProfile">
+      <div className="NGOProfile center-block text-center">
         {this.renderAlert()}
-        <PageHeader>{this.props.get.success.username}</PageHeader>
+        <PageHeader className="text-center text-primary">{this.props.get.success.username}</PageHeader>
 
         {this.renderButtons()}
 
-        <h2>Information</h2>
-        <h4>Email: {this.props.get.success.email}</h4>
+        <div className="text-center profileDiv">
+        <Card className="profile">
+          <CardBody>
+            <CardTitle style={{fontSize:'20px'}}>PROFILE</CardTitle>
+            <CardSubtitle className="mb-2 text-muted">Non-Profit Organization</CardSubtitle>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Email</Label>{' '}
+              {this.props.get.success.email} </CardText>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Location</Label>{' '}
+              {this.props.get.success.location || 'No location listed'} </CardText>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Category</Label>{' '}
+              {NGO_CATEGORIES[this.props.get.success.category]} </CardText>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Description</Label>{' '}
+              {this.props.get.success.description || 'No description listed'} </CardText>
+          </CardBody>
+        </Card>
+        </div>
 
-        <h4>Location: {this.props.get.success.location || 'No location listed'}</h4>
-
-        <h4>Category: {NGO_CATEGORIES[this.props.get.success.category]}</h4>
-
-        <h4>Description: {this.props.get.success.description || 'No description listed'}</h4>
-
-        <h2>Notice: {this.props.getNotice.success.notice || 'No notice listed'}</h2>
-
+        <div className="text-center profileDiv">
+        <Card className="profile">
+          <CardBody>
+            <CardTitle style={{fontSize:'16px'}}>NOTICE</CardTitle>
+            <hr />
+            <CardText className="text-warning">{this.props.getNotice.success.notice || 'No notice listed'}</CardText>
+          </CardBody>
+        </Card>
+        </div>
 
         <NGODonateModal
           visibility={this.state.ngoDonateModalVis}
