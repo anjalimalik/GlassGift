@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { search, searchClear } from '../../actions/search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  Alert, Button, ControlLabel, FormControl, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
+  Alert, Button, FormControl, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
   Table
  } from 'react-bootstrap';
 import { NGO_CATEGORIES } from '../../constants';

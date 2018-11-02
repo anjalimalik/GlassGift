@@ -6,7 +6,7 @@ import { CardElement, injectStripe } from 'react-stripe-elements';
 import { Button, Checkbox, FormControl, FormGroup, InputGroup, ControlLabel, ButtonToolbar, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import { donate, donateClear, donateError } from '../../actions/donate';
+import { donate, donateClear } from '../../actions/donate';
 import { getUserId, getUserToken } from '../../utils';
 
 class CheckoutForm extends Component {
@@ -23,7 +23,6 @@ class CheckoutForm extends Component {
       recurring: 0,
     }
 
-    this.handleDonationTypes = this.handleDonationTypes.bind(this);
     this.submit = this.submit.bind(this);
     this.renderCardInput = this.renderCardInput.bind(this);
   }
@@ -53,14 +52,6 @@ class CheckoutForm extends Component {
       recurring: this.state.recurring,
     })
     .then(() => { if (this.props.success) this.props.history.push('/donationcompleted', this.props.success) });
-  }
-
-  handleDonationTypes(e) {
-    if (this.state.type !== '1' || this.state.type !== '2') {
-        donateError("Invalid input for name of the person being honored or remembered through this donation.");
-        return;
-    }
-    this.setState({ honorname: e.target.value })
   }
 
   renderCardInput() {
@@ -129,7 +120,7 @@ class CheckoutForm extends Component {
                 type="text"
                 placeholder="Name of the person honored/remembered"
                 value={this.state.honorname}
-                onChange={e => this.handleDonationTypes(e)}
+                onChange={e => this.setState({ honorname: e.target.value })}
               />
             )
           }
