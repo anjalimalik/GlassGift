@@ -47,6 +47,7 @@ class CheckoutForm extends Component {
       message: this.state.message,
       amount: parseInt(this.state.amount, 10) * 100,
       stripeToken: token,
+      recurring: this.state.recurring,
     })
     .then(() => { if (this.props.success) this.props.history.push('/donationcompleted', this.props.success) });
   }

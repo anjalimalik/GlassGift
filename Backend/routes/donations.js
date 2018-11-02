@@ -28,11 +28,13 @@ router.post('/', async function (req, res) {
 		[donId, donorId, donation.ngoId, donation.amount, donation.anonymity || false, donation.message || "", donation.donationType || 0,
 			donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
 
+
+	if (donation.recurring > 0)
+		await db.pool.query(`INSERT INTO recurringdonation VALUES ('${donId}', now(), ${donation.recurring})`);
+
 	let dbResult = await db.pool.query(`SELECT email FROM GGUser WHERE id = '${donorId}'`);
 	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 	let donorEmail = dbResult.rows[0].email;
-
-
 
   let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
    			  +`\nMessage: '${donation.message}'`;
@@ -46,7 +48,7 @@ router.post('/', async function (req, res) {
 	} else {
 		const customer = await stripe.customers.create({
 			source: token.id,
-			email: 'test@gmail.com',
+			email: donorEmail,
 		});
 
 		customerId = customer.id;

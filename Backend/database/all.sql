@@ -68,10 +68,9 @@ create table if not exists donation(
 );
 
 create table if not exists recurringdonation(
-  id text unique primary key,
   donationId text references donation,
-  updated timestamp,
-  frequency integer
+  next timestamp,
+  frequency int
 );
 
 create table if not exists userips(
