@@ -36,8 +36,11 @@ class CheckoutForm extends Component {
   }
 
   async submit(ev) {
-    let { token } = await this.props.stripe.createToken({ name: getUserId() });
-    if (!token) return;
+    let token;
+    if (!this.state.previous) {
+      token = await this.props.stripe.createToken({ name: getUserId() }).token;
+      if (!token) return;
+    }
 
     this.props.donate({
       ngoId: this.props.ngoId,
@@ -46,7 +49,7 @@ class CheckoutForm extends Component {
       honorname: this.state.honorname,
       message: this.state.message,
       amount: parseInt(this.state.amount, 10) * 100,
-      stripeToken: token,
+      stripeToken: token || null,
       recurring: this.state.recurring,
     })
     .then(() => { if (this.props.success) this.props.history.push('/donationcompleted', this.props.success) });
