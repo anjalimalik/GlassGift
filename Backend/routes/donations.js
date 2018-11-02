@@ -33,7 +33,10 @@ router.post('/', async function (req, res) {
         currency: donation.currency,
         description: message,
         source: token,
-        metadata: {donation_id: donId}, 
+        metadata: {
+            donation_id: donId,
+            honoredUser: donation.honoredUserName
+        }, 
         receipt_email: donorEmail 
      }, function(err, charge){
         if(charge == null) return res.status(500).json({ error: `Stripe Payment Failed` });

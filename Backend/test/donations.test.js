@@ -8,16 +8,25 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 const donor = {
-    email: 'test@gmail.com',
-    password: 'test',
+    email: 'test00@gmail.com',
+    password: 'test00',
+    id: uuidv4(),
+    token: ''
+};
+
+const honorDonor = {
+    email: 'test02@gmail.com',
+    password: 'test02',
     id: uuidv4(),
     token: ''
 };
 
 const ngo = {
-    email: 'test@gmail.com',
-    password: 'test',
+    email: 'test01@gmail.com',
+    password: 'test01',
     id: uuidv4(),
+    maxLimit: 1000,
+    minLimit: 0,
     token: ''
 };
 
@@ -39,7 +48,13 @@ describe("Donations", function() {
             donorId: donor.id,
             ngoId: ngo.id,
             amount: ngo.maxLimit + 1,
-            anonymous: true
+            ngoId: ngo.id,
+            ngoName: "PeaceWithPedro",
+            anon: false,
+            message: "Kerchoo",
+            type: 1,
+            stripeToken: "tok_visa_debit",
+            currency: "usd"
         };
 
         chai.request(server)
@@ -52,8 +67,56 @@ describe("Donations", function() {
             });
     });
 
-    it("Viewing anonymous payments shouldn't reveal the donor's identity", function() {
-        // Donate anonymously
-        // Assert no identifying details present
-    });
+    it("A successful donation should send a json with the stripe order back", function(done){
+         const donation = {
+            ngoId: ngo.id,
+            amount: ngo.maxLimit -10,
+            ngoId: ngo.id,
+            ngoName: "PeaceWithPedro",
+            anon: false,
+            message: "Kerchoo",
+            type: 1,
+            stripeToken: "tok_visa_debit",
+            currency: "usd"
+        };
+
+        chai.request(server)
+            .post('/donation')
+            .set('content-type', 'application/json')
+            .set('Authorization', donor.id)
+            .send({donation})
+            .then( function(res) {
+                expect(res).to.have.status(200);
+                expect(res.body).to.not.be.null;
+                done();
+            })
+
+    })
+
+    it("Ability to donate on behalf of someone", function(done){
+        const donation = {
+            ngoId: ngo.id,
+            honoredUserId: honoredDonor.id,
+            honoredUserName: "Billybobjoefredhenry",
+            amount: ngo.maxLimit -100,
+            ngoId: ngo.id,
+            ngoName: "PeaceWithPedro",
+            anon: false,
+            message: "Kerchoo",
+            type: 1,
+            stripeToken: "tok_visa_debit",
+            currency: "usd"
+        };
+
+        chai.request(server)
+            .post('/donation')
+            .set('content-type', 'application/json')
+            .set('Authorization', donor.id)
+            .send({donation})
+            .then( function(res) {
+                expect(res).to.have.status(200);
+                expect(res.body).to.not.be.null;
+                done();
+            })
+    })
 });
