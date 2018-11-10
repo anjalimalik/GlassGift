@@ -9,42 +9,32 @@ const router = express.Router();
 router.post('/', async function (req, res) {
 	const ngo = req.body;
 	const hash = await bcrypt.hash(req.body.password, 10);
-	const id = ngo.id || uuidv4();
-	const emailId = uuidv4();
-	const emailConfirmation = `http://localhost:8080/confirmEmail?token=${emailId}`;
+	const emailToken = uuidv4();
+	const emailConfirmationLink = `http://localhost:8080/confirmEmail?token=${emailToken}`;
 
-	let dbResult = await db.get('GGUser', ['id'], `email = '${ngo.email}'`);
+	let dbResult = await ngoRepository.getIdsByEmail(ngo.email);
 	if (dbResult.length !== 0) return res.status(500).json({error: 'Already exists'});
 
-	await db.insert('GGUser', ['id', 'email', 'password', 'username', 'location', 'emailConfirmation', 'confirmed'],
-		[id, ngo.email, hash, ngo.name, ngo.location, emailId, 'false']);
-	await db.insert('NGO', ['id', 'description', 'category', 'calLink', 'minLimit', 'maxLimit'],
-		[id, ngo.description, ngo.category, ngo.calLink, ngo.minLimit || 0, ngo.maxLimit || 0]);
+	await ngoRepository.create(ngo.email, hash, ngo.name, ngo.location, emailToken, ngo.description, ngo.category,
+		ngo.calLink, ngo.minLimit, ngo.maxLimit);
 
-	sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
+	sendConfirmationEmail(ngo.email, ngo.name, emailConfirmationLink, 0);
 	res.sendStatus(200);
 });
 
 router.put('/', async function (req, res) {
 	const changes = req.body;
-
-	await db.modify('GGUser', 'location', changes.location, `id = '${req.decodedToken.id}'`);
-	await db.modify('NGO', ['description', 'calLink', 'minLimit', 'maxLimit'],
-		[changes.description, changes.category, changes.calendarLink, changes.minLimit || 0, changes.maxLimit || 0],
-		`id = '${req.decodedToken.id}'`);
+	await ngoRepository.edit(req.decodedToken.id, changes.location, changes.description, changes.category,
+		changes.calendarLink, changes.minLimit, changes.maxLimit);
 
 	return res.sendStatus(200);
 });
 
 router.get('/', async function (req, res) {
-	const id = req.query.id;
+	const ngos = await ngoRepository.getById(req.query.id);
+	if (ngos.length === 0) return res.status(500).json({error: "NGO not found!"});
 
-	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
-		['NGO.id as id', 'username', 'email', 'location', 'category', 'description',
-			'calLink', 'notice', 'minLimit', 'maxLimit']);
-	if (dbResult.rows.length !== 1) return res.status(500).json({error: "NGO not found!"});
-
-	return res.status(200).json(dbResult.rows[0]);
+	return res.status(200).json(ngos.rows[0]);
 });
 
 router.post('/search', async function (req, res) {
@@ -61,25 +51,25 @@ router.post('/search', async function (req, res) {
 });
 
 router.get('/notice', async function (req, res) {
-	const dbResult = await db.get('NGO', ['notice'], `id = '${req.query.id}'`);
-	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	const ngos = await ngoRepository.getById(req.query.id);
+	if (ngos.rows.length === 0) return res.status(500).json({error: "Account doesn't exist"});
 
-	const dbUser = dbResult.rows[0];
-	res.status(200).json({notice: dbUser.notice});
+	const ngo = ngos.rows[0];
+	res.status(200).json({notice: ngo.notice});
 });
 
 router.put('/notice', async function (req, res) {
-	await db.modify('NGO', 'notice', req.body.notice, `id = '${req.decodedToken.id}'`);
+	await ngoRepository.setNotice(req.decodedToken.id, req.body.notice);
 	return res.sendStatus(200);
 });
 
 router.post('/limit/max', async function (req, res) {
-	await db.modify('NGO', 'maxLimit', req.body.limit, `id = '${req.decodedToken.id}'`);
+	await ngoRepository.setMaxLimit(req.decodedToken.id, req.body.limit);
 	return res.sendStatus(200);
 });
 
 router.post('/limit/min', async function (req, res) {
-	await db.modify('NGO', 'minLimit', req.body.limit, `id = '${req.decodedToken.id}'`);
+	await ngoRepository.setMinLimit(req.decodedToken.id, req.body.limit);
 	return res.sendStatus(200);
 });
 

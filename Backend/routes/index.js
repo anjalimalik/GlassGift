@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database');
+const userRepository = require("../database/user");
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
@@ -9,21 +9,19 @@ const {sendForgotPasswordEmail, sendIPEmail} = require('../email');
 router.post('/login', async function (req, res) {
 	const user = req.body;
 
-	let dbResult = await db.get('GGUser', ['*'], `email = '${user.email}'`);
-	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	let users = await userRepository.getByEmail(user.email);
+	if (users.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	const dbUser = dbResult[0];
-
+	const dbUser = users[0];
 	const match = await bcrypt.compare(user.password, dbUser.password);
 	if (!match) return res.status(500).json({error: "Wrong password"});
-
 	if (!dbUser.confirmed) return res.status(500).json({error: "Not confirmed"});
 
 	// Check IP
-	dbResult = await db.get('UserIps', ['ip'], `userId = '${dbUser.id}'`);
-	if (!dbResult.rows.find(row => row.ip === req.ip)) {
+	users = await userRepository.getIpsById(dbUser.id);
+	if (!users.rows.find(row => row.ip === req.ip)) {
 		sendIPEmail(dbUser.email, req.ip);
-		await db.insert('UserIps', ['userId', 'ip'], [dbUser.id, req.ip]);
+		await userRepository.addNewIp(dbUser.id, req.ip);
 	}
 
 	const j = jwt.sign({
@@ -42,44 +40,33 @@ router.post('/login', async function (req, res) {
 });
 
 router.post('/reset_password', async function (req, res) {
-	console.log(req.body);
-	const email = req.body.email;
+    let users = await userRepository.getByEmail(req.body.email);
+	if (users.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	let dbResult = await db.get('GGUser', ['*'], `email = '${email}'`);
-	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
-
-	const emailId = uuidv4();
-	const emailConfirmation = `http://localhost:8080/resetPassword?token=${emailId}`;
-
-	await db.modify('GGUser', ['resetPasswordToken'], [emailId], `email = '${email}'`);
+	const token = uuidv4();
+	const emailConfirmation = `http://localhost:8080/resetPassword?token=${token}`;
+	await userRepository.setResetPasswordToken(req.body.email, token);
 	await sendForgotPasswordEmail('noahster11@gmail.com', emailConfirmation);
 
 	return res.sendStatus(200);
 });
 
 router.post('/confirm_password', async function (req, res) {
-	const {token, password} = req.body;
+	let users = await userRepository.getByResetPasswordToken(req.body.token);
+	if (users.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	let dbResult = await db.get('GGUser', ['*'], `resetPasswordToken = '${token}'`);
-	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	const id = users.rows[0].id;
+	const newPasswordHash = await bcrypt.hash(req.body.password, 10);
 
-	const id = dbResult.rows[0].id;
-	const hash = await bcrypt.hash(password, 10);
-
-	await db.modify('GGUser', 'password', hash, `id = '${id}'`);
-
+	await userRepository.changePassword(id, newPasswordHash);
 	return res.sendStatus(200);
 });
 
 router.post('/confirm_account', async function (req, res) {
-	const {token} = req.body;
+	let users = await userRepository.getByEmailConfirmationToken(req.body.token);
+	if (users.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	let dbResult = await db.get('GGUser', ['*'], `emailConfirmation = '${token}'`);
-	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
-
-	const id = dbResult.rows[0].id;
-	await db.modify('GGUser', 'confirmed', 'true', `id = '${id}'`);
-
+    userRepository.confirmById(users.rows[0].id);
 	return res.sendStatus(200);
 });
 
