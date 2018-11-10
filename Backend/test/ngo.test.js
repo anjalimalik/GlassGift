@@ -150,4 +150,8 @@ describe('Testing Actions on an NGO account', function() {
 
         expect(user).to.deep.equal(requestedUser);
     });
+
+    it("Newsletters", function() {
+
+    });
 });

@@ -27,4 +27,8 @@ describe('Testing Search', function () {
                 done();
             });
     });
+
+    it("History", function(done) {
+
+    });
 });

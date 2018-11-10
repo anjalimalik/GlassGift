@@ -1,13 +1,10 @@
 const express = require('express');
-const db = require('../database');
+const subscriptionRepository = require('../database/subscriptions');
 const router = express.Router();
 
 router.post('/', async function (req, res) {
 	const subscription = req.body.subscription;
-
-	await db.insert('Subscriptions',
-		['donorId', 'ngoId'],
-		[subscription.donorId, subscription.ngoId]);
+	await subscriptionRepository.create(subscription.donorId, subscription.ngoId);
 	res.status(200);
 });
 

@@ -48,7 +48,6 @@ describe("Donations", function() {
             donorId: donor.id,
             ngoId: ngo.id,
             amount: ngo.maxLimit + 1,
-            ngoId: ngo.id,
             ngoName: "PeaceWithPedro",
             anon: false,
             message: "Kerchoo",
@@ -71,7 +70,6 @@ describe("Donations", function() {
          const donation = {
             ngoId: ngo.id,
             amount: ngo.maxLimit -10,
-            ngoId: ngo.id,
             ngoName: "PeaceWithPedro",
             anon: false,
             message: "Kerchoo",
@@ -89,17 +87,15 @@ describe("Donations", function() {
                 expect(res).to.have.status(200);
                 expect(res.body).to.not.be.null;
                 done();
-            })
-
-    })
+            });
+    });
 
     it("Ability to donate on behalf of someone", function(done){
         const donation = {
             ngoId: ngo.id,
-            honoredUserId: honoredDonor.id,
+            honoredUserId: honorDonor.id,
             honoredUserName: "Billybobjoefredhenry",
             amount: ngo.maxLimit -100,
-            ngoId: ngo.id,
             ngoName: "PeaceWithPedro",
             anon: false,
             message: "Kerchoo",
@@ -117,6 +113,14 @@ describe("Donations", function() {
                 expect(res).to.have.status(200);
                 expect(res.body).to.not.be.null;
                 done();
-            })
-    })
+            });
+    });
+
+    it("Get donations by NGO", function(done) {
+
+    });
+
+    it("Get donation by donor", function(done) {
+
+    });
 });

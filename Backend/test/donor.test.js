@@ -68,7 +68,11 @@ describe('Testing registering donor account', function() {
             });
     });
 
-    it('Adding payment methods stores them for the future', function() {
+    it('Adding payment methods stores them for the future', function(done) {
 
     });
+
+    it("Export transactions", function(done) {
+
+    })
 });

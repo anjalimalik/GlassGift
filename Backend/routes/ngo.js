@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require("bcryptjs");
-const db = require('../database');
+const ngoRepository = require('../database/ngo');
 const uuidv4 = require('uuid/v4');
 const {sendConfirmationEmail} = require('../email');
 
@@ -48,27 +48,16 @@ router.get('/', async function (req, res) {
 });
 
 router.post('/search', async function (req, res) {
-	const keyword = req.body.keyword;
-	let where;
-
-	switch (req.body.type) {
-		case 0: // Name
-			where = `name LIKE \'%${keyword}%\'`;
-			break;
-		case 1: // Location
-			where = `location LIKE \'%${keyword}%\'`;
-			break;
-		case 2: // Category
-			where = `category = \'${keyword}\'`;
-			break;
+    switch (req.body.type) {
+		case 0:
+			return res.status(200).json(ngoRepository.searchByName(req.body.keyword));
+		case 1:
+			return res.status(200).json(ngoRepository.searchByLocation(req.body.keyword));
+		case 2:
+			return res.status(200).json(ngoRepository.searchByCategory(req.body.keyword));
 		default:
 			return res.status(500).json({error: "Couldn't match type"});
 	}
-
-	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
-		['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
-			'minLimit', 'maxLimit'], where);
-	return res.status(200).json(dbResult.rows);
 });
 
 router.get('/notice', async function (req, res) {
@@ -92,6 +81,14 @@ router.post('/limit/max', async function (req, res) {
 router.post('/limit/min', async function (req, res) {
 	await db.modify('NGO', 'minLimit', req.body.limit, `id = '${req.decodedToken.id}'`);
 	return res.sendStatus(200);
+});
+
+router.post('/newsletter', async function(req, res) {
+
+});
+
+router.post('/newsletter/send', async function(req, res) {
+
 });
 
 module.exports = router;
