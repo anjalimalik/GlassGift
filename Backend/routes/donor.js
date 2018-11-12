@@ -1,8 +1,10 @@
 const express = require('express');
 const bcrypt = require("bcrypt");
 const uuidv4 = require('uuid/v4');
+const json2csv = require("json2csv");
 const donorRepository = require('../database/donor');
 const userRepository = require('../database/user');
+const donationRepository = require('../database/donations');
 const {sendConfirmationEmail} = require('../email');
 
 const router = express.Router();
@@ -46,8 +48,12 @@ router.post('/search', async function (req, res) {
     return res.status(200).json(dbResult);
 });
 
-router.get('/export', async function (res, res) {
-
+router.get('/export_transactions', async function (req, res) {
+    const donations = donationRepository.getByDonor(req.query['id']);
+    const csv = json2csv.parse(donations);
+    res.setHeader('Content-disposition', 'attachment; filename=donor-transactions.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(csv);
 });
 
 module.exports = router;
