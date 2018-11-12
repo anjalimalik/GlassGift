@@ -3,6 +3,11 @@ const bcrypt = require("bcryptjs");
 const db = require('../database');
 const uuidv4 = require('uuid/v4');
 const {sendConfirmationEmail} = require('../email');
+const csv = require('csv');
+const json2csv = require('json2csv').parse;
+
+const fields = ['id', 'donorId', 'ngoId', 'amount', 'message', 'anonymous', 'type',
+  'honoredUserId', 'honoredUserName','created'];
 
 const router = express.Router();
 
@@ -45,6 +50,27 @@ router.get('/', async function (req, res) {
 	if (dbResult.rows.length !== 1) return res.status(500).json({error: "NGO not found!"});
 
 	return res.status(200).json(dbResult.rows[0]);
+});
+
+router.post('/paymentData', async function(req, res){
+	const donorId = req.get('Authorization');
+
+	const fileName = req.body.ngoId + donorId + '.csv'; 
+
+	var data = await db.get('donation', ['*'], `ngoId = '${req.body.ngoId}' ` + 
+			(req.body.num > 0? `FETCH FIRST ${req.body.num} ROWS ONLY`: ''));
+
+	res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
+  	res.set('Content-Type', 'text/csv');
+
+  	const opts = { fields };
+  	try{
+  		const csv =  json2csv(data, opts);
+		res.status(200).send(csv);
+	}catch(err){
+		console.log(err);
+		res.status(500).send(err);
+	}
 });
 
 router.post('/search', async function (req, res) {
