@@ -42,8 +42,8 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/Backend/database/scripts/init.sql" connection-id="e7222127-c0e4-4463-966f-0acfcab67a9a" session-id="MAIN" current-schema="GLASSGIFT" />
     <mapping file-url="file://$PROJECT_DIR$/Backend/database/scripts/drop.sql" connection-id="e7222127-c0e4-4463-966f-0acfcab67a9a" session-id="MAIN" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/Backend/database/scripts/init.sql" connection-id="e7222127-c0e4-4463-966f-0acfcab67a9a" session-id="MAIN" current-schema="GLASSGIFT" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
@@ -73,7 +73,7 @@
           <description value="" />
           <database-type value="POSTGRES" />
           <config-type value="BASIC" />
-          <database-version value="10.5" />
+          <database-version value="9.5" />
           <driver-source value="BUILTIN" />
           <driver-library value="" />
           <driver value="" />
@@ -281,6 +281,7 @@
           <content-type name="JSPx" enabled="true" />
           <content-type name="ASP" enabled="true" />
           <content-type name="YAML" enabled="true" />
+          <content-type name="Bash" enabled="true" />
         </content-types>
       </qualified-text-editor>
       <record-navigation>

@@ -54,9 +54,11 @@ router.post('/', async function (req, res) {
 
 router.get('/', async function (req, res) {
     if (req.query['by'] === 'user') {
-
+        const donations = await donationRepository.getByDonor(req.query['id']);
+        res.status(200).json(donations);
     } else if (req.query['by'] === 'ngo') {
-
+        const donations = await donationRepository.getByNgo(req.query['id']);
+        res.status(200).json(donations);
     } else {
         res.status(500).send({error: 'Invalid filter'});
     }

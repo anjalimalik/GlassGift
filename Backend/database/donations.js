@@ -18,4 +18,12 @@ function createScheduled(donationId, frequency) {
         [uuidv4(), donationId, new Date().toString(), frequency]);
 }
 
-module.exports = {create, createScheduled, getById};
+function getByNgo(id) {
+    return db.get('donation', ['*'], `ngoId = '${id}'`);
+}
+
+function getByDonor(id) {
+    return db.get('donation', ['*'], `donorId = '${id}'`);
+}
+
+module.exports = {create, createScheduled, getById, getByNgo, getByDonor};
