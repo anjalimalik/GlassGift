@@ -1,8 +1,9 @@
 const express = require('express');
 const bcrypt = require("bcryptjs");
 const ngoRepository = require('../database/ngo');
+const userRepository = require('../database/user');
 const uuidv4 = require('uuid/v4');
-const {sendConfirmationEmail} = require('../email');
+const email = require('../email');
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.post('/', async function (req, res) {
 	await ngoRepository.create(ngo.email, hash, ngo.name, ngo.location, emailToken, ngo.description, ngo.category,
 		ngo.calLink, ngo.minLimit, ngo.maxLimit);
 
-	sendConfirmationEmail(ngo.email, ngo.name, emailConfirmationLink, 0);
+	await email.sendConfirmationEmail(ngo.email, ngo.name, emailConfirmationLink, 0);
 	res.sendStatus(200);
 });
 
@@ -74,11 +75,16 @@ router.post('/limit/min', async function (req, res) {
 });
 
 router.post('/newsletter', async function(req, res) {
-
+	await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
+	return res.sendStatus(200);
 });
 
 router.post('/newsletter/send', async function(req, res) {
+	const newsletter = await ngoRepository.getNewsletter(req.body["ngoId"]);
 
+	(await ngoRepository.getSubscribers(req.body["ngoId"]))
+		.map(async (id) => (await userRepository.getEmailsFromId(id))[0])
+		.forEach(async (userEmail) => await email.sendNewsletter(newsletter, userEmail));
 });
 
 module.exports = router;

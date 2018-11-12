@@ -63,5 +63,19 @@ function setMaxLimit(id, limit) {
     return db.modify('NGO', 'maxLimit', limit, `id = '${id}'`);
 }
 
+function createNewsletter(id, newsletter) {
+    return db.insert('newsletters',
+        ['id', 'ngoId', 'newsletter', 'created'],
+        [uuidv4(), id, newsletter, `to_timestamp(${Date.now() / 1000})`]);
+}
+
+function getNewsletter(id) {
+    return db.get('newsletters', ['newsletter'], `ngoId = '${id}'`);
+}
+
+function getSubscribers(id) {
+    return db.get('subscriptions', ['donorId'], `ngoId = '${id}'`);
+}
+
 module.exports = {getLimitsById, create, searchByName, searchByCategory, searchByLocation, getIdsByEmail, edit, getById,
-setNotice, setMaxLimit, setMinLimit};
+setNotice, setMaxLimit, setMinLimit, createNewsletter, getSubscribers, getNewsletter};

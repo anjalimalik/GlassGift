@@ -136,5 +136,17 @@ async function sendReceiptEmail(donation, ngoEmail, donorEmail){
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail}
+async function sendNewsletter(newsletter, email) {
+    const mailOptions = {
+        from: 'glassgiftteam@gmail.com',
+        to: email,
+        subject: '[GlassGift] New Newsletter',
+        text: newsletter
+    };
+
+    transporter.sendMail(mailOptions);
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail,
+	sendReceiptEmail, sendNewsletter};
 

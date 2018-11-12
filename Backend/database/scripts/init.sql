@@ -70,3 +70,10 @@ create table if not exists paymentinfo(
     expirationDate timestamp,
     ccName text
 );
+
+create table if not exists newsletters(
+    id text primary key,
+    ngoId text references gguser,
+    newsletter text,
+    created date
+);
