@@ -136,5 +136,24 @@ async function sendReceiptEmail(donation, ngoEmail, donorEmail){
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail}
+async function sendNGOThankYouEmail(donorEmail, ngoEmailText, donorName, ngoName){
+	var body = `Dear ${donorName},\n\n` + ngoEmailText;
+
+	var mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: donorEmail,
+		subject: `Thank you from ${ngoName}`,
+		text: body
+	}
+
+	transporter.sendMail(mailoptions, function(err, info){
+		if(err){
+			return console.error(err);
+		}else{
+			return console.log('Email sent' + info.response);
+		}
+	});
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail}
 
