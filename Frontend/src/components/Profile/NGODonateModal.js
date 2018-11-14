@@ -28,7 +28,9 @@ class NGODonateModal extends Component {
           <Modal.Body>
             <StripeProvider apiKey="pk_test_tT5Wr6dgsHTfyhCGrGaJYLM1">
               <Elements>
-                <CheckoutForm ngoId={this.props.ngoId} onChangeVisibility={this.props.onChangeVisibility} />
+                <CheckoutForm ngoId={this.props.ngoId} minLimit={this.props.minLimit} maxLimit={this.props.maxLimit}
+                  onChangeVisibility={this.props.onChangeVisibility}
+                />
               </Elements>
             </StripeProvider>
           </Modal.Body>

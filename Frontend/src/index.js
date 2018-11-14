@@ -6,10 +6,11 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import WebFont from 'webfontloader';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
-import { getUserId } from './actions/utils';
+import { getUserId } from './utils';
 import Header from './components/Shared/Header';
 import Entry from './components/Entry';
 import Signup from './components/Signup';
@@ -27,6 +28,12 @@ import DonationCompleted from './components/DonationCompleted';
 // Font Awesome
 library.add(faSpinner);
 
+// load fonts
+WebFont.load({
+  google: {
+    families: ['Roboto Mono', 'Montserrat', 'sans-serif']
+  }
+});
 
 const store = createStore(
   rootReducer,

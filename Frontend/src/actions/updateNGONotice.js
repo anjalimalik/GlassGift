@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getUserToken } from './utils';
+import { getUserToken } from '../utils';
 
 export const UPDATE_NGO_NOTICE_PENDING = 'UPDATE_NGO_NOTICE_PENDING';
 export const UPDATE_NGO_NOTICE_SUCCESS = 'UPDATE_NGO_NOTICE_SUCCESS';

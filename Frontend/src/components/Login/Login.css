@@ -1,7 +1,30 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
 .Login {
   max-width: 50%;
 }
 
 .loginButtonSpinner {
   padding-left: 10px;
+}
+
+.RMFont {
+  font-family: 'Roboto Mono', sans-serif;
+}
+
+.SentEmail {
+  font-size: 20px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.text-red {
+  color: darkred;
+}
+
+.header {
+  color: #004A8B;
+  font-size: 16px;
+  font-family: 'Roboto Mono', sans-serif;
 }

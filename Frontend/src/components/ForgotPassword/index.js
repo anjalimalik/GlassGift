@@ -32,7 +32,7 @@ class ForgotPassword extends Component {
       return (
         <Alert bsStyle="danger">
           <p>
-            {this.props.error}Click <a onClick={() => this.props.forgotPassword()}>here</a> to try again
+            {this.props.error}. Click <a onClick={() => this.props.forgotPassword()}>here</a> to try again
           </p>
         </Alert>
       );
