@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../database');
 const uuidv4 = require('uuid/v4');
 const stripe = require('stripe')('sk_test_qQerTxPScIJqfK5Cx30E5U5O');
+const datetime = require('node-datetime');
 const router = express.Router();
 const {sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail} = require('../email');
 
@@ -10,6 +11,9 @@ router.post('/', async function (req, res) {
 	const limits = await db.get('NGO', ['minLimit', 'maxLimit', 'emailTemplate'], `id = '${donation.ngoId}'`);
     const ngoSearch = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`);
     let ngoName = ngoSearch[0].username;
+
+    var dt = datetime.create();
+    dt.format('m/d/Y');
 
 	if ((limits.maxLimit && donation.amount > limits.maxLimit) ||
 		(limits.minLimit && donation.amount < limits.minLimit)) {
@@ -56,10 +60,14 @@ router.post('/', async function (req, res) {
         let stringAmount = (donation.amount/100) + "." 
             + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
 
-        sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, donation.date, donId);
+        // console.log(limits);
+        // console.log(limits.emailtemplate);
+        // console.log(limits[0].emailtemplate);
 
-        if(limits.emailTemplate){
-            sendNGOThankYouEmail(donorEmail, limits.emailTemplate, donorName, ngoName);
+        sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, (donation.date || new Date(dt.now())), donId);
+
+        if(limits[0].emailtemplate){
+            sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
         }
     }
 });
