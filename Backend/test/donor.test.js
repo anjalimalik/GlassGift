@@ -73,6 +73,11 @@ describe('Testing registering donor account', function() {
     });
 
     it("Export transactions", function(done) {
+        chai.request(server)
+            .get('/donor/export_transactions')
+            .send()
+            .end(function(err, res) {
 
-    })
+            });
+    });
 });

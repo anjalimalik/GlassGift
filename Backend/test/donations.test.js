@@ -116,11 +116,23 @@ describe("Donations", function() {
             });
     });
 
-    it("Get donations by NGO", function(done) {
+    it("Get Donation List by Donor", function(done) {
+        chai.request(server)
+            .get('/donations')
+            .query({by: 'donor'})
+            .send()
+            .end(function(err, res) {
 
+            });
     });
 
-    it("Get donation by donor", function(done) {
+    it("Get donation list by NGO", function(done) {
+        chai.request(server)
+            .get('/donations')
+            .query({by: 'ngo'})
+            .send()
+            .end(function(err, res) {
 
+            });
     });
 });

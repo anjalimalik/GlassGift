@@ -151,7 +151,12 @@ describe('Testing Actions on an NGO account', function() {
         expect(user).to.deep.equal(requestedUser);
     });
 
-    it("Newsletters", function() {
+    it("Newsletters", function(done) {
+        chai.request(server)
+            .post('/ngo/newsletter')
+            .send()
+            .end(function(err, res) {
 
+            });
     });
 });

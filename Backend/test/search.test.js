@@ -29,6 +29,11 @@ describe('Testing Search', function () {
     });
 
     it("History", function(done) {
+        chai.request(server)
+            .get('/search/history')
+            .send()
+            .end(function(err, res) {
 
+            });
     });
 });
