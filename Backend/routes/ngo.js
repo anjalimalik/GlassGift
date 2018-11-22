@@ -46,7 +46,7 @@ router.get('/', async function (req, res) {
 	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
 		['NGO.id as id', 'username', 'email', 'location', 'category', 'description',
 			'calLink', 'notice', 'minLimit', 'maxLimit']);
-	if (dbResult.length !== 1) return res.status(500).json({error: "NGO not found!"});2
+	if (dbResult.length !== 1) return res.status(500).json({error: "NGO not found!"});
 
 	return res.status(200).json(dbResult[0]);
 });
@@ -69,6 +69,10 @@ router.post('/search', async function (req, res) {
 			return res.status(500).json({error: "Couldn't match type"});
 	}
 
+	if (req.body.filter !== 'select') {
+		const filter = parseInt(req.body.filter);
+		where += ` AND category = \'${filter}\'`;
+	}
 
 	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
 		['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
