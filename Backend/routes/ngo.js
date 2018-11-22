@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const ngoRepository = require('../database/ngo');
 const userRepository = require('../database/user');
 const uuidv4 = require('uuid/v4');
+const jwt = require('jsonwebtoken');
 const email = require('../email');
 
 const router = express.Router();
@@ -25,6 +26,11 @@ router.post('/', async function (req, res) {
 
 router.put('/', async function (req, res) {
 	const changes = req.body;
+    const authorization = req.get('Authorization');
+    if (!authorization) return res.status(500).json({error: 'No token supplied'});
+    const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+    const userId = decoded.id;
+
 	await ngoRepository.edit(req.decodedToken.id, changes.location, changes.description, changes.category,
 		changes.calendarLink, changes.minLimit, changes.maxLimit);
 
@@ -60,6 +66,11 @@ router.get('/notice', async function (req, res) {
 });
 
 router.put('/notice', async function (req, res) {
+    const authorization = req.get('Authorization');
+    if (!authorization) return res.status(500).json({error: 'No token supplied'});
+    const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+    const userId = decoded.id;
+
 	await ngoRepository.setNotice(req.decodedToken.id, req.body.notice);
 	return res.sendStatus(200);
 });

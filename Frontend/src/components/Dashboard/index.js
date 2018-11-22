@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { PageHeader, Button } from 'react-bootstrap';
-import { getUserId } from '../../actions/utils';
+import { PageHeader, Button, ButtonGroup } from 'react-bootstrap';
+import { getUserId } from '../../utils';
+import "../Login/Login.css";
 
 class Dashboard extends Component {
 
@@ -13,14 +14,17 @@ class Dashboard extends Component {
   render() {
     const userId = getUserId();
     return (
-      <div className="Dashboard">
+      <div className="Dashboard center-block text-center">
         <PageHeader>Dashboard</PageHeader>
-        <Button bsSize="large" className="pull-left" onClick={()=> {this.props.history.replace(`/profile/${userId}`)}}>
+        <ButtonGroup vertical style={{width:'30%'}}>
+          <Button bsSize="large" bsStyle="info" onClick={()=> {this.props.history.replace(`/profile/${userId}`)}}>
               Profile
           </Button>
-          <Button bsSize="large"  className="pull-left" onClick={()=> {this.props.history.replace('/search')}}>
+          <hr />
+          <Button bsSize="large"  bsStyle="info" onClick={()=> {this.props.history.replace('/search')}}>
               Search NGOs
           </Button>
+        </ButtonGroup>
 
       </div>
     );

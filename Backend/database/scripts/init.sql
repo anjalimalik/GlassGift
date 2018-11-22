@@ -22,9 +22,7 @@ create table if not exists ngo(
 );
 
 create table if not exists donor(
-  id text unique primary key references gguser,
-  age integer,
-  gender text
+  id text unique primary key references gguser
 );
 
 create table if not exists searches(
@@ -51,11 +49,11 @@ create table if not exists donation(
 );
 
 create table if not exists recurringdonation(
-  id text unique primary key,
   donationId text references donation,
-  updated timestamp,
-  frequency integer
+  next timestamp,
+  frequency int
 );
+
 
 create table if not exists userips(
     userId text references gguser,
@@ -64,11 +62,7 @@ create table if not exists userips(
 
 create table if not exists paymentinfo(
     userId text references gguser,
-    address text,
-    ccNumber int,
-    cvv int,
-    expirationDate timestamp,
-    ccName text
+    stripeCustomerId text
 );
 
 create table if not exists newsletters(

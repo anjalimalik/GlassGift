@@ -4,15 +4,16 @@ const userRepository = require('../database/user');
 const donationRepository = require('../database/donations');
 const uuidv4 = require('uuid/v4');
 const stripe = require('stripe')('sk_test_qQerTxPScIJqfK5Cx30E5U5O');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
-const {sendDonationConfirmationEmail, sendReceiptEmail} = require('../email');
+const {sendDonationConfirmationEmail, sendDonationReceiptEmail} = require('../email');
 
 router.post('/', async function (req, res) {
     const donation = req.body;
     const limits = await ngoRepository.getLimitsById(donation.ngoId);
 
-    if ((limits.maxLimit && donation.amount > limits.maxLimit) ||
-        (limits.minLimit && donation.amount < limits.minLimit)) {
+    if ((limits.maxLimit && donation.amount / 100 > limits.maxLimit) ||
+        (limits.minLimit && donation.amount / 100 < limits.minLimit)) {
         return res.status(500).json({error: "Outside range"});
     }
 
@@ -40,6 +41,41 @@ router.post('/', async function (req, res) {
         if (charge == null) return res.status(500).json({error: `Stripe Payment Failed`});
         return res.status(200).json(charge);
     });
+	if (donation.recurring > 0)
+		await db.pool.query(`INSERT INTO recurringdonation VALUES ('${donId}', now(), ${donation.recurring})`);
+
+	let dbResult = await db.pool.query(`SELECT email FROM GGUser WHERE id = '${donorId}'`);
+	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	let donorEmail = dbResult.rows[0].email;
+
+  let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
+   			  +`\nMessage: '${donation.message}'`;
+
+ 	const token = req.body.stripeToken;
+	let customerId;
+
+	dbResult = await db.pool.query(`SELECT stripeCustomerId FROM paymentinfo WHERE userId = '${donorId}'`);
+	if (dbResult.rows.length === 1) {
+		customerId = dbResult.rows[0].stripecustomerid;
+	} else {
+		const customer = await stripe.customers.create({
+			source: token.id,
+			email: donorEmail,
+		});
+
+		customerId = customer.id;
+
+		await db.pool.query(`INSERT INTO paymentinfo VALUES ('${donorId}', '${customerId}')`);
+	}
+
+
+ 	const charge = await stripe.charges.create({
+   	amount: donation.amount,
+	 	currency: 'usd',
+	 	description: message,
+	 	customer: customerId,
+	 	metadata: { donation_id: donId },
+   });
 
     if (charge != null) {
         await donationRepository.create(donationId, donorId, donation.ngoId, donation.anonymity, donation.message,
@@ -84,14 +120,23 @@ router.post('/emailReceipt', async function (req, res) {
     if (donationData.length === 0) return res.status(500).json({error: `Donation with id ${donationId} not found`});
     let donation = donationData[0];
 
-    let ngoSearch = await userRepository.getEmailsFromId(donation.ngoId);
-    if (ngoSearch.length === 0) return res.status(500).json({error: `Ngo with id ${donation.ngoId} not found`});
-
-    let donorSearch = await userRepository.getEmailsFromId(donation.donorId);
-    if (donorSearch.length === 0) return res.status(500).json({error: `Donor with id ${donation.donorId} not found`});
-
     sendReceiptEmail(donation, ngoSearch[0].email, donorSearch[0].email);
     return res.sendStatus(200);
 });
+
+router.post('/email', async function(req, res) {
+    const donationID = req.body.id;
+
+    let ngoSearch = await userRepository.getEmailsFromId(donation.ngoId);
+    if (ngoSearch.length === 0) return res.status(500).json({error: `Ngo with id ${donation.ngoId} not found`});
+    const dbResult = await db.pool.query(`select gguser_donor.email, donation.amount, gguser_ngo.username, donation.created from donation inner join ngo on donation.ngoId = ngo.id inner join donor on donation.donorId = donor.id inner join gguser as gguser_donor on donor.id = gguser_donor.id inner join gguser as gguser_ngo on ngo.id = gguser_ngo.id where donation.id = '${donationID}'`);
+    if (dbResult.rows.length !== 1) return res.status(500).json({error: "Donation doesn't exist"});
+
+    let donorSearch = await userRepository.getEmailsFromId(donation.donorId);
+    if (donorSearch.length === 0) return res.status(500).json({error: `Donor with id ${donation.donorId} not found`});
+    await sendDonationReceiptEmail(dbResult.rows[0].email, dbResult.rows[0].amount, dbResult.rows[0].username, dbResult.rows[0].created);
+
+    res.sendStatus(200);
+})
 
 module.exports = router;

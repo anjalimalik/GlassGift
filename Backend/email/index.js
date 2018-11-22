@@ -147,6 +147,25 @@ async function sendNewsletter(newsletter, email) {
     transporter.sendMail(mailOptions);
 }
 
+async function sendDonationReceiptEmail(email, amount, ngoName, date) {
+    const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
+
+    const mailoptions = {
+        from: 'glassgiftteam@gmail.com',
+        to: email,
+        subject: 'GlassGift: Donation Receipt',
+        text: body,
+    };
+
+    transporter.sendMail(mailoptions, (err, info) => {
+        if (err) {
+            return console.error(err);
+        } else {
+            return console.log('Email sent' + info.response)
+        }
+    });
+}
+
 module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail,
-	sendReceiptEmail, sendNewsletter};
+	sendReceiptEmail, sendDonationReceiptEmail, sendNewsletter};
 

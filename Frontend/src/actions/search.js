@@ -34,7 +34,6 @@ export function searchClear() {
 
 function callSearchApi(type, keyword) {
   return new Promise((resolve, reject) => {
-    console.log(type);
     const body = {
       type,
       keyword,

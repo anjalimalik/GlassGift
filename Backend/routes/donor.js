@@ -24,16 +24,16 @@ router.post('/', async function (req, res) {
 });
 
 router.put('/', async function (req, res) {
-    const changes = req.body;
+	const changes = req.body;
 
-    // const id_req = `id = ${changes.values.id}`;
-    // const rows = await db.get("Donor", ["id"], `id = ${changes.id}`);
-    // if (rows.length === 0) {
-    //     res.status(500).send(`No Donor with id ${changes.id} found`);
-    // } else {
-    //
-    // 	res.status(200);
-    // }
+	// const id_req = `id = ${changes.values.id}`;
+	// const rows = await db.get("Donor", ["id"], `id = ${changes.id}`);
+	// if (rows.length === 0) {
+	//     res.status(500).send(`No Donor with id ${changes.id} found`);
+	// } else {
+	//
+	// 	res.status(200);
+	// }
 });
 
 router.post('/payment_method', async function (req, res) {
@@ -42,7 +42,7 @@ router.post('/payment_method', async function (req, res) {
         paymentMethod.cvv, paymentMethod.expirationDate, paymentMethod.ccNumber);
     res.sendStatus(200);
 });
-
+  
 router.post('/search', async function (req, res) {
     let dbResult = await donorRepository.search(req.body.keyword);
     return res.status(200).json(dbResult);

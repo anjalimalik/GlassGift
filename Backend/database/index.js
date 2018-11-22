@@ -33,4 +33,4 @@ async function modify(table, props, values, qualifier) {
 	return await execute(`UPDATE ${table} SET ${deltas.join(', ')} WHERE ${qualifier}`);
 }
 
-module.exports = {get, insert, modify, init};
+module.exports = {pool, get, insert, modify, init};

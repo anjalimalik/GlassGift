@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { removeUserToken, getUserToken, getUserId } from '../../../actions/utils';
+import { removeUserToken, getUserToken, getUserId } from '../../../utils';
 import { LinkContainer } from 'react-router-bootstrap';
+import './Header.css';
 
 
 class Header extends Component {
@@ -23,7 +24,7 @@ class Header extends Component {
     const id = getUserId();
     if (getUserToken()) {
       return (
-        <Nav pullRight>
+        <Nav pullRight className="header">
           <LinkContainer to="/dashboard">
             <NavItem>Dashboard</NavItem>
           </LinkContainer>
@@ -35,7 +36,7 @@ class Header extends Component {
       );
     }
     return (
-      <Nav pullRight>
+      <Nav pullRight className="header">
         <LinkContainer to="/login">
           <NavItem>Login</NavItem>
         </LinkContainer>
@@ -49,7 +50,7 @@ class Header extends Component {
   render() {
     return (
       <div className="Header">
-        <Navbar>
+        <Navbar className="header">
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/">GlassGift</Link>

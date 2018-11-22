@@ -15,11 +15,12 @@ router.post('/login', async function (req, res) {
 	const dbUser = users[0];
 	const match = await bcrypt.compare(user.password, dbUser.password);
 	if (!match) return res.status(500).json({error: "Wrong password"});
+
 	if (!dbUser.confirmed) return res.status(500).json({error: "Not confirmed"});
 
 	// Check IP
 	users = await userRepository.getIpsById(dbUser.id);
-	if (!users.rows.find(row => row.ip === req.ip)) {
+	if (users.length != 0 && !users.rows.find(row => row.ip === req.ip)) {
 		sendIPEmail(dbUser.email, req.ip);
 		await userRepository.addNewIp(dbUser.id, req.ip);
 	}

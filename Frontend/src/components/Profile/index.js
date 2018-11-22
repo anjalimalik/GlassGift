@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, Button, PageHeader } from 'react-bootstrap';
+import { Alert, Button, PageHeader, Label, ButtonGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
-import { getUserId } from '../../actions/utils';
+import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
 import { NGO_CATEGORIES } from '../../constants';
+import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
+import './Profile.css';
 
 
 class Profile extends Component {
@@ -22,6 +24,7 @@ class Profile extends Component {
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
+    this.renderButtons = this.renderButtons.bind(this);
 
     this.state = {
       ngoDonateModalVis: false,
@@ -31,8 +34,8 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    this.props.getNGO(getUserId());
-    this.props.getNGONotice(getUserId());
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
   }
 
   onChangeNGODonateModalVisibility(ngoDonateModalVis) {
@@ -41,14 +44,14 @@ class Profile extends Component {
 
   onChangeNGOEditModalVisibility(ngoEditModalVis) {
     this.setState({ngoEditModalVis});
-    this.props.getNGO(getUserId());
-    this.props.getNGONotice(getUserId());
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
   }
 
   onChangeNGOEditNoticeModalVisibility(ngoEditNoticeModalVis) {
     this.setState({ngoEditNoticeModalVis});
-    this.props.getNGO(getUserId());
-    this.props.getNGONotice(getUserId());
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
   }
 
   renderAlert() {
@@ -78,56 +81,95 @@ class Profile extends Component {
     }
   }
 
+  renderButtons() {
+
+    const id = getUserId();
+
+    if (id === this.props.match.params.id) {
+      return (
+        <div>
+          <ButtonGroup>
+            <Button bsStyle="info" onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
+            <Button bsStyle="info" onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+          </ButtonGroup>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Button onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+        </div>
+      );
+    }
+  }
+
   render() {
 
     if (this.props.get.pending || this.props.getNotice.pending) {
       return (
-        <div className="NGOProfile">
+        <div className="NGOProfile text-center">
           <FontAwesomeIcon icon="spinner" size="6x" spin/>
         </div>
       );
     }
 
     return (
-      <div className="NGOProfile">
+      <div className="NGOProfile center-block text-center">
         {this.renderAlert()}
-        <PageHeader>Profile</PageHeader>
+        <PageHeader className="text-center text-primary">{this.props.get.success.username}</PageHeader>
 
-        <Button onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+        {this.renderButtons()}
 
-        <br />
+        <div className="text-center profileDiv">
+        <Card className="profile">
+          <CardBody>
+            <CardTitle style={{fontSize:'20px'}}>PROFILE</CardTitle>
+            <CardSubtitle className="mb-2 text-muted">Non-Profit Organization</CardSubtitle>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Email</Label>{' '}
+              {this.props.get.success.email} </CardText>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Location</Label>{' '}
+              {this.props.get.success.location || 'No location listed'} </CardText>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Category</Label>{' '}
+              {NGO_CATEGORIES[this.props.get.success.category]} </CardText>
+            <hr />
+            <CardText className="profileText"> <Label bsStyle="default" className="label">Description</Label>{' '}
+              {this.props.get.success.description || 'No description listed'} </CardText>
+          </CardBody>
+        </Card>
+        </div>
 
-        <Button onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
-        <Button onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
-
-        <h2>Information</h2>
-        <h4>Name:</h4>
-        {this.props.get.success.name}
-        <h4>Email:</h4>
-        {this.props.get.success.email}
-        <h4>Location</h4>
-        {this.props.get.success.location || 'No location listed'}
-        <h4>Category</h4>
-        {NGO_CATEGORIES[this.props.get.success.category]}
-        <h4>Description</h4>
-        {this.props.get.success.description || 'No description listed'}
-        <h2>Notice</h2>
-        {this.props.getNotice.success.notice}
+        <div className="text-center profileDiv">
+        <Card className="profile">
+          <CardBody>
+            <CardTitle style={{fontSize:'16px'}}>NOTICE</CardTitle>
+            <hr />
+            <CardText className="text-warning">{this.props.getNotice.success.notice || 'No notice listed'}</CardText>
+          </CardBody>
+        </Card>
+        </div>
 
         <NGODonateModal
           visibility={this.state.ngoDonateModalVis}
           onChangeVisibility={this.onChangeNGODonateModalVisibility}
           ngoId={this.props.match.params.id}
+          minLimit={this.props.get.success.minlimit}
+          maxLimit={this.props.get.success.maxlimit}
         />
 
         <NGOEditModal
           location={this.props.get.success.location}
           category={this.props.get.success.category}
           description={this.props.get.success.description}
+          minLimit={this.props.get.success.minlimit}
+          maxLimit={this.props.get.success.maxlimit}
           calendarLink={this.props.get.success.callink}
           visibility={this.state.ngoEditModalVis}
           onChangeVisibility={this.onChangeNGOEditModalVisibility}
         />
+
         <NGOEditNoticeModal
           notice={this.props.getNotice.success.notice}
           visibility={this.state.ngoEditNoticeModalVis}
