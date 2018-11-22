@@ -7,6 +7,7 @@ import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
 import { getNGOTYTemplate, getNGOTYTemplateClear } from '../../actions/getNGOTYTemplate';
+import { subscribe } from '../../actions/subscribe';
 import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
@@ -26,6 +27,7 @@ class Profile extends Component {
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
     this.onChangeNGOEditTYTemplateModalVisibility = this.onChangeNGOEditTYTemplateModalVisibility.bind(this);
+    this.onSubscribe = this.onSubscribe.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
 
@@ -62,6 +64,10 @@ class Profile extends Component {
     this.setState({ngoEditTYTemplateModalVis});
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
+  }
+
+  onSubscribe() {
+    this.props.subscribe(this.state);
   }
 
   renderAlert() {
@@ -108,7 +114,10 @@ class Profile extends Component {
     } else {
       return (
         <div>
-          <Button onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+          <ButtonGroup>
+            <Button bsStyle="info" onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+            <Button bsStyle="success" onClick={ this.onSubscribe() }>Subscribe</Button>
+          </ButtonGroup>
         </div>
       );
     }
@@ -212,6 +221,7 @@ function mapDispatchToProps(dispatch) {
     getNGOClear,
     getNGONotice,
     getNGONoticeClear,
+    subscribe,
   }, dispatch);
 }
 
