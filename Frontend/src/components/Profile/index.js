@@ -6,10 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
+import { getNGOTYTemplate, getNGOTYTemplateClear } from '../../actions/getNGOTYTemplate';
 import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
+import NGOEditTYTemplateModal from './NGOEditTYTemplateModal';
 import { NGO_CATEGORIES } from '../../constants';
 import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
 import './Profile.css';
@@ -23,6 +25,7 @@ class Profile extends Component {
     this.onChangeNGODonateModalVisibility = this.onChangeNGODonateModalVisibility.bind(this);
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
+    this.onChangeNGOEditTYTemplateModalVisibility = this.onChangeNGOEditTYTemplateModalVisibility.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
 
@@ -30,6 +33,7 @@ class Profile extends Component {
       ngoDonateModalVis: false,
       ngoEditModalVis: false,
       ngoEditNoticeModalVis: false,
+      ngoEditTYTemplateModalVis: false,
     };
   }
 
@@ -50,6 +54,12 @@ class Profile extends Component {
 
   onChangeNGOEditNoticeModalVisibility(ngoEditNoticeModalVis) {
     this.setState({ngoEditNoticeModalVis});
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
+  }
+
+  onChangeNGOEditTYTemplateModalVisibility(ngoEditTYTemplateModalVis) {
+    this.setState({ngoEditTYTemplateModalVis});
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
   }
@@ -91,6 +101,7 @@ class Profile extends Component {
           <ButtonGroup>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+            <Button bsStyle="info" onClick={() => this.setState({ngoEditTYTemplateModalVis: true})}>Edit Thank-you Email Template</Button>
           </ButtonGroup>
         </div>
       );
@@ -174,6 +185,12 @@ class Profile extends Component {
           notice={this.props.getNotice.success.notice}
           visibility={this.state.ngoEditNoticeModalVis}
           onChangeVisibility={this.onChangeNGOEditNoticeModalVisibility}
+        />
+
+        <NGOEditTYTemplateModal
+          //tytemplate={this.props.getTYTemplate.success.tytemplate}
+          visibility={this.state.ngoEditTYTemplateModalVis}
+          onChangeVisibility={this.onChangeNGOEditTYTemplateModalVisibility}
         />
       </div>
     );

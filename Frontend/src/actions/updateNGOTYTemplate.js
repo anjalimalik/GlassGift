@@ -33,12 +33,12 @@ export function updateNGOTYTemplateClear() {
   };
 }
 
-function callUpdateNGOTYTemplateApi(tytemplate) {
+function callUpdateNGOTYTemplateApi(emailtemplate) {
   return new Promise((resolve, reject) => {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
     const body = {
-      tytemplate,
+      emailtemplate,
     };
     axios.put('http://localhost:3000/ngo/thankyou', body, { headers: { Authorization: token }})
     .then(response => resolve())

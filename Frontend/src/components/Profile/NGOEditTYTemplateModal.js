@@ -15,12 +15,12 @@ class NGOEditTYTemplateModal extends Component {
     this.onSaveChanges = this.onSaveChanges.bind(this);
 
     this.state = {
-      tytemplate: '',
+      emailtemplate: '',
     };
   }
 
   onSaveChanges() {
-    this.props.updateNGOTYTemplate(this.state.tytemplate).then(() => {
+    this.props.updateNGOTYTemplate(this.state.emailtemplate).then(() => {
       this.props.onChangeVisibility(false)
     });
   }
@@ -41,9 +41,9 @@ class NGOEditTYTemplateModal extends Component {
               <ControlLabel>New Email</ControlLabel>
               <FormControl
                 autoFocus
-                placeholder={this.props.tytemplate}
-                value={this.state.tytemplate}
-                onChange={e => this.setState({ tytemplate: e.target.value }) }
+                placeholder={this.props.emailtemplate}
+                value={this.state.emailtemplate}
+                onChange={e => this.setState({ emailtemplate: e.target.value }) }
               />
             </FormGroup>
           </Modal.Body>
@@ -73,9 +73,9 @@ NGOEditTYTemplateModal.propTypes = {
 
 function mapStateToProps({ updateNGOTYTemplate }) {
   return {
-    pending: updateNGOTYTemplate.pending,
-    success: updateNGOTYTemplate.success,
-    error: updateNGOTYTemplate.error,
+    //pending: updateNGOTYTemplate.pending,
+    //success: updateNGOTYTemplate.success,
+    //error: updateNGOTYTemplate.error,
   };
 }
 
