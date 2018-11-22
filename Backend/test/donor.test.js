@@ -77,7 +77,9 @@ describe('Testing registering donor account', function() {
             .get('/donor/export_transactions')
             .send()
             .end(function(err, res) {
-
+                expect(err).to.be.null;
+                expect(res.headers);
+                done();
             });
     });
 });

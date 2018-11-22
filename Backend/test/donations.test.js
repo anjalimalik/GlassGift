@@ -119,20 +119,30 @@ describe("Donations", function() {
     it("Get Donation List by Donor", function(done) {
         chai.request(server)
             .get('/donations')
-            .query({by: 'donor'})
+            .query({
+                by: 'donor',
+                id: donor.id
+            })
             .send()
             .end(function(err, res) {
-
+                expect(err).to.be.null;
+                expect(res).to.be.length(0);
+                done();
             });
     });
 
     it("Get donation list by NGO", function(done) {
         chai.request(server)
             .get('/donations')
-            .query({by: 'ngo'})
+            .query({
+                by: 'ngo',
+                id: ngo.id
+            })
             .send()
             .end(function(err, res) {
-
+                expect(err).to.be.null;
+                expect(res).to.be.length(0);
+                done();
             });
     });
 });
