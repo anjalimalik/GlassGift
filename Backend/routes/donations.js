@@ -2,13 +2,20 @@ const express = require('express');
 const db = require('../database');
 const uuidv4 = require('uuid/v4');
 const stripe = require('stripe')('sk_test_qQerTxPScIJqfK5Cx30E5U5O');
+const datetime = require('node-datetime');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-const {sendDonationConfirmationEmail, sendDonationReceiptEmail} = require('../email');
+const {sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail} = require('../email');
+
 
 router.post('/', async function (req, res) {
 	const donation = req.body;
-	const limits = await db.get('NGO', ['minLimit', 'maxLimit'], `id = '${donation.ngoId}'`);
+	const limits = await db.get('NGO', ['minLimit', 'maxLimit', 'emailTemplate'], `id = '${donation.ngoId}'`);
+    const ngoSearch = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`);
+    let ngoName = ngoSearch[0].username;
+
+    var dt = datetime.create();
+    dt.format('m/d/Y');
 
 	if ((limits[0].maxLimit && donation.amount / 100 > limits[0].maxlimit) ||
 		(limits[0].minlimit && donation.amount / 100 < limits[0].minlimit)) {
@@ -16,12 +23,18 @@ router.post('/', async function (req, res) {
 	}
 
   const donId = uuidv4();
-
-	const authorization = req.get('Authorization');
+  
+  const authorization = req.get('Authorization');
 	if (!authorization) return res.status(500).json({error: 'No token supplied'});
 
 	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
 	const donorId = decoded.id;
+
+  let emailWrapper = await db.get('GGUser', ['email', 'username'] , `id = '${donorId}'`);
+  if(emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
+
+  let donorEmail = emailWrapper[0].email;
+  let donorName = emailWrapper[0].username;
 
 	await db.insert('Donation',
 		['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
@@ -70,7 +83,11 @@ router.post('/', async function (req, res) {
 	 const ngoName = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`)
 	 const date = new Date();
 
-   sendDonationConfirmationEmail(donorEmail, stringAmount, ngoName[0].username, date.toLocaleString(), donId);
+   sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, (donation.date || new Date(dt.now())), donId);
+
+   if(limits[0].emailtemplate){
+      sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
+   }
 
  	 return res.status(200).json({
 		 id: donId.id,

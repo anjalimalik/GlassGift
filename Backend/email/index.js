@@ -136,9 +136,29 @@ async function sendReceiptEmail(donation, ngoEmail, donorEmail){
 	});
 }
 
+async function sendNGOThankYouEmail(donorEmail, ngoEmailText, donorName, ngoName){
+	var body = `Dear ${donorName},\n\n` + ngoEmailText;
+
+	var mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: donorEmail,
+		subject: `Thank you from ${ngoName}`,
+		text: body
+	}
+
+	transporter.sendMail(mailoptions, function(err, info){
+		if(err){
+			return console.error(err);
+		}else{
+			return console.log('Email sent' + info.response);
+		}
+	});
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail}
+
 async function sendDonationReceiptEmail(email, amount, ngoName, date) {
 	const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
-
 	const mailoptions = {
 		from: 'glassgiftteam@gmail.com',
 		to: email,
