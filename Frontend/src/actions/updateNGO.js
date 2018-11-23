@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getUserToken } from './utils';
+import { getUserToken } from '../utils';
 
 export const UPDATE_NGO_PENDING = 'UPDATE_NGO_PENDING';
 export const UPDATE_NGO_SUCCESS = 'UPDATE_NGO_SUCCESS';
@@ -37,7 +37,6 @@ function callUpdateNGOApi(state) {
   return new Promise((resolve, reject) => {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
-    console.log(state.category);
     const body = {
       location: state.location,
       category: state.category.value,

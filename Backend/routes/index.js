@@ -21,7 +21,7 @@ router.post('/login', async function (req, res) {
 
 	// Check IP
 	dbResult = await db.get('UserIps', ['ip'], `userId = '${dbUser.id}'`);
-	if (!dbResult.rows.find(row => row.ip === req.ip)) {
+	if (dbResult.length != 0 && !dbResult.find(row => row.ip === req.ip)) {
 		sendIPEmail(dbUser.email, req.ip);
 		await db.insert('UserIps', ['userId', 'ip'], [dbUser.id, req.ip]);
 	}
@@ -63,7 +63,7 @@ router.post('/confirm_password', async function (req, res) {
 	let dbResult = await db.get('GGUser', ['*'], `resetPasswordToken = '${token}'`);
 	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	const id = dbResult.rows[0].id;
+	const id = dbResult[0].id;
 	const hash = await bcrypt.hash(password, 10);
 
 	await db.modify('GGUser', 'password', hash, `id = '${id}'`);
@@ -77,8 +77,8 @@ router.post('/confirm_account', async function (req, res) {
 	let dbResult = await db.get('GGUser', ['*'], `emailConfirmation = '${token}'`);
 	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	const id = dbResult.rows[0].id;
-	await db.modify('GGUser', 'confirmed', 'true', `id = '${id}'`);
+	const { id } = dbResult[0];
+	await db.pool.query(`UPDATE GGUser SET confirmed = 'true' where id = '${id}'`)
 
 	return res.sendStatus(200);
 });

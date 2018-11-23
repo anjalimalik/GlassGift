@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require("bcryptjs");
 const db = require('../database');
 const uuidv4 = require('uuid/v4');
+const jwt = require('jsonwebtoken');
 const {sendConfirmationEmail} = require('../email');
 const csv = require('csv');
 const json2csv = require('json2csv').parse;
@@ -23,7 +24,7 @@ router.post('/', async function (req, res) {
 
 	await db.insert('GGUser', ['id', 'email', 'password', 'username', 'location', 'emailConfirmation', 'confirmed'],
 		[id, ngo.email, hash, ngo.name, ngo.location, emailId, 'false']);
-	await db.insert('NGO', ['id', 'description', 'category', 'calLink', 'minLimit', 'maxLimit'],
+	await db.insert('NGO', ['id', 'description', 'category', 'callink', 'minLimit', 'maxLimit'],
 		[id, ngo.description, ngo.category, ngo.calLink, ngo.minLimit || 0, ngo.maxLimit || 0]);
 
 	sendConfirmationEmail(ngo.email, ngo.name, emailConfirmation, 0);
@@ -33,10 +34,13 @@ router.post('/', async function (req, res) {
 router.put('/', async function (req, res) {
 	const changes = req.body;
 
-	await db.modify('GGUser', 'location', changes.location, `id = '${req.decodedToken.id}'`);
-	await db.modify('NGO', ['description', 'calLink', 'minLimit', 'maxLimit'],
-		[changes.description, changes.category, changes.calendarLink, changes.minLimit || 0, changes.maxLimit || 0],
-		`id = '${req.decodedToken.id}'`);
+	const authorization = req.get('Authorization');
+	if (!authorization) return res.status(500).json({error: 'No token supplied'});
+	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+	const userId = decoded.id;
+
+	await db.pool.query(`UPDATE GGUser SET location = '${changes.location}' where id = '${userId}'`)
+	await db.pool.query(`UPDATE NGO SET category = '${changes.category}', description = '${changes.description}', callink = '${changes.calLink}', minLimit = '${changes.minLimit || 0}', maxLimit = '${changes.maxLimit || 0}'`)
 
 	return res.sendStatus(200);
 });
@@ -47,9 +51,9 @@ router.get('/', async function (req, res) {
 	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
 		['NGO.id as id', 'username', 'email', 'location', 'category', 'description',
 			'calLink', 'notice', 'minLimit', 'maxLimit']);
-	if (dbResult.rows.length !== 1) return res.status(500).json({error: "NGO not found!"});
+	if (dbResult.length !== 1) return res.status(500).json({error: "NGO not found!"});2
 
-	return res.status(200).json(dbResult.rows[0]);
+	return res.status(200).json(dbResult[0]);
 });
 
 router.post('/paymentData', async function(req, res){
@@ -79,7 +83,7 @@ router.post('/search', async function (req, res) {
 
 	switch (req.body.type) {
 		case 0: // Name
-			where = `name LIKE \'%${keyword}%\'`;
+			where = `username LIKE \'%${keyword}%\'`;
 			break;
 		case 1: // Location
 			where = `location LIKE \'%${keyword}%\'`;
@@ -91,22 +95,30 @@ router.post('/search', async function (req, res) {
 			return res.status(500).json({error: "Couldn't match type"});
 	}
 
+
 	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
 		['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
 			'minLimit', 'maxLimit'], where);
-	return res.status(200).json(dbResult.rows);
+	return res.status(200).json(dbResult);
 });
 
 router.get('/notice', async function (req, res) {
 	const dbResult = await db.get('NGO', ['notice'], `id = '${req.query.id}'`);
-	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	if (dbResult.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-	const dbUser = dbResult.rows[0];
+	const dbUser = dbResult[0];
 	res.status(200).json({notice: dbUser.notice});
 });
 
 router.put('/notice', async function (req, res) {
-	await db.modify('NGO', 'notice', req.body.notice, `id = '${req.decodedToken.id}'`);
+
+	const authorization = req.get('Authorization');
+	if (!authorization) return res.status(500).json({error: 'No token supplied'});
+	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+	const userId = decoded.id;
+
+	await db.pool.query(`UPDATE NGO SET notice = '${req.body.notice}' WHERE id = '${userId}'`);
+
 	return res.sendStatus(200);
 });
 
