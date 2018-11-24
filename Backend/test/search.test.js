@@ -29,11 +29,22 @@ describe('Testing Search', function () {
     });
 
     it("History", function(done) {
+        const requester = chai.request(server).keepOpen();
+        const searches = [
+            {type: 0, keyword: "foo"},
+            {type: 1, keyword: "bar"},
+            {type: 2, keyword: "baz"}
+        ];
+
+        Promise.all(searches.map(search => requester.post('/ngo/search').send(search)));
+
         chai.request(server)
-            .get('/search/history')
+            .get('/ngo/search/history')
             .send()
             .end(function(err, res) {
-
+                expect(err).to.be.null;
+                expect(res).to.deep.equal(searches);
+                done();
             });
     });
 });

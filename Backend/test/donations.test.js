@@ -116,33 +116,62 @@ describe("Donations", function() {
             });
     });
 
+    const baseDonation = {
+        anon: false,
+        message: "Test donation",
+        type: 1,
+        stripeToken: "tok_visa_debit",
+        currency: "usd",
+        amount: 1,
+        ngoName: "Red Cross"
+    };
+
+    const donations = [
+        {donorId: donor.id, ngoId: uuidv4()},
+        {donorId: donor.id, ngoId: ngo.id},
+        {donorId: uuidv4(), ngoId: ngo.id}
+    ];
+
     it("Get Donation List by Donor", function(done) {
-        chai.request(server)
-            .get('/donations')
-            .query({
-                by: 'donor',
-                id: donor.id
-            })
-            .send()
-            .end(function(err, res) {
-                expect(err).to.be.null;
-                expect(res).to.be.length(0);
-                done();
-            });
+        const requester = chai.request(server).keepOpen();
+
+        Promise.all(donations.map(donation => requester.post('/donations')
+            .send(Object.assign({}, baseDonation, donation))))
+            .then(() => requester
+                .get('/donations')
+                .query({
+                    by: 'donor',
+                    id: donor.id
+                })
+                .send()
+                .end(function(err, res) {
+                    expect(err).to.be.null;
+                    expect(res).to.be.length(2);
+                    expect(res).to.deep.equal([donations[0], donations[1]]);
+
+                    requester.close();
+                    done();
+                })
+            );
     });
 
     it("Get donation list by NGO", function(done) {
-        chai.request(server)
-            .get('/donations')
-            .query({
-                by: 'ngo',
-                id: ngo.id
-            })
-            .send()
-            .end(function(err, res) {
-                expect(err).to.be.null;
-                expect(res).to.be.length(0);
-                done();
-            });
+        const requester = chai.request(server).keepOpen();
+
+        Promise.all(donations.map(donation => requester.post('/donations')
+            .send(Object.assign({}, baseDonation, donation))))
+            .then(() => requester.get('/donations')
+                .query({
+                    by: 'ngo',
+                    id: ngo.id
+                })
+                .send()
+                .end(function(err, res) {
+                    expect(err).to.be.null;
+                    expect(res).to.be.length(2);
+                    expect(res).to.deep.equal([donations[1], donations[2]]);
+                    done();
+                })
+            );
     });
 });

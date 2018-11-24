@@ -151,12 +151,24 @@ describe('Testing Actions on an NGO account', function() {
         expect(user).to.deep.equal(requestedUser);
     });
 
-    it("Newsletters", function(done) {
-        chai.request(server)
+    it("Newsletters", async function(done) {
+        await chai.request(server)
             .post('/ngo/newsletter')
-            .send()
+            .send({
+                ngoId: ngo.id,
+                newsletter: "This is a test newsletter!"
+            })
             .end(function(err, res) {
+                expect(err).to.be.null;
+            });
 
+        chai.request(server)
+            .post('/ngo/newsletter/send')
+            .send({ngoId: ngo.id})
+            .end(function(err, res) {
+                expect(err).to.be.null;
+                // If mail stuff is bad, it would have thrown an error
+                done();
             });
     });
 });
