@@ -22,19 +22,19 @@ router.post('/', async function (req, res) {
 		return res.status(500).json({error: "Outside range"});
 	}
 
-  const donId = uuidv4();
+    const donId = uuidv4();
   
-  const authorization = req.get('Authorization');
+    const authorization = req.get('Authorization');
 	if (!authorization) return res.status(500).json({error: 'No token supplied'});
 
-	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
+    const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
 	const donorId = decoded.id;
 
-  let emailWrapper = await db.get('GGUser', ['email', 'username'] , `id = '${donorId}'`);
-  if(emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
+    let emailWrapper = await db.get('GGUser', ['email', 'username'] , `id = '${donorId}'`);
+    if(emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
 
-  let donorEmail = emailWrapper[0].email;
-  let donorName = emailWrapper[0].username;
+    let donorEmail = emailWrapper[0].email;
+    let donorName = emailWrapper[0].username;
 
 	await db.insert('Donation',
 		['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
@@ -45,11 +45,7 @@ router.post('/', async function (req, res) {
 	if (donation.recurring > 0)
 		await db.pool.query(`INSERT INTO recurringdonation VALUES ('${donId}', now(), ${donation.recurring})`);
 
-	let dbResult = await db.pool.query(`SELECT email FROM GGUser WHERE id = '${donorId}'`);
-	if (dbResult.rows.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
-	let donorEmail = dbResult.rows[0].email;
-
-  let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
+    let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
    			  +`\nMessage: '${donation.message}'`;
 
  	const token = req.body.stripeToken;
@@ -76,18 +72,15 @@ router.post('/', async function (req, res) {
 	 	description: message,
 	 	customer: customerId,
 	 	metadata: { donation_id: donId },
-   });
+    });
 
-   let stringAmount = (donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
+    let stringAmount = (donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
 
-	 const ngoName = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`)
-	 const date = new Date();
+    sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, (donation.date || new Date(dt.now())), donId);
 
-   sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, (donation.date || new Date(dt.now())), donId);
-
-   if(limits[0].emailtemplate){
-      sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
-   }
+    if(limits[0].emailtemplate){
+       sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
+    }
 
  	 return res.status(200).json({
 		 id: donId.id,

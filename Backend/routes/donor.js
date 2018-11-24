@@ -62,7 +62,12 @@ router.post('/search', async function (req, res) {
 });
 
 router.post('/newSearch', async function (req, res){
-	//nothing for now
+	const donorId = req.get('Authorization');
+	const keyword = req.body.term;
+
+	await db.insert('searches', ['id', 'term'], [donorId, keyword]);
+
+	res.status(200).send("Search insertion successful");
 });
 
 router.get('/searchHistory', async function(req, res){
