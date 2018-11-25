@@ -56,4 +56,18 @@ router.get('/export_transactions', async function (req, res) {
     res.status(200).send(csv);
 });
 
+router.post('/newSearch', async function (req, res){
+	//nothing for now
+});
+
+router.get('/searchHistory', async function(req, res){
+	const donorId = req.get('Authorization');
+	const keyword = req.query.entry;
+
+	let searches = await db.get('searches', ['term'], `id = ${donorId}${
+		keyword === ""? ``: ` AND term LIKE '${keyword}'`} FETCH FIRST 10 ROWS ONLY`);
+
+	res.status(200).send(searches);
+});
+
 module.exports = router;
