@@ -17,6 +17,7 @@ import { NGO_CATEGORIES } from '../../constants';
 import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
 import LineChart from './LineChart';
 import PieChart from './PieChart';
+import moment from 'moment';
 import './Profile.css';
 
 
@@ -48,10 +49,22 @@ class Profile extends Component {
     this.getData(); // temp
   }
 
+  getMonths() {
+    var mons = [];
+    var month = moment();
+    var i;
+    for (i = 0; i <= 12; i++) {
+      var duration = moment.duration({'months' : 1});
+      mons.push( moment(month).format("MMM") );
+      month = moment(month).subtract(duration);
+    }
+    return mons;
+  }
+
   getData() {
     this.setState({
       lineData:{
-        labels: ['Col1', 'Col2', 'Col3', 'Col4', 'Col5', 'Col6'],
+        labels: this.getMonths(),
         datasets:[
           {
             label:'TestLegend',
