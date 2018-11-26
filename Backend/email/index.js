@@ -155,23 +155,36 @@ async function sendNGOThankYouEmail(donorEmail, ngoEmailText, donorName, ngoName
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail}
+async function sendNewsletter(newsletter, email) {
+    const mailOptions = {
+        from: 'glassgiftteam@gmail.com',
+        to: email,
+        subject: '[GlassGift] New Newsletter',
+        text: newsletter
+    };
+
+    transporter.sendMail(mailOptions);
+}
 
 async function sendDonationReceiptEmail(email, amount, ngoName, date) {
-	const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
-	const mailoptions = {
-		from: 'glassgiftteam@gmail.com',
-		to: email,
-		subject: 'GlassGift: Donation Receipt',
-		text: body,
-	};
+    const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
 
-	transporter.sendMail(mailoptions, (err, info) => {
-		if (err) {
-			return console.error(err);
-		} else {
-			return console.log('Email sent' + info.response)
-		}
-	});
+    const mailoptions = {
+        from: 'glassgiftteam@gmail.com',
+        to: email,
+        subject: 'GlassGift: Donation Receipt',
+        text: body,
+    };
+
+    transporter.sendMail(mailoptions, (err, info) => {
+        if (err) {
+            return console.error(err);
+        } else {
+            return console.log('Email sent' + info.response)
+        }
+    });
 }
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail, sendDonationReceiptEmail}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail,
+	sendReceiptEmail, sendDonationReceiptEmail, sendNewsletter, sendNGOThankYouEmail};
+

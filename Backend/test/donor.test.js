@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const uuidv4 = require('uuid/v4');
 const server = require('../app');
 
 const expect = chai.expect;
@@ -7,6 +8,7 @@ chai.use(chaiHttp);
 
 describe('Testing registering donor account', function() {
     const donor = {
+        id: uuidv4(),
         email: 'test@gmail.com',
         password: 'test',
         location: "test location",
@@ -68,7 +70,20 @@ describe('Testing registering donor account', function() {
             });
     });
 
-    it('Adding payment methods stores them for the future', function() {
+    it('Adding payment methods stores them for the future', function(done) {
 
+    });
+
+    it("Export transactions", function(done) {
+        chai.request(server)
+            .get('/donor/export_transactions')
+            .query({id: donor.id})
+            .send()
+            .end(function(err, res) {
+                expect(err).to.be.null;
+                expect(res.headers['Content-disposition']).to.equal('attachment; filename=donor-transactions.csv');
+                expect(res.headers['Content-Type']).to.equal('text/csv');
+                done();
+            });
     });
 });

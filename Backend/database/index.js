@@ -13,7 +13,7 @@ async function execute(query) {
 }
 
 function init() {
-    execute(fs.readFileSync(__dirname + '/init.sql', 'utf-8').replace(/\n/g, ''))
+    execute(fs.readFileSync(__dirname + '/scripts/init.sql', 'utf-8').replace(/\n/g, ''))
 	    .then(() => console.log("Database initialized"))
 	    .catch((e) => console.error(e, "Something went wrong in database initialization :("));
 }
