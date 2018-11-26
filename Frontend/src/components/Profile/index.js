@@ -15,6 +15,8 @@ import NGOEditNoticeModal from './NGOEditNoticeModal';
 import NGOEditTYTemplateModal from './NGOEditTYTemplateModal';
 import { NGO_CATEGORIES } from '../../constants';
 import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
+import LineChart from './LineChart';
+import PieChart from './PieChart';
 import './Profile.css';
 
 
@@ -36,12 +38,36 @@ class Profile extends Component {
       ngoEditModalVis: false,
       ngoEditNoticeModalVis: false,
       ngoEditTYTemplateModalVis: false,
+      lineData: {},
     };
   }
 
   componentDidMount() {
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
+    this.getData(); // temp
+  }
+
+  getData() {
+    this.setState({
+      lineData:{
+        labels: ['Col1', 'Col2', 'Col3', 'Col4', 'Col5', 'Col6'],
+        datasets:[
+          {
+            label:'TestLegend',
+            data:[
+              1,
+              100000,
+              2000,
+              7000,
+              90,
+              500,
+            ],
+            backgroundColor:[]
+          }
+        ]
+      }
+    });
   }
 
   onChangeNGODonateModalVisibility(ngoDonateModalVis) {
@@ -169,6 +195,17 @@ class Profile extends Component {
             <CardText className="text-warning">{this.props.getNotice.success.notice || 'No notice listed'}</CardText>
           </CardBody>
         </Card>
+        </div>
+
+        <div className="text-center profileDiv">
+          <Card className="profile">
+            <CardBody>
+              <CardTitle style={{fontSize:'16px'}}>STATS</CardTitle>
+              <hr />
+             
+                <LineChart data={this.state.lineData}>LALA</LineChart>
+            </CardBody>
+          </Card>
         </div>
 
         <NGODonateModal
