@@ -35,9 +35,7 @@ router.put('/', async function (req, res) {
 	const changes = req.body;
 
 	const authorization = req.get('Authorization');
-	if (!authorization) return res.status(500).json({error: 'No token supplied'});
-	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
-	const userId = decoded.id;
+	const userId = authorization;
 
 	await db.pool.query(`UPDATE GGUser SET location = '${changes.location}' where id = '${userId}'`)
 	await db.pool.query(`UPDATE NGO SET category = '${changes.category}', description = '${changes.description}', callink = '${changes.calLink}', minLimit = '${changes.minLimit || 0}', maxLimit = '${changes.maxLimit || 0}'`)
@@ -75,6 +73,17 @@ router.post('/paymentData', async function(req, res){
 		console.log(err);
 		res.status(500).send(err);
 	}
+});
+
+router.post('/paymentVisualization', async function(req, res){
+	const donorId = req.get('Authorization');
+	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
+	if(!check){ return res.status(500).send("User not found"); }
+
+	var data = await db.get('donation', ['amount', 'created'], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+	res.status(200).json(data);
 });
 
 router.post('/search', async function (req, res) {

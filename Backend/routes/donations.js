@@ -23,12 +23,8 @@ router.post('/', async function (req, res) {
 	}
 
     const donId = uuidv4();
-  
-    const authorization = req.get('Authorization');
-	if (!authorization) return res.status(500).json({error: 'No token supplied'});
 
-    const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
-	const donorId = decoded.id;
+	const donorId = req.get('Authorization');
 
     let emailWrapper = await db.get('GGUser', ['email', 'username'] , `id = '${donorId}'`);
     if(emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
@@ -65,9 +61,10 @@ router.post('/', async function (req, res) {
 		await db.pool.query(`INSERT INTO paymentinfo VALUES ('${donorId}', '${customerId}')`);
 	}
 
+    console.log(`${customerId}`);
 
  	const charge = await stripe.charges.create({
-   	amount: donation.amount,
+   	    amount: donation.amount,
 	 	currency: 'usd',
 	 	description: message,
 	 	customer: customerId,
@@ -96,10 +93,7 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/prev', async function(req, res) {
-	const authorization = req.get('Authorization');
-	if (!authorization) return res.status(500).json({error: 'No token supplied'});
-	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
-	const donorId = decoded.id;
+	const donorId = req.get('Authorization');
 
 	const donor = await db.pool.query(`SELECT * FROM paymentinfo WHERE userId = '${donorId}'`);
 	if (donor.rows.length > 0) return res.sendStatus(200);

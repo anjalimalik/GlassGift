@@ -26,7 +26,7 @@ create table if not exists donor(
 );
 
 create table if not exists searches(
-  id text unique primary key references gguser,
+  id text references gguser,
   term text
 );
 
