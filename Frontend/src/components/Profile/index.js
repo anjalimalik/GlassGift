@@ -17,6 +17,7 @@ import { NGO_CATEGORIES } from '../../constants';
 import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
 import LineChart from './LineChart';
 import PieChart from './PieChart';
+import DateRangeStats from './DateRangeStats';
 import moment from 'moment';
 import './Profile.css';
 
@@ -216,7 +217,11 @@ class Profile extends Component {
               <CardTitle style={{fontSize:'16px'}}>STATS</CardTitle>
               <hr />
              
-                <LineChart data={this.state.lineData}>LALA</LineChart>
+              <LineChart data={this.state.lineData}></LineChart>
+              <br />
+              <hr />
+              <br />
+              <DateRangeStats> </DateRangeStats>
             </CardBody>
           </Card>
         </div>
