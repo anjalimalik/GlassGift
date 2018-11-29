@@ -71,11 +71,18 @@ class Profile extends Component {
             label:'TestLegend',
             data:[
               1,
-              100000,
+              1000,
               2000,
               7000,
               90,
               500,
+              20,
+              759,
+              3000,
+              140, 
+              11,
+              1300,
+              1
             ],
             backgroundColor:[]
           }
@@ -221,7 +228,7 @@ class Profile extends Component {
               <br />
               <hr />
               <br />
-              <DateRangeStats> </DateRangeStats>
+              <DateRangeStats ngoName={this.props.get.success.username}> </DateRangeStats>
             </CardBody>
           </Card>
         </div>
