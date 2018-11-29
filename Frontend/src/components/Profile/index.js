@@ -46,7 +46,7 @@ class Profile extends Component {
   componentDidMount() {
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
-    this.getData(); // temp
+    this.getLineData(); // temp
   }
 
   getMonths() {
@@ -61,7 +61,7 @@ class Profile extends Component {
     return mons;
   }
 
-  getData() {
+  getLineData() {
     this.setState({
       lineData:{
         labels: this.getMonths(),
