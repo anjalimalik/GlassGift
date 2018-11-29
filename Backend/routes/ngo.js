@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const db = require('../database');
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
-const {sendConfirmationEmail} = require('../email');
+const {sendConfirmationEmail, sendNoticeUpdateEmail} = require('../email');
 const csv = require('csv');
 const json2csv = require('json2csv').parse;
 
@@ -120,13 +120,20 @@ router.get('/notice', async function (req, res) {
 });
 
 router.put('/notice', async function (req, res) {
+	const userId = req.get('Authorization');
 
-	const authorization = req.get('Authorization');
-	if (!authorization) return res.status(500).json({error: 'No token supplied'});
-	const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
-	const userId = decoded.id;
+	let ngoData = await db.get("GGUser", ['name'], `id = '${userId}'`);
 
 	await db.pool.query(`UPDATE NGO SET notice = '${req.body.notice}' WHERE id = '${userId}'`);
+
+	let subscribers = await db.get("Subscriptions", 
+		['donorId'],
+		`ngoId = '${userId}'`);
+
+	for (var i = 0; i < subscribers.length; i++) {
+		let donorData = await db.get("GGUser", ['email'], `id = '${donorId}'`);
+		sendNoticeUpdateEmail(donorData.email, req.body.notice, ngoData.name);
+	}
 
 	return res.sendStatus(200);
 });
