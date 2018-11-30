@@ -185,11 +185,6 @@ async function sendDonationReceiptEmail(email, amount, ngoName, date) {
     });
 }
 
-<<<<<<< HEAD
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail,
-	sendReceiptEmail, sendDonationReceiptEmail, sendNewsletter, sendNGOThankYouEmail};
-
-=======
 async function sendNoticeUpdateEmail(email, notice, ngoName){
 	const body = `Dear User,\n\nYou have an update from ${ngoName};\n\n\t`+
 				 `"${notice}"\n\n This notice will be available on ${ngoName}'s page.`+
@@ -212,4 +207,4 @@ async function sendNoticeUpdateEmail(email, notice, ngoName){
 }
 
 module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail, sendDonationReceiptEmail, sendNoticeUpdateEmail}
->>>>>>> peter
+
