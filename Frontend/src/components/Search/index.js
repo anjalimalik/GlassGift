@@ -7,24 +7,44 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Alert, Button, FormControl, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
   Table
- } from 'react-bootstrap';
+} from 'react-bootstrap';
+import Select from 'react-select';
 import { NGO_CATEGORIES } from '../../constants';
 import '../Login/Login.css';
+import './Search.css';
 
+const options = [
+  {
+    value: '111',
+    label: 'Yolo Boat',
+  },
+  {
+    value: '222',
+    label: 'Noah Rinehart'
+  },
+];
 
 class Search extends Component {
 
 constructor(props) {
   super(props);
 
+  this.onOptionChange = this.onOptionChange.bind(this);
   this.onSubmit = this.onSubmit.bind(this);
   this.renderNGOList = this.renderNGOList.bind(this);
   this.renderAlert = this.renderAlert.bind(this);
 
   this.state = {
     type: 0,
-    keyword: '',
+    option: null,
   };
+}
+
+onOptionChange({selectedOption}) {
+  this.setState({
+    option: selectedOption,
+  });
+  console.log(selectedOption);
 }
 
 onSubmit(e) {
@@ -98,13 +118,19 @@ render() {
      <PageHeader>Search</PageHeader>
       <form onSubmit={this.onSubmit}>
         <FormGroup bsSize="lg">
-          <FormControl
+          <Select
+            value={this.state.option}
+            onChange={this.onOptionChange}
+            options={options}
+            classNamePrefix="react-select"
+          />
+          {/* <FormControl
             autoFocus
             type="text"
             placeholder="Type to search for NGOs"
             value={this.state.keyword}
             onChange={(e) => { this.setState({ keyword: e.target.value }) }}
-           />
+           /> */}
         </FormGroup>
 
         <div style={{paddingBottom: '20px'}}>

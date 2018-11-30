@@ -6,11 +6,11 @@ function search(keyword) {
         `name LIKE \'%${keyword}%\'`);
 }
 
-async function create(email, password, username, location, emailConfirmation) {
+async function create(email, password, username, location, emailConfirmation, age, gender) {
     const id = uuidv4();
     await db.insert('GGUser', ['id', 'email', 'password', 'username', 'location', 'emailConfirmation', 'confirmed'],
         [id, email, password, username, location, emailConfirmation, false]);
-    await db.insert('Donor', ['id'], [id]);
+    await db.insert('Donor', ['id', 'age', 'gender'], [id, age || 0, gender || ""]);
 }
 
 function addPaymentInfo(id, address, number, cvv, expirationDate, name) {

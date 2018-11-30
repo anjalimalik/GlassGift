@@ -28,6 +28,7 @@ export interface Body {
     subscription?: Subscription;
     donation?: Donation;
     paymentMethod?: PaymentMethod;
+    donationId?: String;
 }
 
 export interface DecodedToken {

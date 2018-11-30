@@ -40,7 +40,7 @@ class DonationCompleted extends Component {
   }
 
   render() {
-    const shareUrl = 'http://github.com';
+    const shareUrl = 'http://github.com/anjalimalik/Glassgift';
     const post = 'I donated on GlassGift!'; // get more details using donation id?
 
     return (

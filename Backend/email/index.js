@@ -107,23 +107,84 @@ async function sendDonationConfirmationEmail(email, amount, NGOname, date, donat
 	});
 }
 
-async function sendDonationReceiptEmail(email, amount, ngoName, date) {
-	const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
+async function sendReceiptEmail(donation, ngoEmail, donorEmail){
+	let stringAmount = (donation.amount/100) + "." 
+                + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
 
-	const mailoptions = {
+	var body = `Here is your receipt from GlassGift:\n\n` +
+			`Donation id: ${donation.id}\nNGO ID: ${donation.ngoid}\nDonor ID: ${donation.donorid}\n`+
+			`Amount: \$${(donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100)}\n`+
+			`Message: "${donation.message}"\n\n` +
+			`Total: \$${stringAmount}\n\n` +
+			`If there is an issue with this, please email us with an URGENT tag and we will send you the stripe receipt,`+
+			`you can also contact the ngo you donated to with this email: ${ngoEmail}. Thank you for using GlassGift!`+
+			`\n\nBest Regards,\nThe GlassGift Team\n\n`;
+
+	var mailoptions = {
 		from: 'glassgiftteam@gmail.com',
-		to: email,
-		subject: 'GlassGift: Donation Receipt',
-		text: body,
+		to: donorEmail,
+		subject: `GlassGift: Receipt for donation ${donation.id}`,
+		text: body
 	};
 
-	transporter.sendMail(mailoptions, (err, info) => {
-		if (err) {
+	transporter.sendMail(mailoptions, function(err, info){
+		if(err){
 			return console.error(err);
-		} else {
-			return console.log('Email sent' + info.response)
+		}else{
+			return console.log('Email sent' + info.response);
 		}
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendDonationReceiptEmail}
+async function sendNGOThankYouEmail(donorEmail, ngoEmailText, donorName, ngoName){
+	var body = `Dear ${donorName},\n\n` + ngoEmailText;
+
+	var mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: donorEmail,
+		subject: `Thank you from ${ngoName}`,
+		text: body
+	}
+
+	transporter.sendMail(mailoptions, function(err, info){
+		if(err){
+			return console.error(err);
+		}else{
+			return console.log('Email sent' + info.response);
+		}
+	});
+}
+
+async function sendNewsletter(newsletter, email) {
+    const mailOptions = {
+        from: 'glassgiftteam@gmail.com',
+        to: email,
+        subject: '[GlassGift] New Newsletter',
+        text: newsletter
+    };
+
+    transporter.sendMail(mailOptions);
+}
+
+async function sendDonationReceiptEmail(email, amount, ngoName, date) {
+    const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
+
+    const mailoptions = {
+        from: 'glassgiftteam@gmail.com',
+        to: email,
+        subject: 'GlassGift: Donation Receipt',
+        text: body,
+    };
+
+    transporter.sendMail(mailoptions, (err, info) => {
+        if (err) {
+            return console.error(err);
+        } else {
+            return console.log('Email sent' + info.response)
+        }
+    });
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail,
+	sendReceiptEmail, sendDonationReceiptEmail, sendNewsletter, sendNGOThankYouEmail};
+

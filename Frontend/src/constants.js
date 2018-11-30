@@ -16,6 +16,7 @@ export const NGO_CATEGORIES = {
   9:  'Religion',
   10: 'Research & Public Policy',
   11: 'Other',
+  'select': 'Filter by Category',
 };
 
 export const GENDER_OPTIONS = {

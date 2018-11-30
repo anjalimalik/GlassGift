@@ -1,16 +1,23 @@
 body {
   font-family: 'Montserrat', sans-serif;
   background-color: rgba(203, 203, 210, 0.15);
+  width: 100%;
+  margin: 0 auto !important;
 }
 
 .profileDiv {
-  float: left;
+  width: 90%;
+  min-width: 40%;
+  max-width: 90%;
   position: relative;  
-  left: 23%;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .profile {
-  margin: 20px 0 20px 0; 
+  margin: 0 auto;
   width: 90rem; 
   padding: 10px 10px 20px 10px;
   border-radius: 10px;
