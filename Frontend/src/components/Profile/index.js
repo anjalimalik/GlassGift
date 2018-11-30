@@ -6,12 +6,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
+import { getNGOTYTemplate, getNGOTYTemplateClear } from '../../actions/getNGOTYTemplate';
+import { subscribe } from '../../actions/subscribe';
 import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
+import NGOEditTYTemplateModal from './NGOEditTYTemplateModal';
 import { NGO_CATEGORIES } from '../../constants';
 import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
+import LineChart from './LineChart';
+import PieChart from './PieChart';
+import DateRangeStats from './DateRangeStats';
+import moment from 'moment';
 import './Profile.css';
 
 
@@ -23,6 +30,8 @@ class Profile extends Component {
     this.onChangeNGODonateModalVisibility = this.onChangeNGODonateModalVisibility.bind(this);
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
+    this.onChangeNGOEditTYTemplateModalVisibility = this.onChangeNGOEditTYTemplateModalVisibility.bind(this);
+    this.onSubscribe = this.onSubscribe.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
 
@@ -30,12 +39,63 @@ class Profile extends Component {
       ngoDonateModalVis: false,
       ngoEditModalVis: false,
       ngoEditNoticeModalVis: false,
+      ngoEditTYTemplateModalVis: false,
+      lineData: {},
+      pieData: {},
     };
   }
 
   componentDidMount() {
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
+    this.getLineData(); // temp
+    this.getPieData(); // temp
+  }
+
+  getMonths() {
+    var mons = [];
+    var month = moment();
+    var i;
+    for (i = 0; i <= 12; i++) {
+      var duration = moment.duration({'months' : 1});
+      mons.push( moment(month).format("MMM") );
+      month = moment(month).subtract(duration);
+    }
+    return mons;
+  }
+
+  getLineData() {
+    this.setState({
+      lineData:{
+        labels: this.getMonths(),
+        datasets:[
+          {
+            label:'TestLegend',
+            data:[1, 1000, 2000, 7000, 90, 500, 20, 759, 3000, 140, 11,300,1],
+            backgroundColor: 'rgba(75,192,192,0.4)',
+            borderColor: 'rgba(75,192,192,1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+            hoverBorderColor: 'rgba(255,99,132,1)',
+          }
+        ]
+      }
+    });
+  }
+
+  getPieData() {
+    this.setState({
+      pieData:{
+        labels: [ 'Female', 'Male', 'Non-Binary', ],
+        datasets:[
+          {
+            data:[40, 55, 5],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+          }
+        ]
+      }
+    });
   }
 
   onChangeNGODonateModalVisibility(ngoDonateModalVis) {
@@ -52,6 +112,16 @@ class Profile extends Component {
     this.setState({ngoEditNoticeModalVis});
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
+  }
+
+  onChangeNGOEditTYTemplateModalVisibility(ngoEditTYTemplateModalVis) {
+    this.setState({ngoEditTYTemplateModalVis});
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
+  }
+
+  onSubscribe() {
+    this.props.subscribe(this.state);
   }
 
   renderAlert() {
@@ -91,13 +161,17 @@ class Profile extends Component {
           <ButtonGroup>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
+            <Button bsStyle="info" onClick={() => this.setState({ngoEditTYTemplateModalVis: true})}>Edit Thank-you Email Template</Button>
           </ButtonGroup>
         </div>
       );
     } else {
       return (
         <div>
-          <Button onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+          <ButtonGroup>
+            <Button bsStyle="info" onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
+            <Button bsStyle="success" onClick={ this.onSubscribe() }>Subscribe</Button>
+          </ButtonGroup>
         </div>
       );
     }
@@ -144,11 +218,29 @@ class Profile extends Component {
         <div className="text-center profileDiv">
         <Card className="profile">
           <CardBody>
-            <CardTitle style={{fontSize:'16px'}}>NOTICE</CardTitle>
+            <CardTitle style={{fontSize:'20px'}}>NOTICE</CardTitle>
             <hr />
             <CardText className="text-warning">{this.props.getNotice.success.notice || 'No notice listed'}</CardText>
           </CardBody>
         </Card>
+        </div>
+
+        <div className="text-center profileDiv">
+          <Card className="profile">
+            <CardBody>
+              <CardTitle style={{fontSize:'20px'}}>STATS</CardTitle>
+              <hr />
+             
+              <LineChart data={this.state.lineData}></LineChart>
+              <br /> <hr /> <br />
+
+              <h4>Pick a Date Range to get donations statistics for <span style={{color:'blue',}}>{this.props.get.success.username}</span></h4>
+              <DateRangeStats> </DateRangeStats>
+              <hr /> 
+              <h4>Distribution by gender of donors who donated to <span style={{color:'blue',}}>{this.props.get.success.username}</span> </h4>
+              <PieChart data={this.state.pieData}></PieChart>
+            </CardBody>
+          </Card>
         </div>
 
         <NGODonateModal
@@ -175,6 +267,12 @@ class Profile extends Component {
           visibility={this.state.ngoEditNoticeModalVis}
           onChangeVisibility={this.onChangeNGOEditNoticeModalVisibility}
         />
+
+        <NGOEditTYTemplateModal
+          //tytemplate={this.props.getTYTemplate.success.tytemplate}
+          visibility={this.state.ngoEditTYTemplateModalVis}
+          onChangeVisibility={this.onChangeNGOEditTYTemplateModalVisibility}
+        />
       </div>
     );
   }
@@ -195,6 +293,7 @@ function mapDispatchToProps(dispatch) {
     getNGOClear,
     getNGONotice,
     getNGONoticeClear,
+    subscribe,
   }, dispatch);
 }
 

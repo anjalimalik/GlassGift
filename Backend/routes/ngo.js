@@ -4,7 +4,7 @@ const ngoRepository = require('../database/ngo');
 const userRepository = require('../database/user');
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
-const email = require('../email');
+const {sendConfirmationEmail, sendNoticeUpdateEmail} = require('../email');
 const csv = require('csv');
 const json2csv = require('json2csv').parse;
 
@@ -36,8 +36,8 @@ router.put('/', async function (req, res) {
     const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
     const userId = decoded.id;
 
-	await ngoRepository.edit(req.decodedToken.id, changes.location, changes.description, changes.category,
-		changes.calendarLink, changes.minLimit, changes.maxLimit);
+	const authorization = req.get('Authorization');
+	const userId = authorization;
 
 	return res.sendStatus(200);
 });
@@ -46,7 +46,7 @@ router.get('/', async function (req, res) {
 	const ngos = await ngoRepository.getById(req.query.id);
 	if (ngos.length === 0) return res.status(500).json({error: "NGO not found!"});
 
-	return res.status(200).json(ngos.rows[0]);
+	return res.status(200).json(ngos[0]);
 });
 
 router.post('/paymentData', async function(req, res){
@@ -70,6 +70,100 @@ router.post('/paymentData', async function(req, res){
 	}
 });
 
+//line graph <- timestamp manipulation
+router.post('/visualLineGraph', async function(req, res){
+	const donorId = req.get('Authorization');
+	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
+	if(!check){ return res.status(500).send("User not found"); }
+
+	var dates = {};
+
+	var month1 = 12; var month2 = 11;
+	while(month1 > 0){
+		let sum = await db.get('donation', ['SUM(amount) AS sum'], 
+		`ngoId = '${req.body.ngoId}' AND created BETWEEN CURRENT_DATE - INTERVAL '${month1} months'` + 
+		` AND CURRENT_DATE ${month2 === 0? '':`- INTERVAL '${month2} months'`}`);
+
+		dates[`month_${month1}`] = (sum[0].sum|0);
+		month1--; month2--;
+	}
+
+	return res.status(200).json(dates);
+});
+
+//calendar easy
+router.post('/visualCalendar', async function(req, res){
+	//star date, end date, type, ngoId
+	const donorId = req.get('Authorization');
+	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
+	if(!check){ return res.status(500).send("User not found"); }
+
+	var donations = await db.get('donation', ['DISTINCT donorId'], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+
+	var numDonations = await db.get('donation', [`COUNT(*)`], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+	var totalMoney = await db.get('donation', [`sum(amount) AS sum`], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+
+	var averageDonation = await db.get('donation', [`avg(amount) AS avg`], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+
+	var averageAge = 0;
+
+	for (var i = 0; i < donations.length; i++) {
+		let donor = await db.get('Donor', ['age'], `id = '${donations[i].donorid}'`);
+		averageAge += donor[0].age;
+	}
+
+	averageAge /= donations.length;
+
+	return res.status(200).json({
+		numDonations: numDonations[0].count,
+		totalMoney: `\$${parseInt(totalMoney[0].sum | 0)/100}.${parseInt(totalMoney[0].sum | 0)%100 < 10? '0' + parseInt(totalMoney[0].sum | 0)%100: parseInt(totalMoney[0].sum | 0)%100} `,
+		averageDonation: `\$${parseInt(averageDonation[0].avg | 0)/100}.${parseInt(averageDonation[0].avg | 0)%100 < 10 ? '0' + parseInt(averageDonation[0].avg | 0)%100: parseInt(averageDonation[0].avg | 0)%100}`,
+		averageAge: averageAge,
+	});
+});
+
+
+//pie graph easy
+router.post('/visualPieGraph', async function(req, res){
+	const donorId = req.get('Authorization');
+	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
+	if(!check){ return res.status(500).send("User not found"); }
+
+	var totalMale = 0;
+	var totalFemale = 0;
+	var totalNB = 0;
+
+	var donations = await db.get('donation', ['DISTINCT donorId'], `ngoId = '${req.body.ngoId}'`);
+
+	for (var i = 0; i < donations.length; i++) {
+		let gender = (await db.get('Donor', ['gender'], `id = '${donations[i].donorid}'`));
+
+		if(gender[0].gender === "Male"){
+			totalMale++;
+		}else if(gender[0].gender === "Female"){
+			totalFemale++;
+		}else {
+			totalNB++;
+		}
+	}
+
+	let total = totalMale + totalFemale + totalNB;
+
+	return res.status(200).json({
+		male: ((totalMale + 0.00) / total),
+		female: ((totalFemale + 0.00) / total),
+		nonBinary: ((totalNB + 0.00) / total),
+	});		
+});
+
 router.post('/search', async function (req, res) {
     switch (req.body.type) {
 		case 0:
@@ -81,23 +175,42 @@ router.post('/search', async function (req, res) {
 		default:
 			return res.status(500).json({error: "Couldn't match type"});
 	}
+
+	if (req.body.filter !== 'select') {
+		const filter = parseInt(req.body.filter);
+		where += ` AND category = \'${filter}\'`;
+	}
+
+	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
+		['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
+			'minLimit', 'maxLimit'], where);
+	return res.status(200).json(dbResult);
 });
 
 router.get('/notice', async function (req, res) {
 	const ngos = await ngoRepository.getById(req.query.id);
-	if (ngos.rows.length === 0) return res.status(500).json({error: "Account doesn't exist"});
+	if (ngos.length === 0) return res.status(500).json({error: "Account doesn't exist"});
 
-	const ngo = ngos.rows[0];
+	const ngo = ngos[0];
 	res.status(200).json({notice: ngo.notice});
 });
 
 router.put('/notice', async function (req, res) {
-    const authorization = req.get('Authorization');
-    if (!authorization) return res.status(500).json({error: 'No token supplied'});
-    const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
-    const userId = decoded.id;
+	const userId = req.get('Authorization');
 
-	await ngoRepository.setNotice(req.decodedToken.id, req.body.notice);
+	let ngoData = await db.get("GGUser", ['name'], `id = '${userId}'`);
+
+	await db.pool.query(`UPDATE NGO SET notice = '${req.body.notice}' WHERE id = '${userId}'`);
+
+	let subscribers = await db.get("Subscriptions", 
+		['donorId'],
+		`ngoId = '${userId}'`);
+
+	for (var i = 0; i < subscribers.length; i++) {
+		let donorData = await db.get("GGUser", ['email'], `id = '${donorId}'`);
+		sendNoticeUpdateEmail(donorData.email, req.body.notice, ngoData.name);
+	}
+
 	return res.sendStatus(200);
 });
 

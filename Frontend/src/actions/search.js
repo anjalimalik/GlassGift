@@ -32,11 +32,12 @@ export function searchClear() {
   };
 }
 
-function callSearchApi(type, keyword) {
+function callSearchApi(type, keyword, filter) {
   return new Promise((resolve, reject) => {
     const body = {
       type,
       keyword,
+      filter,
     };
     axios.post('http://localhost:3000/ngo/search', body)
     .then(response => resolve(response.data))
@@ -44,8 +45,8 @@ function callSearchApi(type, keyword) {
   });
 }
 
-export function search(BasisOf, Key) {
-  const request = callSearchApi(BasisOf, Key)
+export function search(BasisOf, Key, filter) {
+  const request = callSearchApi(BasisOf, Key, filter);
   return dispatch => {
     dispatch(searchPending(true));
     return request

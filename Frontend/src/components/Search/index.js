@@ -6,7 +6,7 @@ import { search, searchClear } from '../../actions/search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Alert, Button, FormControl, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
-  Table
+  Table, MenuItem, DropdownButton
  } from 'react-bootstrap';
 import { NGO_CATEGORIES } from '../../constants';
 import '../Login/Login.css';
@@ -24,13 +24,14 @@ constructor(props) {
   this.state = {
     type: 0,
     keyword: '',
+    filter: 'select',
   };
 }
 
 onSubmit(e) {
   e.preventDefault();
-  const { type, keyword } = this.state;
-  this.props.search(type, keyword)
+  const { type, keyword, filter, } = this.state;
+  this.props.search(type, keyword, filter)
   .then(() => {
     if (this.props.ngos) {
       this.renderNGOs();
@@ -39,6 +40,7 @@ onSubmit(e) {
   this.setState({
     type: '',
     keyword: '',
+    filter: 'select',
   });
 }
 
@@ -116,7 +118,29 @@ render() {
               <ToggleButton value={1}>Location</ToggleButton>
               <ToggleButton value={2}>Category</ToggleButton>
             </ToggleButtonGroup>
+
+            <DropdownButton
+            bsStyle="primary"
+            title={NGO_CATEGORIES[this.state.filter]}
+            id='1'
+            onSelect={filter => this.setState({ filter })}
+            >
+              <MenuItem eventKey="0">{NGO_CATEGORIES[0]}</MenuItem>
+              <MenuItem eventKey="1">{NGO_CATEGORIES[1]}</MenuItem>
+              <MenuItem eventKey="2">{NGO_CATEGORIES[2]}</MenuItem>
+              <MenuItem eventKey="3">{NGO_CATEGORIES[3]}</MenuItem>
+              <MenuItem eventKey="4">{NGO_CATEGORIES[4]}</MenuItem>
+              <MenuItem eventKey="5">{NGO_CATEGORIES[5]}</MenuItem>
+              <MenuItem eventKey="6">{NGO_CATEGORIES[6]}</MenuItem>
+              <MenuItem eventKey="7">{NGO_CATEGORIES[7]}</MenuItem>
+              <MenuItem eventKey="8">{NGO_CATEGORIES[8]}</MenuItem>
+              <MenuItem eventKey="9">{NGO_CATEGORIES[9]}</MenuItem>
+              <MenuItem eventKey="10">{NGO_CATEGORIES[10]}</MenuItem>
+              <MenuItem eventKey="11">{NGO_CATEGORIES[11]}</MenuItem>
+            </DropdownButton>
           </ButtonToolbar>
+
+          
         </div>
 
         <div style={{ marginBottom: '15px'}}>
