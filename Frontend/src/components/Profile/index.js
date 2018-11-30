@@ -218,7 +218,7 @@ class Profile extends Component {
         <div className="text-center profileDiv">
         <Card className="profile">
           <CardBody>
-            <CardTitle style={{fontSize:'16px'}}>NOTICE</CardTitle>
+            <CardTitle style={{fontSize:'20px'}}>NOTICE</CardTitle>
             <hr />
             <CardText className="text-warning">{this.props.getNotice.success.notice || 'No notice listed'}</CardText>
           </CardBody>
@@ -228,7 +228,7 @@ class Profile extends Component {
         <div className="text-center profileDiv">
           <Card className="profile">
             <CardBody>
-              <CardTitle style={{fontSize:'16px'}}>STATS</CardTitle>
+              <CardTitle style={{fontSize:'20px'}}>STATS</CardTitle>
               <hr />
              
               <LineChart data={this.state.lineData}></LineChart>

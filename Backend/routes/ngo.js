@@ -46,7 +46,7 @@ router.get('/', async function (req, res) {
 	const ngos = await ngoRepository.getById(req.query.id);
 	if (ngos.length === 0) return res.status(500).json({error: "NGO not found!"});
 
-	return res.status(200).json(ngos.rows[0]);
+	return res.status(200).json(ngos[0]);
 });
 
 router.post('/paymentData', async function(req, res){
@@ -95,9 +95,9 @@ router.post('/search', async function (req, res) {
 
 router.get('/notice', async function (req, res) {
 	const ngos = await ngoRepository.getById(req.query.id);
-	if (ngos.rows.length === 0) return res.status(500).json({error: "Account doesn't exist"});
+	if (ngos.length === 0) return res.status(500).json({error: "Account doesn't exist"});
 
-	const ngo = ngos.rows[0];
+	const ngo = ngos[0];
 	res.status(200).json({notice: ngo.notice});
 });
 
