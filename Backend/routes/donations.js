@@ -24,14 +24,15 @@ router.post('/', async function (req, res) {
         return res.status(500).json({error: "Outside range"});
     }
 
-    const donorId = req.get('Authorization');
-    const donationId = uuidv4();
+    const donId = uuidv4();
 
-  const authorization = req.get('Authorization');
-    if (!authorization) return res.status(500).json({error: 'No token supplied'});
+	const donorId = req.get('Authorization');
 
-  let donorEmail = emailWrapper[0].email;
-  let donorName = emailWrapper[0].username;
+    let emailWrapper = await db.get('GGUser', ['email', 'username'] , `id = '${donorId}'`);
+    if(emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
+
+    let donorEmail = emailWrapper[0].email;
+    let donorName = emailWrapper[0].username;
 
 	await db.insert('Donation',
 		['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
@@ -42,28 +43,8 @@ router.post('/', async function (req, res) {
     let emailWrapper = await userRepository.getEmailsFromId(donorId);
     if (emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
 
-    let message = `Donation of $${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}\n` +
-        `Message: '${donation.message}'`;
-    const token = req.body.stripeToken;
-    const charge = stripe.charges.create({
-        amount: donation.amount,
-        currency: donation.currency,
-        description: message,
-        source: token,
-        metadata: {
-            donation_id: donationId,
-            honoredUser: donation.honoredUserName
-        },
-        receipt_email: donorEmail
-    }, function (err, charge) {
-        if (charge == null) return res.status(500).json({error: `Stripe Payment Failed`});
-        return res.status(200).json(charge);
-    });
-
-    if (charge != null) {
-        await donationRepository.create(donationId, donorId, donation.ngoId, donation.anonymity, donation.message,
-            donation.donationType, donation.honoredUserId, donation.honoredUserName, donation.date, donation.amount);
-    }
+    let message = `Donation of \$${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}`
+   			  +`\nMessage: '${donation.message}'`;
 
     if(limits[0].emailtemplate){
         sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
@@ -87,25 +68,53 @@ router.get('/', async function (req, res) {
     }
 });
 
+    console.log(`${customerId}`);
+    const donationId = uuidv4();
 router.post('/scheduled', async function (req, res) {
     const donation = req.body.donation;
-    const donationId = uuidv4();
 
-    setInterval(async () => {
-        await donationRepository.create(donationId, donation.donorId, donation.ngoId, donation.anonymity, donation.message,
-            donation.donationType, donation.honoredUserId, donation.honoredUserName, donation.date, donation.amount);
+ 	const charge = await stripe.charges.create({
+   	    amount: donation.amount,
+	 	currency: 'usd',
+	 	description: message,
+	 	customer: customerId,
+	 	metadata: { donation_id: donId },
+    });
     }, donation.frequency);
+            donation.donationType, donation.honoredUserId, donation.honoredUserName, donation.date, donation.amount);
+        await donationRepository.create(donationId, donation.donorId, donation.ngoId, donation.anonymity, donation.message,
+    setInterval(async () => {
 
+    let stringAmount = (donation.amount/100) + "." + (donation.amount%100 < 10? `0${donation.amount%100}`: donation.amount%100);
     await donationRepository.createScheduled(donationId, donation.frequency);
 
+    sendDonationConfirmationEmail(donorEmail, stringAmount, donation.ngoName, (donation.date || new Date(dt.now())), donId);
+
+    if(limits[0].emailtemplate){
+       sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
+    }
+
+ 	 return res.status(200).json({
+		 id: donId.id,
+		 donorEmail,
+		 ngoId: donation.ngoId,
+		 ngoName: ngoName[0].username,
+		 amount: charge.amount,
+		 created: charge.created,
+		 description: charge.description,
+		 metadata: charge.metadata,
+		 status: charge.status,
+	 });
     res.sendStatus(500);
 });
 
-router.post('/emailReceipt', async function (req, res) {
+router.get('/prev', async function(req, res) {
+	const donorId = req.get('Authorization');
+    let donation = donationData[0];
+    if (donationData.length === 0) return res.status(500).json({error: `Donation with id ${donationId} not found`});
     const donationId = req.body.donationId;
     let donationData = await donationRepository.getById(donationId);
-    if (donationData.length === 0) return res.status(500).json({error: `Donation with id ${donationId} not found`});
-    let donation = donationData[0];
+router.post('/emailReceipt', async function (req, res) {
 
     await sendReceiptEmail(donation, ngoSearch[0].email, donorSearch[0].email);
     return res.sendStatus(200);
