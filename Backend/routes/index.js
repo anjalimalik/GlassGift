@@ -80,6 +80,7 @@ router.post('/confirm_account', async function (req, res) {
 	const { id } = dbResult[0];
 	await db.pool.query(`UPDATE GGUser SET confirmed = 'true' where id = '${id}'`)
 
+	userRepository.confirmById(users[0].id);
 	return res.sendStatus(200);
 });
 

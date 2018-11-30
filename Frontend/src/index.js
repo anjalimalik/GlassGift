@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faDownload } from '@fortawesome/free-solid-svg-icons';
 import WebFont from 'webfontloader';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
@@ -26,7 +26,7 @@ import Search from './components/Search';
 import DonationCompleted from './components/DonationCompleted';
 
 // Font Awesome
-library.add(faSpinner);
+library.add(faSpinner, faDownload);
 
 // load fonts
 WebFont.load({

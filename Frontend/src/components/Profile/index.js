@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, Button, PageHeader, Label, ButtonGroup } from 'react-bootstrap';
+import { Alert, Button, PageHeader, Label, ButtonGroup, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
@@ -25,6 +25,7 @@ class Profile extends Component {
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
+    this.renderDonations = this.renderDonations.bind(this);
 
     this.state = {
       ngoDonateModalVis: false,
@@ -103,15 +104,53 @@ class Profile extends Component {
     }
   }
 
+  renderDonations() {
+    // TODO if no donations
+
+    const donationRows = [
+      (<tr>
+        <td>1</td>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>@mdo</td>
+      </tr>)
+    ];
+
+    return (
+      <div className="text-center profileDiv">
+      <Card className="profile">
+        <CardTitle style={{fontSize:'16px'}}>DONATIONS</CardTitle>
+        <CardBody>
+          <Table striped bordered condensed hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+              </tr>
+            </thead>
+            <tbody>
+              {donationRows}          
+            </tbody>
+          </Table>
+          <div style={{ float: 'right' }}><Button bsStyle="link"><FontAwesomeIcon icon="download" size="1x"/> Download donations</Button></div>
+          <br/>
+        </CardBody>
+      </Card>
+    </div>
+    );
+  }
+
   render() {
 
-    if (this.props.get.pending || this.props.getNotice.pending) {
-      return (
-        <div className="NGOProfile text-center">
-          <FontAwesomeIcon icon="spinner" size="6x" spin/>
-        </div>
-      );
-    }
+    // if (this.props.get.pending || this.props.getNotice.pending) {
+    //   return (
+    //     <div className="NGOProfile text-center">
+    //       <FontAwesomeIcon icon="spinner" size="6x" spin/>
+    //     </div>
+    //   );
+    // }
 
     return (
       <div className="NGOProfile center-block text-center">
@@ -150,6 +189,23 @@ class Profile extends Component {
           </CardBody>
         </Card>
         </div>
+
+        <div className="text-center profileDiv">
+          <Card className="profile">
+            <CardBody>
+              <CardTitle style={{fontSize:'16px'}}>STATS</CardTitle>
+              <hr />
+             
+              <LineChart data={this.state.lineData}></LineChart>
+              <br />
+              <hr />
+              <br />
+              <DateRangeStats ngoName={this.props.get.success.username}> </DateRangeStats>
+            </CardBody>
+          </Card>
+        </div>
+
+        {this.renderDonations()}
 
         <NGODonateModal
           visibility={this.state.ngoDonateModalVis}

@@ -16,12 +16,9 @@ router.post('/', async function (req, res) {
 	let dbResult = await db.get('GGUser', ['*'], `email = '${donor.email}'`);
 	if (dbResult.length !== 0) return res.status(500).json({error: 'Already exists'});
 
-	await db.insert('GGUser', ['id', 'email', 'password', 'username', 'location', 'emailConfirmation', 'confirmed'],
-		[id, donor.email, hash, donor.name, donor.location, emailId, 'false']);
-	await db.insert('Donor', ['id'], [id]);
-	sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
-
-	res.sendStatus(200);
+    await donorRepository.create(donor.email, hash, donor.name, donor.location, emailId);
+    sendConfirmationEmail(donor.email, donor.name, emailConfirmation, 1);
+    res.sendStatus(200);
 });
 
 router.put('/', async function (req, res) {
