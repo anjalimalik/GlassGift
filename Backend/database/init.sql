@@ -22,7 +22,9 @@ create table if not exists ngo(
 );
 
 create table if not exists donor(
-  id text unique primary key references gguser
+  id text unique primary key references gguser,
+  age int,
+  gender text
 );
 
 create table if not exists searches(

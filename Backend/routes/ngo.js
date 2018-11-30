@@ -75,15 +75,98 @@ router.post('/paymentData', async function(req, res){
 	}
 });
 
-router.post('/paymentVisualization', async function(req, res){
+//line graph <- timestamp manipulation
+router.post('/visualLineGraph', async function(req, res){
 	const donorId = req.get('Authorization');
 	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
 	if(!check){ return res.status(500).send("User not found"); }
 
-	var data = await db.get('donation', ['amount', 'created'], `ngoId = '${req.body.ngoId}' AND `+
+	var dates = {};
+
+	var month1 = 12; var month2 = 11;
+	while(month1 > 0){
+		let sum = await db.get('donation', ['SUM(amount) AS sum'], 
+		`ngoId = '${req.body.ngoId}' AND created BETWEEN CURRENT_DATE - INTERVAL '${month1} months'` + 
+		` AND CURRENT_DATE ${month2 === 0? '':`- INTERVAL '${month2} months'`}`);
+
+		dates[`month_${month1}`] = (sum[0].sum|0);
+		month1--; month2--;
+	}
+
+	return res.status(200).json(dates);
+});
+
+//calendar easy
+router.post('/visualCalendar', async function(req, res){
+	//star date, end date, type, ngoId
+	const donorId = req.get('Authorization');
+	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
+	if(!check){ return res.status(500).send("User not found"); }
+
+	var donations = await db.get('donation', ['DISTINCT donorId'], `ngoId = '${req.body.ngoId}' AND `+
 					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
 
-	res.status(200).json(data);
+
+	var numDonations = await db.get('donation', [`COUNT(*)`], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+	var totalMoney = await db.get('donation', [`sum(amount) AS sum`], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+
+	var averageDonation = await db.get('donation', [`avg(amount) AS avg`], `ngoId = '${req.body.ngoId}' AND `+
+					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
+
+
+	var averageAge = 0;
+
+	for (var i = 0; i < donations.length; i++) {
+		let donor = await db.get('Donor', ['age'], `id = '${donations[i].donorid}'`);
+		averageAge += donor[0].age;
+	}
+
+	averageAge /= donations.length;
+
+	return res.status(200).json({
+		numDonations: numDonations[0].count,
+		totalMoney: `\$${parseInt(totalMoney[0].sum | 0)/100}.${parseInt(totalMoney[0].sum | 0)%100 < 10? '0' + parseInt(totalMoney[0].sum | 0)%100: parseInt(totalMoney[0].sum | 0)%100} `,
+		averageDonation: `\$${parseInt(averageDonation[0].avg | 0)/100}.${parseInt(averageDonation[0].avg | 0)%100 < 10 ? '0' + parseInt(averageDonation[0].avg | 0)%100: parseInt(averageDonation[0].avg | 0)%100}`,
+		averageAge: averageAge,
+	});
+});
+
+
+//pie graph easy
+router.post('/visualPieGraph', async function(req, res){
+	const donorId = req.get('Authorization');
+	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
+	if(!check){ return res.status(500).send("User not found"); }
+
+	var totalMale = 0;
+	var totalFemale = 0;
+	var totalNB = 0;
+
+	var donations = await db.get('donation', ['DISTINCT donorId'], `ngoId = '${req.body.ngoId}'`);
+
+	for (var i = 0; i < donations.length; i++) {
+		let gender = (await db.get('Donor', ['gender'], `id = '${donations[i].donorid}'`));
+
+		if(gender[0].gender === "Male"){
+			totalMale++;
+		}else if(gender[0].gender === "Female"){
+			totalFemale++;
+		}else {
+			totalNB++;
+		}
+	}
+
+	let total = totalMale + totalFemale + totalNB;
+
+	return res.status(200).json({
+		male: ((totalMale + 0.00) / total),
+		female: ((totalFemale + 0.00) / total),
+		nonBinary: ((totalNB + 0.00) / total),
+	});		
 });
 
 router.post('/search', async function (req, res) {
