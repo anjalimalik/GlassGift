@@ -124,6 +124,14 @@ router.post('/email', async function (req, res) {
     await sendDonationReceiptEmail(dbResult.rows[0].email, dbResult.rows[0].amount, dbResult.rows[0].username, dbResult.rows[0].created);
 
     res.sendStatus(200);
-})
+});
+
+router.get('/prev', async function(req, res) {
+    const donorId = req.get('Authorization');
+
+    const donor = await db.pool.query(`SELECT * FROM paymentinfo WHERE userId = '${donorId}'`);
+    if (donor.rows.length > 0) return res.sendStatus(200);
+    return res.sendStatus(500);
+});
 
 module.exports = router;
