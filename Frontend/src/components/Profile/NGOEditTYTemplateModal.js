@@ -41,6 +41,8 @@ class NGOEditTYTemplateModal extends Component {
               <ControlLabel>New Email</ControlLabel>
               <FormControl
                 autoFocus
+                componentClass="textarea"
+                rows={20}
                 placeholder={this.props.emailtemplate}
                 value={this.state.emailtemplate}
                 onChange={e => this.setState({ emailtemplate: e.target.value }) }
