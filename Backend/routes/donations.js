@@ -27,20 +27,19 @@ router.post('/', async function (req, res) {
     const donorId = req.get('Authorization');
     const donationId = uuidv4();
 
-  const authorization = req.get('Authorization');
+    const authorization = req.get('Authorization');
     if (!authorization) return res.status(500).json({error: 'No token supplied'});
-
-  let donorEmail = emailWrapper[0].email;
-  let donorName = emailWrapper[0].username;
-
-	await db.insert('Donation',
-		['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
-		[donationId, donorId, donation.ngoId, donation.amount, donation.anonymity || false, donation.message || "", donation.donationType || 0,
-			donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
-
 
     let emailWrapper = await userRepository.getEmailsFromId(donorId);
     if (emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
+    let donorEmail = emailWrapper[0].email;
+    let donorName = emailWrapper[0].username;
+
+    await db.insert('Donation',
+        ['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
+        [donationId, donorId, donation.ngoId, donation.amount, donation.anonymity || false, donation.message || "", donation.donationType || 0,
+            donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
+
 
     let message = `Donation of $${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}\n` +
         `Message: '${donation.message}'`;
@@ -65,12 +64,12 @@ router.post('/', async function (req, res) {
             donation.donationType, donation.honoredUserId, donation.honoredUserName, donation.date, donation.amount);
     }
 
-    if(limits[0].emailtemplate){
+    if (limits[0].emailtemplate) {
         sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
     }
 
     let stringAmount = (donation.amount / 100) + "."
-    + (donation.amount % 100 < 10 ? `0${donation.amount % 100}` : donation.amount % 100);
+        + (donation.amount % 100 < 10 ? `0${donation.amount % 100}` : donation.amount % 100);
 
     sendDonationConfirmationEmail(donation.email, stringAmount, donation.ngoName, donation.date, donationId);
 });
@@ -126,7 +125,7 @@ router.post('/email', async function (req, res) {
     res.sendStatus(200);
 });
 
-router.get('/prev', async function(req, res) {
+router.get('/prev', async function (req, res) {
     const donorId = req.get('Authorization');
 
     const donor = await db.pool.query(`SELECT * FROM paymentinfo WHERE userId = '${donorId}'`);
