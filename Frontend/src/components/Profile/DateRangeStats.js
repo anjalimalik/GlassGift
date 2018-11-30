@@ -8,14 +8,13 @@ class Result extends Component {
     render() {
         var show = {
             display: this.props.visibility ? "block" : "none",
-            color: "orange",
 		};
 		
         return (
           <div >
-            <h4 style={ show }>{ this.props.result }
+            <h5 style={ show }>{ this.props.result }
                   Results for the period between { this.props.from } to { this.props.to }
-            </ h4>
+            </ h5>
           </div>
         );
     }
@@ -41,10 +40,6 @@ class DateRangeStats extends Component {
             resultVis: false, 
             resultData: [],
         };
-    }
-
-    static defaultProps = {
-        ngoName: 'NGO',
     }
 
     onChangeResultVisibility(vis) {
@@ -73,7 +68,7 @@ class DateRangeStats extends Component {
             // get data
             //-------> CALL API ROUTE here
             // show stats
-            console.log("here: " + (this.state.to).toDateString() + (this.state.from).toDateString());
+            console.log("here: " + (this.state.to).toISOString().split('T')[0] + (this.state.from).toISOString().split('T')[0]);
             this.onChangeResultVisibility(true);
         }
         else {
@@ -89,7 +84,6 @@ class DateRangeStats extends Component {
         const { from, to } = this.state;
         return (
           <div style={{width:'100%', height:'100%', }}>
-              <h4>Pick a Date Range to get donations statistics for <span style={{color:'blue',}}>{this.props.ngoName}</span>.</h4>
             <DayPicker
               className="Selectable"
               numberOfMonths={2}
@@ -103,15 +97,15 @@ class DateRangeStats extends Component {
                 <Button bsStyle="info" onClick={this.handleEnterClick}>Enter</Button>
                 <Button bsStyle="danger" onClick={this.handleResetClick}>Reset</Button>
             </ButtonGroup>
-            < br />
+            < br /> < br />
 
             {(() => {
                 if (this.state.resultVis === true){
                     return (
                     <Result visibility={this.state.resultVis} 
                         result={this.state.resultData}
-                        to={(this.state.to).toDateString()}
-                        from={(this.state.from).toDateString()}>
+                        to={(this.state.to).toISOString().split('T')[0]}
+                        from={(this.state.from).toISOString().split('T')[0]}>
                     </Result> 
                     )
                 }

@@ -41,6 +41,7 @@ class Profile extends Component {
       ngoEditNoticeModalVis: false,
       ngoEditTYTemplateModalVis: false,
       lineData: {},
+      pieData: {},
     };
   }
 
@@ -48,6 +49,7 @@ class Profile extends Component {
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
     this.getLineData(); // temp
+    this.getPieData(); // temp
   }
 
   getMonths() {
@@ -69,22 +71,27 @@ class Profile extends Component {
         datasets:[
           {
             label:'TestLegend',
-            data:[
-              1,
-              1000,
-              2000,
-              7000,
-              90,
-              500,
-              20,
-              759,
-              3000,
-              140, 
-              11,
-              1300,
-              1
-            ],
-            backgroundColor:[]
+            data:[1, 1000, 2000, 7000, 90, 500, 20, 759, 3000, 140, 11,300,1],
+            backgroundColor: 'rgba(75,192,192,0.4)',
+            borderColor: 'rgba(75,192,192,1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+            hoverBorderColor: 'rgba(255,99,132,1)',
+          }
+        ]
+      }
+    });
+  }
+
+  getPieData() {
+    this.setState({
+      pieData:{
+        labels: [ 'Female', 'Male', 'Non-Binary', ],
+        datasets:[
+          {
+            data:[40, 55, 5],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
           }
         ]
       }
@@ -225,10 +232,13 @@ class Profile extends Component {
               <hr />
              
               <LineChart data={this.state.lineData}></LineChart>
-              <br />
-              <hr />
-              <br />
-              <DateRangeStats ngoName={this.props.get.success.username}> </DateRangeStats>
+              <br /> <hr /> <br />
+
+              <h4>Pick a Date Range to get donations statistics for <span style={{color:'blue',}}>{this.props.get.success.username}</span></h4>
+              <DateRangeStats> </DateRangeStats>
+              <hr /> 
+              <h4>Distribution by gender of donors who donated to <span style={{color:'blue',}}>{this.props.get.success.username}</span> </h4>
+              <PieChart data={this.state.pieData}></PieChart>
             </CardBody>
           </Card>
         </div>

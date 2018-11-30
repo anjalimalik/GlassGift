@@ -27,6 +27,8 @@ class LineChart extends Component {
                     },
                     legend:{},
                 }}
+                width={20}
+                height={10}
             />
         </div>
         )
