@@ -31,13 +31,7 @@ router.post('/', async function (req, res) {
 
 router.put('/', async function (req, res) {
 	const changes = req.body;
-    const authorization = req.get('Authorization');
-    if (!authorization) return res.status(500).json({error: 'No token supplied'});
-    const decoded = jwt.verify(authorization, 'SECRETSECRETSECRET');
-    const userId = decoded.id;
-
-	const authorization = req.get('Authorization');
-	const userId = authorization;
+    const userId = req.get('Authorization');
 
 	return res.sendStatus(200);
 });

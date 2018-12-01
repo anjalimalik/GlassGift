@@ -35,14 +35,15 @@ router.post('/', async function (req, res) {
     let donorEmail = emailWrapper[0].email;
     let donorName = emailWrapper[0].username;
 
-    await db.insert('Donation',
-        ['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
-        [donationId, donorId, donation.ngoId, donation.amount, donation.anonymity || false, donation.message || "", donation.donationType || 0,
-            donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
+    // await db.insert('Donation',
+    //     ['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
+    //     [donationId, donorId, donation.ngoId, donation.amount, donation.anonymity || false, donation.message || "", donation.donationType || 0,
+    //         donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
 
 
     let message = `Donation of $${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}\n` +
         `Message: '${donation.message}'`;
+
     const token = req.body.stripeToken;
     const charge = stripe.charges.create({
         amount: donation.amount,
@@ -71,7 +72,7 @@ router.post('/', async function (req, res) {
     let stringAmount = (donation.amount / 100) + "."
         + (donation.amount % 100 < 10 ? `0${donation.amount % 100}` : donation.amount % 100);
 
-    sendDonationConfirmationEmail(donation.email, stringAmount, donation.ngoName, donation.date, donationId);
+    sendDonationConfirmationEmail(donation.email, stringAmount, donation.ngoName, (donation.date | dt.now()), donationId);
 });
 
 router.get('/', async function (req, res) {
