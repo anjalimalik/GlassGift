@@ -18,12 +18,3 @@ export const NGO_CATEGORIES = {
   11: 'Other',
   'select': 'Filter by Category',
 };
-
-export const GENDER_OPTIONS = {
-  0:  'Female',
-  1:  'Male',
-  2:  'Transgender',
-  3:  'Gender Variant/Non-Conforming',
-  4:  'Not Listed',
-  5:  'Prefer Not to Answer',
-};

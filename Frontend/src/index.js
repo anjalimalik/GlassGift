@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSpinner, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faDownload, faCheck } from '@fortawesome/free-solid-svg-icons';
 import WebFont from 'webfontloader';
 import rootReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
@@ -18,6 +18,7 @@ import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import Profile from './components/Profile';
+import DonorProfile from './components/Profile/Donor';
 import SentEmail from './components/SentEmail';
 import ConfirmEmail from './components/ConfirmEmail';
 import Dashboard from './components/Dashboard';
@@ -26,7 +27,7 @@ import Search from './components/Search';
 import DonationCompleted from './components/DonationCompleted';
 
 // Font Awesome
-library.add(faSpinner, faDownload);
+library.add(faSpinner, faDownload, faCheck);
 
 // load fonts
 WebFont.load({
@@ -56,13 +57,14 @@ ReactDOM.render(
     <BrowserRouter>
       <div className="container-fluid">
         <Header />
-        <Route exact path="/" component={Dashboard} />
+        <Route exact path="/" component={DonorProfile} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />
         <Route exact path="/resetPassword" component={ResetPassword} />
         <Route exact path="/dashboard" component={Dashboard} onEnter={requireAuth} />
         <Route exact path="/unknownaccess" component={UnknownAccess} />
+        <Route exact path="/profile" component={DonorProfile} onEnter={requireAuth} />
         <Route exact path="/profile/:id" component={Profile} onEnter={requireAuth} />
         <Route exact path="/sentEmail" component={SentEmail} />
         <Route exact path="/confirmEmail" component={ConfirmEmail} />

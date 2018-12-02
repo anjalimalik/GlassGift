@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Card, CardTitle, CardBody, PageHeader, Table } from 'react-bootstrap';
+import { Alert, Button, PageHeader, Table } from 'react-bootstrap';
+import { Card, CardBody, CardTitle } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
+import DonationTable from './DonationTable';
+import { getDonorDonations, getDonorDonationsClear } from '../../actions/getDonorDonations';
 import './Profile.css';
 
 
@@ -11,40 +15,52 @@ class DonorProfile extends Component {
   constructor(props) {
     super(props);
 
+    this.onDownloadDonations = this.onDownloadDonations.bind(this);
     this.renderDonations = this.renderDonations.bind(this);
   }
 
-  renderDonations() {
-    // TODO if no donations
+  componentDidMount() {
+    this.props.getDonorDonations();
+  }
 
-    const donationRows = [
-      (<tr>
-        <td>1</td>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-      </tr>)
-    ];
+  onDownloadDonations() {
+    axios({
+      url: 'http://0.0.0.0:1338/',
+      method: 'GET',
+      responseType: 'blob', // important
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      console.log(url);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'donor-transactions.csv');
+      document.body.appendChild(link);
+      link.click();
+    });
+  }
+
+  renderDonations() {
+    if (this.props.getDonations.pending) {
+      return (
+        <FontAwesomeIcon icon="spinner" size="6x" spin />
+      );
+    }
+
+    if (this.props.getDonations.error) {
+      return (
+        <Alert bsStyle="danger">
+          <p>
+            {this.props.getDonations.error}
+          </p>
+        </Alert>
+      );
+    }
 
     return (
-      <Card>
-        <CardTitle>Donations</CardTitle>
-        <CardBody>
-          <Table striped bordered condensed hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-              </tr>
-            </thead>
-            <tbody>
-              {donationRows}          
-            </tbody>
-          </Table>
-        </CardBody>
-      </Card>
+      <div>
+        <DonationTable donations={this.props.getDonations.success || []}/>
+        <div style={{ float: 'right' }}><Button bsStyle="link" onClick={this.onDownloadDonations}><FontAwesomeIcon icon="download" size="1x"/> Download donations</Button></div>
+      </div>
     );
   }
 
@@ -57,21 +73,22 @@ class DonorProfile extends Component {
 
         <div style={{ width: '50%', margin: '0 auto' }} className="text-center">
           {this.renderDonations()}
-
-          <div style={{ float: 'right' }}><Button bsStyle="link"><FontAwesomeIcon icon="download" size="1x"/> Download donations</Button></div>
         </div>
       </div>
     );
   }
 }
 
-function mapStateToProps() {
+function mapStateToProps({ getDonorDonations }) {
   return {
+    getDonations: getDonorDonations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    getDonorDonations,
+    getDonorDonationsClear,
   }, dispatch);
 }
 
