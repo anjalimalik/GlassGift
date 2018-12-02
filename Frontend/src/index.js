@@ -57,7 +57,7 @@ ReactDOM.render(
     <BrowserRouter>
       <div className="container-fluid">
         <Header />
-        <Route exact path="/" component={DonorProfile} />
+        <Route exact path="/" component={Entry} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />

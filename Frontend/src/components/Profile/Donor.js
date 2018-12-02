@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, Button, PageHeader, Table } from 'react-bootstrap';
-import { Card, CardBody, CardTitle } from 'reactstrap';
+import { Alert, Button, PageHeader } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import DonationTable from './DonationTable';
