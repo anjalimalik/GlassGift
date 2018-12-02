@@ -11,6 +11,7 @@ import confirmEmail from './confirmEmail';
 import search from './search';
 import donate from './donate';
 import donationEmail from './donationEmail';
+import getSearches from './getSearches';
 
 export default combineReducers({
   login,
@@ -25,4 +26,5 @@ export default combineReducers({
   search,
   donate,
   donationEmail,
+  getSearches,
 });

@@ -1,0 +1,25 @@
+.react-autosuggest__input {
+  width: 100%;
+}
+
+.react-autosuggest__suggestions-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.react-autosuggest__suggestion {
+  width: 100%;
+  border-bottom-style: solid;
+  border-width: 1px;
+  border-color: #5bc0de;
+  cursor: pointer;
+  text-align: left;
+}
+
+.react-autosuggest__suggestion:last-child {
+  border-bottom-style: none;
+}
+
+.react-autosuggest__suggestion--highlighted {
+  background-color: #cccccc;
+}
