@@ -6,6 +6,7 @@ const donorRepository = require('../database/donor');
 const userRepository = require('../database/user');
 const donationRepository = require('../database/donations');
 const {sendConfirmationEmail} = require('../email');
+const db = require('../database/');
 
 const router = express.Router();
 
@@ -73,6 +74,15 @@ router.get('/searchHistory', async function(req, res){
 		keyword === ""? ``: ` AND term LIKE '${keyword}'`} FETCH FIRST 10 ROWS ONLY`);
 
 	res.status(200).send(searches);
+});
+
+router.post('/subscribe', async function(req, res){
+	const donorId = req.get('Authorization');
+	const ngoId = req.body.ngoId;
+
+	await db.insert('subscriptions', ['donorId', 'ngoId'], [donorId, ngoId]);
+
+	return res.status(200).send(`${donorId} is now subscribed to ${ngoId}`);
 });
 
 module.exports = router;
