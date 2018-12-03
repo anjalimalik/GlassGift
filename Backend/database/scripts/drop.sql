@@ -15,3 +15,5 @@ drop table if exists recurringdonation cascade;
 drop table if exists userips cascade;
 
 drop table if exists paymentinfo cascade;
+
+drop table if exists newsletters cascade;

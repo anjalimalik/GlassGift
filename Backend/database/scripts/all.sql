@@ -16,6 +16,7 @@ drop table if exists userips cascade;
 
 drop table if exists paymentinfo cascade;
 
+drop table if exists newsletters cascade;
 
 create table if not exists gguser(
   id text unique primary key,
@@ -81,4 +82,11 @@ create table if not exists userips(
 create table if not exists paymentinfo(
     userId text references gguser,
     stripeCustomerId text
+);
+
+create table if not exists newsletters(
+    id text primary key,
+    ngoId text references gguser,
+    newsletter text,
+    created date
 );

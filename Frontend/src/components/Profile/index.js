@@ -3,16 +3,19 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Alert, Button, PageHeader, Label, ButtonGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
 import { getNGOTYTemplate, getNGOTYTemplateClear } from '../../actions/getNGOTYTemplate';
 import { subscribe } from '../../actions/subscribe';
+import { getNGODonations, getNGODonationsClear } from '../../actions/getNGODonations';
 import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
 import NGOEditTYTemplateModal from './NGOEditTYTemplateModal';
+import DonationTable from './DonationTable';
 import { NGO_CATEGORIES } from '../../constants';
 import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
 import LineChart from './LineChart';
@@ -27,6 +30,7 @@ class Profile extends Component {
   constructor(props) {
     super(props);
 
+    this.onDownloadDonations = this.onDownloadDonations.bind(this);
     this.onChangeNGODonateModalVisibility = this.onChangeNGODonateModalVisibility.bind(this);
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
@@ -34,6 +38,7 @@ class Profile extends Component {
     this.onSubscribe = this.onSubscribe.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
+    this.renderDonations = this.renderDonations.bind(this);
 
     this.state = {
       ngoDonateModalVis: false,
@@ -50,6 +55,7 @@ class Profile extends Component {
     this.props.getNGONotice(this.props.match.params.id);
     this.getLineData(); // temp
     this.getPieData(); // temp
+    this.props.getNGODonations(this.props.match.params.id);
   }
 
   getMonths() {
@@ -95,6 +101,22 @@ class Profile extends Component {
           }
         ]
       }
+    });
+  }
+
+  onDownloadDonations() {
+    axios({
+      url: 'http://0.0.0.0:1338/',
+      method: 'GET',
+      responseType: 'blob', // important
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      console.log(url);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'ngo-transactions.csv');
+      document.body.appendChild(link);
+      link.click();
     });
   }
 
@@ -177,15 +199,40 @@ class Profile extends Component {
     }
   }
 
-  render() {
-
-    if (this.props.get.pending || this.props.getNotice.pending) {
+  renderDonations() {
+    if (this.props.getDonations.pending) {
       return (
-        <div className="NGOProfile text-center">
-          <FontAwesomeIcon icon="spinner" size="6x" spin/>
-        </div>
+        <FontAwesomeIcon icon="spinner" size="6x" spin />
       );
     }
+
+    if (this.props.getDonations.error) {
+      return (
+        <Alert bsStyle="danger">
+          <p>
+            {this.props.getDonations.error}
+          </p>
+        </Alert>
+      );
+    }
+
+    return (
+      <div>
+        <DonationTable donations={this.props.getDonations.success || []}/>
+        <div style={{ float: 'right' }}><Button bsStyle="link" onClick={this.onDownloadDonations}><FontAwesomeIcon icon="download" size="1x"/> Download donations</Button></div>
+      </div>
+    );
+  }
+
+  render() {
+
+    // if (this.props.get.pending || this.props.getNotice.pending) {
+    //   return (
+    //     <div className="NGOProfile text-center">
+    //       <FontAwesomeIcon icon="spinner" size="6x" spin/>
+    //     </div>
+    //   );
+    // }
 
     return (
       <div className="NGOProfile center-block text-center">
@@ -243,12 +290,15 @@ class Profile extends Component {
           </Card>
         </div>
 
+        <div style={{ width: '50%', margin: '0 auto' }} className="text-center">
+          {this.renderDonations()}
+        </div>
+
+
         <NGODonateModal
           visibility={this.state.ngoDonateModalVis}
-          onChangeVisibility={this.onChangeNGODonateModalVisibility}
           ngoId={this.props.match.params.id}
           minLimit={this.props.get.success.minlimit}
-          maxLimit={this.props.get.success.maxlimit}
         />
 
         <NGOEditModal
@@ -278,11 +328,12 @@ class Profile extends Component {
   }
 }
 
-function mapStateToProps({ updateNGO, getNGO, getNGONotice }) {
+function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGODonations }) {
   return {
     update: updateNGO,
     get: getNGO,
-    getNotice: getNGONotice
+    getNotice: getNGONotice,
+    getDonations: getNGODonations,
   };
 }
 
@@ -294,6 +345,8 @@ function mapDispatchToProps(dispatch) {
     getNGONotice,
     getNGONoticeClear,
     subscribe,
+    getNGODonations,
+    getNGODonationsClear,
   }, dispatch);
 }
 

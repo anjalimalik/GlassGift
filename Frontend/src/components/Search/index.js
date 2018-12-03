@@ -3,35 +3,76 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { search, searchClear } from '../../actions/search';
+import { getSearches, getSearchesClear } from '../../actions/getSearches';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  Alert, Button, FormControl, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
-  Table, MenuItem, DropdownButton
- } from 'react-bootstrap';
+  Alert, Button, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
+  Table
+} from 'react-bootstrap';
+import Autosuggest from 'react-autosuggest';
 import { NGO_CATEGORIES } from '../../constants';
 import '../Login/Login.css';
+import './Search.css';
+import './Autosuggest.css';
 
+const getSuggestionValue = suggestion => suggestion.text;
+const renderSuggestion = suggestion => (
+  <Button bsStyle="link">
+    {suggestion.text}
+  </Button>
+);
 
 class Search extends Component {
 
 constructor(props) {
   super(props);
 
+  this.getSuggestions = this.getSuggestions.bind(this);
+  this.onOptionChange = this.onOptionChange.bind(this);
   this.onSubmit = this.onSubmit.bind(this);
+  this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
+  this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
   this.renderNGOList = this.renderNGOList.bind(this);
   this.renderAlert = this.renderAlert.bind(this);
 
   this.state = {
     type: 0,
     keyword: '',
-    filter: 'select',
+    suggestions: [],
   };
 }
 
+getSuggestions(value) {
+  const inputValue = value.trim().toLowerCase();
+  const inputLength = inputValue.length;
+
+  return inputLength === 0 ? [] : this.props.getSearchesSuccess.filter(search =>
+    search.text.toLowerCase().slice(0, inputLength) === inputValue
+  );
+}
+
+onOptionChange(event, { newValue }) {
+  this.setState({
+    keyword: newValue
+  });
+}
+
+onSuggestionsFetchRequested({ value }) {
+  this.setState({
+    suggestions: this.getSuggestions(value)
+  });
+};
+
+onSuggestionsClearRequested(){
+  this.setState({
+    suggestions: []
+  });
+};
+
 onSubmit(e) {
   e.preventDefault();
-  const { type, keyword, filter, } = this.state;
-  this.props.search(type, keyword, filter)
+  const { type, keyword } = this.state;
+  this.props.search(type, keyword)
   .then(() => {
     if (this.props.ngos) {
       this.renderNGOs();
@@ -40,13 +81,16 @@ onSubmit(e) {
   this.setState({
     type: '',
     keyword: '',
-    filter: 'select',
   });
 }
 
+componentDidMount() {
+  this.props.getSearches();
+}
 
 componentWillUnmount() {
   this.props.searchClear();
+  this.props.getSearchesClear();
 }
 
 renderNGOList() {
@@ -92,6 +136,12 @@ renderAlert() {
 }
 
 render() {
+  const { keyword, suggestions } = this.state;
+  const inputProps = {
+    placeholder: 'Search for an NGO...',
+    value: keyword,
+    onChange: this.onOptionChange
+  };
   return (
     <div className="Search center-block text-center" style={{width:'70%'}}>
 
@@ -100,13 +150,15 @@ render() {
      <PageHeader>Search</PageHeader>
       <form onSubmit={this.onSubmit}>
         <FormGroup bsSize="lg">
-          <FormControl
-            autoFocus
-            type="text"
-            placeholder="Type to search for NGOs"
-            value={this.state.keyword}
-            onChange={(e) => { this.setState({ keyword: e.target.value }) }}
-           />
+
+        <Autosuggest
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestion}
+          inputProps={inputProps}
+        />
         </FormGroup>
 
         <div style={{paddingBottom: '20px'}}>
@@ -118,29 +170,7 @@ render() {
               <ToggleButton value={1}>Location</ToggleButton>
               <ToggleButton value={2}>Category</ToggleButton>
             </ToggleButtonGroup>
-
-            <DropdownButton
-            bsStyle="primary"
-            title={NGO_CATEGORIES[this.state.filter]}
-            id='1'
-            onSelect={filter => this.setState({ filter })}
-            >
-              <MenuItem eventKey="0">{NGO_CATEGORIES[0]}</MenuItem>
-              <MenuItem eventKey="1">{NGO_CATEGORIES[1]}</MenuItem>
-              <MenuItem eventKey="2">{NGO_CATEGORIES[2]}</MenuItem>
-              <MenuItem eventKey="3">{NGO_CATEGORIES[3]}</MenuItem>
-              <MenuItem eventKey="4">{NGO_CATEGORIES[4]}</MenuItem>
-              <MenuItem eventKey="5">{NGO_CATEGORIES[5]}</MenuItem>
-              <MenuItem eventKey="6">{NGO_CATEGORIES[6]}</MenuItem>
-              <MenuItem eventKey="7">{NGO_CATEGORIES[7]}</MenuItem>
-              <MenuItem eventKey="8">{NGO_CATEGORIES[8]}</MenuItem>
-              <MenuItem eventKey="9">{NGO_CATEGORIES[9]}</MenuItem>
-              <MenuItem eventKey="10">{NGO_CATEGORIES[10]}</MenuItem>
-              <MenuItem eventKey="11">{NGO_CATEGORIES[11]}</MenuItem>
-            </DropdownButton>
           </ButtonToolbar>
-
-          
         </div>
 
         <div style={{ marginBottom: '15px'}}>
@@ -168,12 +198,15 @@ render() {
 }
 }
 
-function mapStateToProps({ search }) {
+function mapStateToProps({ search, getSearches }) {
   return {
     pending: search.pending,
     success: search.success,
     error: search.error,
     rows: search.rows,
+    getSearchesPending: getSearches.pending,
+    getSearchesSuccess: getSearches.success,
+    getSearchesError: getSearches.error,
   };
 }
 
@@ -181,6 +214,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     search,
     searchClear,
+    getSearches,
+    getSearchesClear,
   }, dispatch);
 }
 
