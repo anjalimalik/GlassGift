@@ -219,6 +219,11 @@ router.post('/limit/min', async function (req, res) {
 	return res.sendStatus(200);
 });
 
+router.get('/newsletter', async function(req, res) {
+	const newsletter = await ngoRepository.getNewsletter(req.query.id);
+	res.status(200).json({newsletter});
+});
+
 router.post('/newsletter', async function(req, res) {
 	await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
 	return res.sendStatus(200);

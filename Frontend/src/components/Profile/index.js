@@ -7,6 +7,7 @@ import axios from 'axios';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
+import { getNGONewsletter, getNGONewsletterClear } from '../../actions/getNGONewsletter';
 import { getNGOTYTemplate, getNGOTYTemplateClear } from '../../actions/getNGOTYTemplate';
 import { subscribe } from '../../actions/subscribe';
 import { getLineData } from '../../actions/getLineData';
@@ -15,6 +16,7 @@ import { getNGODonations, getNGODonationsClear } from '../../actions/getNGODonat
 import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
 import NGOEditModal from './NGOEditModal';
+import NGONewsletterModal from './NGONewsletterModal';
 import NGOEditNoticeModal from './NGOEditNoticeModal';
 import NGOEditTYTemplateModal from './NGOEditTYTemplateModal';
 import DonationTable from './DonationTable';
@@ -36,6 +38,7 @@ class Profile extends Component {
     this.onChangeNGODonateModalVisibility = this.onChangeNGODonateModalVisibility.bind(this);
     this.onChangeNGOEditModalVisibility = this.onChangeNGOEditModalVisibility.bind(this);
     this.onChangeNGOEditNoticeModalVisibility = this.onChangeNGOEditNoticeModalVisibility.bind(this);
+    this.onChangeNGONewsletterModalVisibility = this.onChangeNGONewsletterModalVisibility.bind(this);
     this.onChangeNGOEditTYTemplateModalVisibility = this.onChangeNGOEditTYTemplateModalVisibility.bind(this);
     this.onSubscribe = this.onSubscribe.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
@@ -46,6 +49,7 @@ class Profile extends Component {
       ngoDonateModalVis: false,
       ngoEditModalVis: false,
       ngoEditNoticeModalVis: false,
+      ngoNewsletterModalVis: false,
       ngoEditTYTemplateModalVis: false,
     };
   }
@@ -53,6 +57,7 @@ class Profile extends Component {
   componentDidMount() {
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
+    this.props.getNGONewsletter(this.props.match.params.id);
     this.props.getNGODonations(this.props.match.params.id);
     this.props.getLineData(this.props.match.params.id);
     this.props.getPieData(this.props.match.params.id);
@@ -98,6 +103,12 @@ class Profile extends Component {
 
   onChangeNGOEditNoticeModalVisibility(ngoEditNoticeModalVis) {
     this.setState({ngoEditNoticeModalVis});
+    this.props.getNGO(this.props.match.params.id);
+    this.props.getNGONotice(this.props.match.params.id);
+  }
+
+  onChangeNGONewsletterModalVisibility(ngoNewsletterModalVis) {
+    this.setState({ngoNewsletterModalVis});
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
   }
@@ -150,6 +161,7 @@ class Profile extends Component {
             <Button bsStyle="info" onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditTYTemplateModalVis: true})}>Edit Thank-you Email Template</Button>
+            <Button bsStyle="info" onClick={() => this.setState({ngoNewsletterModalVis: true})}>Create/Send Newsletter</Button>          
           </ButtonGroup>
         </div>
       );
@@ -310,6 +322,14 @@ class Profile extends Component {
           onChangeVisibility={this.onChangeNGOEditNoticeModalVisibility}
         />
 
+        <NGONewsletterModal
+          //newsletter={this.props.getNewsletter.success}
+          newsletter={""}
+          ngoId={this.props.match.params.id}
+          visibility={this.state.ngoNewsletterModalVis}
+          onChangeVisibility={this.onChangeNGONewsletterModalVisibility}
+        />
+
         <NGOEditTYTemplateModal
           //tytemplate={this.props.getTYTemplate.success.tytemplate}
           visibility={this.state.ngoEditTYTemplateModalVis}
@@ -320,11 +340,12 @@ class Profile extends Component {
   }
 }
 
-function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGODonations, getLineData, getPieData, }) {
+function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGONewsletter, getNGODonations, getLineData, getPieData, }) {
   return {
     update: updateNGO,
     get: getNGO,
     getNotice: getNGONotice,
+    getNewsletter: getNGONewsletter,
     getDonations: getNGODonations,
     getLineData: getLineData,
     getPieData: getPieData,
@@ -338,6 +359,8 @@ function mapDispatchToProps(dispatch) {
     getNGOClear,
     getNGONotice,
     getNGONoticeClear,
+    getNGONewsletter,
+    getNGONewsletterClear,
     getLineData,
     getPieData,
     subscribe,
