@@ -9,6 +9,8 @@ import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
 import { getNGOTYTemplate, getNGOTYTemplateClear } from '../../actions/getNGOTYTemplate';
 import { subscribe } from '../../actions/subscribe';
+import { getLineData } from '../../actions/getLineData';
+import { getPieData } from '../../actions/getPieData';
 import { getNGODonations, getNGODonationsClear } from '../../actions/getNGODonations';
 import { getUserId } from '../../utils';
 import NGODonateModal from './NGODonateModal';
@@ -45,17 +47,15 @@ class Profile extends Component {
       ngoEditModalVis: false,
       ngoEditNoticeModalVis: false,
       ngoEditTYTemplateModalVis: false,
-      lineData: {},
-      pieData: {},
     };
   }
 
   componentDidMount() {
     this.props.getNGO(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
-    this.getLineData(); // temp
-    this.getPieData(); // temp
     this.props.getNGODonations(this.props.match.params.id);
+    this.props.getLineData(this.props.match.params.id);
+    this.props.getPieData(this.props.match.params.id);
   }
 
   getMonths() {
@@ -68,40 +68,6 @@ class Profile extends Component {
       month = moment(month).subtract(duration);
     }
     return mons;
-  }
-
-  getLineData() {
-    this.setState({
-      lineData:{
-        labels: this.getMonths(),
-        datasets:[
-          {
-            label:'TestLegend',
-            data:[1, 1000, 2000, 7000, 90, 500, 20, 759, 3000, 140, 11,300,1],
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-            borderWidth: 1,
-            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-            hoverBorderColor: 'rgba(255,99,132,1)',
-          }
-        ]
-      }
-    });
-  }
-
-  getPieData() {
-    this.setState({
-      pieData:{
-        labels: [ 'Female', 'Male', 'Non-Binary', ],
-        datasets:[
-          {
-            data:[40, 55, 5],
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-          }
-        ]
-      }
-    });
   }
 
   onDownloadDonations() {
@@ -234,6 +200,32 @@ class Profile extends Component {
     //   );
     // }
 
+    /* data for graphs */
+    const lineData = {
+      labels: this.getMonths(),
+      datasets:[
+        {
+          label:'TestLegend',
+          data: this.props.getLineData.success,
+          backgroundColor: 'rgba(75,192,192,0.4)',
+          borderColor: 'rgba(75,192,192,1)',
+          borderWidth: 1,
+          hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+          hoverBorderColor: 'rgba(255,99,132,1)',
+        }
+      ]
+    };
+    const pieData = {
+      labels: [ 'Female', 'Male', 'Non-Binary', ],
+      datasets:[
+        {
+          data:[this.props.getPieData.success,], //??
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+          hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }
+      ]
+    };
+
     return (
       <div className="NGOProfile center-block text-center">
         {this.renderAlert()}
@@ -278,14 +270,14 @@ class Profile extends Component {
               <CardTitle style={{fontSize:'20px'}}>STATS</CardTitle>
               <hr />
              
-              <LineChart data={this.state.lineData}></LineChart>
+              <LineChart data={lineData}></LineChart>
               <br /> <hr /> <br />
 
               <h4>Pick a Date Range to get donations statistics for <span style={{color:'blue',}}>{this.props.get.success.username}</span></h4>
-              <DateRangeStats> </DateRangeStats>
+              <DateRangeStats ngoId={this.props.match.params.id}> </DateRangeStats>
               <hr /> 
               <h4>Distribution by gender of donors who donated to <span style={{color:'blue',}}>{this.props.get.success.username}</span> </h4>
-              <PieChart data={this.state.pieData}></PieChart>
+              <PieChart data={pieData}></PieChart>
             </CardBody>
           </Card>
         </div>
@@ -328,12 +320,14 @@ class Profile extends Component {
   }
 }
 
-function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGODonations }) {
+function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGODonations, getLineData, getPieData, }) {
   return {
     update: updateNGO,
     get: getNGO,
     getNotice: getNGONotice,
     getDonations: getNGODonations,
+    getLineData: getLineData,
+    getPieData: getPieData,
   };
 }
 
@@ -344,6 +338,8 @@ function mapDispatchToProps(dispatch) {
     getNGOClear,
     getNGONotice,
     getNGONoticeClear,
+    getLineData,
+    getPieData,
     subscribe,
     getNGODonations,
     getNGODonationsClear,

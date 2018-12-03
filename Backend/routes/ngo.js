@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require("bcryptjs");
 const ngoRepository = require('../database/ngo');
 const userRepository = require('../database/user');
+const db = require('../database/');
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
 const {sendConfirmationEmail, sendNoticeUpdateEmail} = require('../email');

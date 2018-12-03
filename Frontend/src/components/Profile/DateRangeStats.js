@@ -1,8 +1,11 @@
 import React from 'react';
 import {Component} from "react";
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import { Button, ButtonGroup, } from 'react-bootstrap';
+import { getCalData } from '../../actions/getCalData';
 
 class Result extends Component {
     render() {
@@ -38,8 +41,12 @@ class DateRangeStats extends Component {
             from: undefined,
             to: undefined,
             resultVis: false, 
-            resultData: [],
+            resultData: {},
         };
+    }
+
+    static defaultProps = {
+        ngoId: 0,
     }
 
     onChangeResultVisibility(vis) {
@@ -65,10 +72,10 @@ class DateRangeStats extends Component {
             && this.state.from !== null && this.state.to !== null
             && this.state.from <= this.state.to)
         {
-            // get data
-            //-------> CALL API ROUTE here
-            // show stats
-            console.log("here: " + (this.state.to).toISOString().split('T')[0] + (this.state.from).toISOString().split('T')[0]);
+            var start = ((this.state.from).toISOString().split('T')[0]);
+            var end = ((this.state.to).toISOString().split('T')[0]);
+            this.props.getCalData(this.props.ngoId, start, end);
+            this.setState({resultData: this.props.getCalData.success,});
             this.onChangeResultVisibility(true);
         }
         else {
@@ -116,4 +123,16 @@ class DateRangeStats extends Component {
     }
 }
 
-export default DateRangeStats;
+function mapStateToProps({ getCalData }) {
+    return {
+      getCalData: getCalData,
+    };
+}
+  
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+      getCalData,
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (DateRangeStats);
