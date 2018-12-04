@@ -14,6 +14,7 @@ import donationEmail from './donationEmail';
 import getSearches from './getSearches';
 import getNGODonations from './getNGODonations';
 import getDonorDonations from './getDonorDonations';
+import getNGONewsletter from './getNGONewsletter';
 
 export default combineReducers({
   login,
@@ -31,4 +32,5 @@ export default combineReducers({
   getSearches,
   getNGODonations,
   getDonorDonations,
+  getNGONewsletter,
 });

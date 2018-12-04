@@ -323,8 +323,7 @@ class Profile extends Component {
         />
 
         <NGONewsletterModal
-          //newsletter={this.props.getNewsletter.success}
-          newsletter={""}
+          newsletter={this.props.getNewsletter.success.newsletter}
           ngoId={this.props.match.params.id}
           visibility={this.state.ngoNewsletterModalVis}
           onChangeVisibility={this.onChangeNGONewsletterModalVisibility}

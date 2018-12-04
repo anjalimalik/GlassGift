@@ -7,7 +7,6 @@ import {
     success: false,
     error: null,
   }, action) {
-      console.log("action type newsletter get : " + action.type);
     switch(action.type) {
       case GET_NGO_NEWSLETTER_PENDING:
         return {
@@ -16,7 +15,6 @@ import {
           error: null,
         };
       case GET_NGO_NEWSLETTER_SUCCESS:
-      console.log("newsletter reducers success: " + JSON.stringify(action.payload));
         return {
           pending: false,
           success: action.payload,

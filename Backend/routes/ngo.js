@@ -229,7 +229,7 @@ router.post('/limit/min', async function (req, res) {
 
 router.get('/newsletter', async function(req, res) {
 	const newsletter = await ngoRepository.getNewsletter(req.query.id);
-	res.status(200).json({newsletter});
+	res.status(200).json(newsletter[0]);
 });
 
 router.post('/newsletter', async function(req, res) {
