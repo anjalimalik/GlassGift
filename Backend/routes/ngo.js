@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken');
 const {sendConfirmationEmail, sendNoticeUpdateEmail} = require('../email');
 const csv = require('csv');
 const json2csv = require('json2csv').parse;
-const db = require('../database/');
 
 const fields = ['id', 'donorId', 'ngoId', 'amount', 'message', 'anonymous', 'type',
   'honoredUserId', 'honoredUserName','created'];
