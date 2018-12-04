@@ -3,6 +3,7 @@ import { Table } from 'react-bootstrap';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TimeAgo from 'react-timeago';
+import './Profile.css';
 
 export default class DonationTable extends Component {
 
@@ -38,7 +39,7 @@ export default class DonationTable extends Component {
     });
 
     return (
-      <div className="DonationTable">
+      <div className="DonationTable text-center profileDiv">
         <Card>
           <CardTitle>Donations</CardTitle>
           <CardBody>
