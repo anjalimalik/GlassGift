@@ -6,7 +6,7 @@ class LineChart extends Component {
         super(props);
 
         this.state = {
-            data: props.data,
+            data: this.props.data,
         }
     }
 

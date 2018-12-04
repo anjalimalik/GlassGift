@@ -79,7 +79,7 @@ router.post('/visualLineGraph', async function(req, res){
 	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
 	if(!check){ return res.status(500).send("User not found"); }
 
-	var dates = {};
+	var dates = [];
 
 	var month1 = 12; var month2 = 11;
 	while(month1 > 0){
@@ -87,7 +87,8 @@ router.post('/visualLineGraph', async function(req, res){
 		`ngoId = '${req.body.ngoId}' AND created BETWEEN CURRENT_DATE - INTERVAL '${month1} months'` + 
 		` AND CURRENT_DATE ${month2 === 0? '':`- INTERVAL '${month2} months'`}`);
 
-		dates[`month_${month1}`] = (sum[0].sum|0);
+		//dates[`month_${month1}`] = (sum[0].sum|0);
+		dates.push(sum[0].sum|0);
 		month1--; month2--;
 	}
 
