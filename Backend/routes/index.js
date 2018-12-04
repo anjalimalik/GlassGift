@@ -9,18 +9,17 @@ const {sendForgotPasswordEmail, sendIPEmail} = require('../email');
 router.post('/login', async function (req, res) {
 	const user = req.body;
 
-	let users = await userRepository.getByEmail(user.email);
-	if (users.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
+	let dbUser = await userRepository.getByEmail(user.email);
+	if (!dbUser.id) return res.status(500).json({error: "Account doesn't exist"});
 
-	const dbUser = users[0];
 	const match = await bcrypt.compare(user.password, dbUser.password);
 	if (!match) return res.status(500).json({error: "Wrong password"});
 
 	if (!dbUser.confirmed) return res.status(500).json({error: "Not confirmed"});
 
 	// Check IP
-	users = await userRepository.getIpsById(dbUser.id);
-	if (users.length != 0 && !users.rows.find(row => row.ip === req.ip)) {
+	const ips = await userRepository.getIpsById(dbUser.id);
+	if (ips.length !== 0 && !ips.find(row => row.ip === req.ip)) {
 		sendIPEmail(dbUser.email, req.ip);
 		await userRepository.addNewIp(dbUser.id, req.ip);
 	}
@@ -31,11 +30,7 @@ router.post('/login', async function (req, res) {
 	}, 'SECRETSECRETSECRET');
 
 	return res.status(200).json({
-		user: {
-			id: dbUser.id,
-			email: dbUser.email,
-			name: dbUser.name,
-		},
+		user: dbUser,
 		token: j,
 	});
 });
