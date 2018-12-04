@@ -48,6 +48,7 @@ body {
   display: flex;    
   margin: auto;
   cursor: pointer;
+  margin-bottom: 7px;
 }
 
 .column1 {

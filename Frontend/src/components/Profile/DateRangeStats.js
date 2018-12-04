@@ -28,34 +28,39 @@ class Result extends Component {
                         Number of Donations:
                     </div>
                     <div className="column2">
-                        <samp>{this.props.result.numDonations}</samp>
+                        <samp>{this.props.result.numDonations || "0"}</samp>
                     </div>
                 </div>
-                <br />
                 <div className="row">
                     <div className="column1">
                         Total Amount of Money Donated: 
                     </div>
                     <div className="column2">
-                        <samp>{this.props.result.totalMoney}</samp>
+                        <samp>{this.props.result.totalMoney || "$0"}</samp>
                     </div>
                 </div>
-                <br />
+                <div className="row">
+                    <div className="column1">
+                        Number of Unique Donors:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.uniqueDonors || "0"}</samp>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="column1">
                         Average Donation Amount:
                     </div>
                     <div className="column2">
-                        <samp>{this.props.result.averageDonation}</samp>
+                        <samp>{this.props.result.averageDonation || "$0"}</samp>
                     </div>
                 </div>
-                <br />
                 <div className="row">
                     <div className="column1">
                         Average Age of Donors:
                     </div>
                     <div className="column2">
-                        <samp>{this.props.result.averageAge}</samp>
+                        <samp>{this.props.result.averageAge || "--"}</samp>
                     </div>
                 </div>
                 <br />
