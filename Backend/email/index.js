@@ -185,6 +185,26 @@ async function sendDonationReceiptEmail(email, amount, ngoName, date) {
     });
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail,
-	sendReceiptEmail, sendDonationReceiptEmail, sendNewsletter, sendNGOThankYouEmail};
+async function sendNoticeUpdateEmail(email, notice, ngoName){
+	const body = `Dear User,\n\nYou have an update from ${ngoName};\n\n\t`+
+				 `"${notice}"\n\n This notice will be available on ${ngoName}'s page.`+
+				 `Thank you for using GlassGift.\n\nBest Regards,\nThe GlassGift Team`;
+
+	const mailoptions = {
+		from: 'glassgiftteam@gmail.com',
+		to: email,
+		subject: `GlassGift: Update from ${ngoName}`,
+		text: body,
+	};
+
+	transporter.sendMail(mailoptions, (err, info) => {
+		if (err) {
+			return console.error(err);
+		} else {
+			return console.log('Email sent' + info.response)
+		}
+	});
+}
+
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail, sendDonationReceiptEmail, sendNoticeUpdateEmail}
 

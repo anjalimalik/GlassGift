@@ -48,7 +48,7 @@ function getById(id) {
     return db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
         ['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice', 'minLimit',
             'maxLimit'],
-        `id = '${id}'`);
+        `NGO.id = '${id}'`);
 }
 
 function setNotice(id, notice) {
