@@ -33,11 +33,11 @@ export function getCalDataClear() {
 }
 
 function callGetCalDataApi(id, start, end) {
-    var body = {
-        ngoId: id,
-        startdate: start,
-        enddate: end,
-    };
+  var body = {
+    ngoId: id,
+    startdate: start,
+    enddate: end,
+  };
   return new Promise((resolve, reject) => {
     axios.post(`http://localhost:3000/ngo/visualCalendar`, body)
     .then(response => resolve(response.data))

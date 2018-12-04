@@ -1,5 +1,5 @@
 import React from 'react';
-import {Component} from "react";
+import { Component } from "react";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Alert, } from 'react-bootstrap';
@@ -8,18 +8,60 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import { Button, ButtonGroup, } from 'react-bootstrap';
 import { getCalData } from '../../actions/getCalData';
+import './Profile.css';
 
 class Result extends Component {
     render() {
         var show = {
             display: this.props.visibility ? "block" : "none",
-		};
+        };
 		
         return (
-          <div >
-            <h5 style={ show }>{ this.props.result }
-                  Results for the period between { this.props.from } to { this.props.to }
-            </ h5>
+          <div style={ show }>
+            <h4 style={{ color:"orange", fontWeight:"900"}}>
+            Results for the period between { this.props.from } to { this.props.to }
+            </ h4>
+
+            <br />
+
+            <div style={{ color:"navy", width:"50%", margin: "auto"}}>
+                <div className="row">
+                    <div className="column1">
+                        Number of Donations:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.numDonations}</samp>
+                    </div>
+                </div>
+                <br />
+                <div className="row">
+                    <div className="column1">
+                        Total Amount of Money Donated: 
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.totalMoney}</samp>
+                    </div>
+                </div>
+                <br />
+                <div className="row">
+                    <div className="column1">
+                        Average Donation Amount:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.averageDonation}</samp>
+                    </div>
+                </div>
+                <br />
+                <div className="row">
+                    <div className="column1">
+                        Average Age of Donors:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.averageAge}</samp>
+                    </div>
+                </div>
+                <br />
+            </div>
           </div>
         );
     }
@@ -103,10 +145,10 @@ class DateRangeStats extends Component {
                     </Alert>
                 );
             }
-            console.log(this.props.get.succcess);
+            console.log("RENDER RESULT:  " + JSON.stringify(this.props.get.success));
             return (
                 <Result visibility={this.state.resultVis} 
-                    result={this.props.get.succcess}
+                    result={this.props.get.success}
                     to={(this.state.to).toISOString().split('T')[0]}
                     from={(this.state.from).toISOString().split('T')[0]}>
                 </Result> 
