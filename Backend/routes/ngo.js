@@ -164,7 +164,7 @@ router.post('/visualPieGraph', async function(req, res){
 	return res.status(200).json({
 		male: ((totalMale + 0.00) / total),
 		female: ((totalFemale + 0.00) / total),
-		nonBinary: ((totalNB + 0.00) / total),
+		nb: ((totalNB + 0.00) / total),
 	});		
 });
 

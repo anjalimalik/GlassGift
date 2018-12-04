@@ -45,6 +45,7 @@ class Profile extends Component {
     this.renderButtons = this.renderButtons.bind(this);
     this.renderDonations = this.renderDonations.bind(this);
     this.renderLineChart = this.renderLineChart.bind(this);
+    this.renderPieChart = this.renderPieChart.bind(this)
 
     this.state = {
       ngoDonateModalVis: false,
@@ -238,6 +239,37 @@ class Profile extends Component {
     );
   }
 
+  renderPieChart() {
+    if (this.props.getGenderData.pending) {
+      return (
+        <FontAwesomeIcon icon="spinner" size="6x" spin />
+      );
+    }
+    else if (this.props.getGenderData.error) {
+      return (
+          <Alert bsStyle="danger">
+            <p>
+              {this.props.getGenderData.error}
+            </p>
+          </Alert>
+      );
+    }
+
+    return (
+      <PieChart data={{
+        labels: [ 'Female', 'Male', 'Other', ],
+        datasets:[{
+            data:[this.props.getGenderData.success.female,
+                   this.props.getGenderData.success.male, 
+                   this.props.getGenderData.success.nb], 
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }]
+      }}>
+      </PieChart>
+    );
+  }
+
   render() {
 
     // if (this.props.get.pending || this.props.getNotice.pending) {
@@ -298,15 +330,8 @@ class Profile extends Component {
               <DateRangeStats ngoId={this.props.match.params.id}> </DateRangeStats>
               <hr /> 
               <h4>Distribution by gender of donors who donated to <span style={{color:'blue',}}>{this.props.get.success.username}</span> </h4>
-              <PieChart data={{
-                labels: [ 'Female', 'Male', 'Other', ],
-                datasets:[{
-                    data:[this.props.getMonthlyData.success,], //??
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                    hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-                }]
-              }}>
-              </PieChart>
+              {this.renderPieChart()}
+
             </CardBody>
           </Card>
         </div>
