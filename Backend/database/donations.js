@@ -9,7 +9,7 @@ function create(id, donorId, ngoId, anonymous, message, type, honoredUserId, hon
     return db.insert('Donation',
         ['id', 'donorId', 'ngoId', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created', 'amount'],
         [id, donorId, ngoId, anonymous || false, message || "", type || 0, honoredUserId || 0, honoredUserName || "",
-            created || `to_timestamp(${Date.now() / 1000})`, amount || 0]);
+            created || `NOW()`, amount || 0]);
 }
 
 function createScheduled(donationId, frequency) {

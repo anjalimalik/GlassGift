@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const {sendConfirmationEmail, sendNoticeUpdateEmail} = require('../email');
 const csv = require('csv');
 const json2csv = require('json2csv').parse;
+const db = require('../database/');
 
 const fields = ['id', 'donorId', 'ngoId', 'amount', 'message', 'anonymous', 'type',
   'honoredUserId', 'honoredUserName','created'];
@@ -35,6 +36,14 @@ router.put('/', async function (req, res) {
     const userId = req.get('Authorization');
 
 	return res.sendStatus(200);
+});
+
+router.put('/email', async function(req, res) {
+	const ngoId = req.get('Authorization');
+
+	await db.modify('NGO', ['emailTemplate'], [req.body.emailTemplate], `id = '${ngoId}'`);
+
+	res.status(200).send(`Email template for ${ngoId} successfully updated.`);
 });
 
 router.get('/', async function (req, res) {

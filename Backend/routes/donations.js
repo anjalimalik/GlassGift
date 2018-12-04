@@ -2,6 +2,7 @@ const express = require('express');
 const ngoRepository = require('../database/ngo');
 const userRepository = require('../database/user');
 const donationRepository = require('../database/donations');
+const db = require('../database/');
 const uuidv4 = require('uuid/v4');
 const stripe = require('stripe')('sk_test_qQerTxPScIJqfK5Cx30E5U5O');
 const datetime = require('node-datetime');
@@ -14,6 +15,7 @@ router.post('/', async function (req, res) {
     const donation = req.body;
     const limits = await ngoRepository.getLimitsById(donation.ngoId);
     const ngoSearch = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`);
+    const ngoEmailTemplate = await db.get('NGO', ['emailTemplate'], `id = '${donation.ngoId}'`);
     let ngoName = ngoSearch[0].username;
 
     var dt = datetime.create();
@@ -31,15 +33,11 @@ router.post('/', async function (req, res) {
     if (!authorization) return res.status(500).json({error: 'No token supplied'});
 
     let emailWrapper = await userRepository.getEmailsFromId(donorId);
+    console.log(emailWrapper);
     if (emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
     let donorEmail = emailWrapper[0].email;
-    let donorName = emailWrapper[0].username;
-
-    // await db.insert('Donation',
-    //     ['id', 'donorId', 'ngoId', 'amount', 'anonymous', 'message', 'type', 'honoredUserId', 'honoredUserName', 'created'],
-    //     [donationId, donorId, donation.ngoId, donation.amount, donation.anonymity || false, donation.message || "", donation.donationType || 0,
-    //         donation.honoredUserId || 0, donation.honoredUserName || "", donation.date || "now()"]);
-
+    let nameWrapper = await db.get('GGUser', ['username'], `id = '${donorId}'`);
+    let donorName = nameWrapper[0].username;
 
     let message = `Donation of $${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}\n` +
         `Message: '${donation.message}'`;
@@ -65,14 +63,14 @@ router.post('/', async function (req, res) {
             donation.donationType, donation.honoredUserId, donation.honoredUserName, donation.date, donation.amount);
     }
 
-    if (limits[0].emailtemplate) {
-        sendNGOThankYouEmail(donorEmail, limits[0].emailtemplate, donorName, ngoName);
+    if (ngoEmailTemplate[0].emailtemplate) {
+        sendNGOThankYouEmail(donorEmail, ngoEmailTemplate[0].emailtemplate, donorName, ngoName);
     }
 
     let stringAmount = (donation.amount / 100) + "."
         + (donation.amount % 100 < 10 ? `0${donation.amount % 100}` : donation.amount % 100);
 
-    sendDonationConfirmationEmail(donation.email, stringAmount, donation.ngoName, (donation.date | dt.now()), donationId);
+    sendDonationConfirmationEmail(donorEmail, stringAmount, ngoName, (donation.date | dt.now()), donationId);
 });
 
 router.get('/', async function (req, res) {
