@@ -71,6 +71,6 @@ const response = [
 export function getSearches() {
   return dispatch => {
     dispatch(getSearchesPending(true));
-    setTimeout(dispatch(getSearchesSuccess(response)), 500);
+    setTimeout(() => dispatch(getSearchesSuccess(response)), 500);
   }
 }

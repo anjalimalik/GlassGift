@@ -92,6 +92,6 @@ const donations = [
 export function getNGODonations(id) {
   return dispatch => {
     dispatch(getNGODonationsPending(true));
-    setTimeout(dispatch(getNGODonationsSuccess(donations)), 500);
+    setTimeout(() => dispatch(getNGODonationsSuccess(donations)), 500);
   };
 }

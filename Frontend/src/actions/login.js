@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { saveUserToken, saveUserId } from '../utils';
+import { saveUserToken, saveUserId, saveUserType } from '../utils';
 
 export const LOGIN_PENDING = 'LOGIN_PENDING';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -53,6 +53,7 @@ export function login(email, password, rememberMe) {
     .then(response => {
       saveUserToken(response.token);
       saveUserId(response.user.id);
+      saveUserType(response.user.type);
       dispatch(loginSuccess(response));
     })
     .catch(error => dispatch(loginError(error)));

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { removeUserToken, getUserToken, getUserId } from '../../../utils';
+import { removeUserToken, removeUserId, removeUserType, getUserToken, getUserId } from '../../../utils';
 import { LinkContainer } from 'react-router-bootstrap';
 import './Header.css';
 
@@ -17,10 +17,13 @@ class Header extends Component {
 
   onLogoutSelect() {
     removeUserToken();
+    removeUserId();
+    removeUserType();
     this.props.history.push('/login');
   }
 
   renderLogout() {
+    // TODO redirect to donor profile if user type 0
     const id = getUserId();
     if (getUserToken()) {
       return (
