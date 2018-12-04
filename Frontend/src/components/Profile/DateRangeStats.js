@@ -2,6 +2,8 @@ import React from 'react';
 import {Component} from "react";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Alert, } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import { Button, ButtonGroup, } from 'react-bootstrap';
@@ -41,7 +43,6 @@ class DateRangeStats extends Component {
             from: undefined,
             to: undefined,
             resultVis: false, 
-            resultData: {},
         };
     }
 
@@ -75,7 +76,6 @@ class DateRangeStats extends Component {
             var start = ((this.state.from).toISOString().split('T')[0]);
             var end = ((this.state.to).toISOString().split('T')[0]);
             this.props.getCalData(this.props.ngoId, start, end);
-            this.setState({resultData: this.props.getCalData.success,});
             this.onChangeResultVisibility(true);
         }
         else {
@@ -85,6 +85,33 @@ class DateRangeStats extends Component {
 
     handleResetClick() {
         this.setState(this.getInitialState());
+    }
+
+    renderResult() {
+        if (this.state.resultVis === true) {
+            if (this.props.get.pending) {
+                return (
+                <FontAwesomeIcon icon="spinner" size="6x" spin />
+                );
+            }
+            else if (this.props.get.error) {
+                return (
+                    <Alert bsStyle="danger">
+                    <p>
+                        {this.props.get.error}
+                    </p>
+                    </Alert>
+                );
+            }
+            console.log(this.props.get.succcess);
+            return (
+                <Result visibility={this.state.resultVis} 
+                    result={this.props.get.succcess}
+                    to={(this.state.to).toISOString().split('T')[0]}
+                    from={(this.state.from).toISOString().split('T')[0]}>
+                </Result> 
+            );
+        }
     }
 
     render() {
@@ -106,17 +133,7 @@ class DateRangeStats extends Component {
             </ButtonGroup>
             < br /> < br />
 
-            {(() => {
-                if (this.state.resultVis === true){
-                    return (
-                    <Result visibility={this.state.resultVis} 
-                        result={this.state.resultData}
-                        to={(this.state.to).toISOString().split('T')[0]}
-                        from={(this.state.from).toISOString().split('T')[0]}>
-                    </Result> 
-                    )
-                }
-            })()}
+            {this.renderResult()}
 
           </div>
         );
@@ -125,7 +142,7 @@ class DateRangeStats extends Component {
 
 function mapStateToProps({ getCalData }) {
     return {
-      getCalData: getCalData,
+      get: getCalData,
     };
 }
   
