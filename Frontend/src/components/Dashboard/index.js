@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import { PageHeader, Button, ButtonGroup } from 'react-bootstrap';
+import { USER_TYPE_DONOR } from '../../constants';
 import { getUserId } from '../../utils';
 import "../Login/Login.css";
 
-class Dashboard extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
+export default class Dashboard extends Component {
 
   render() {
     const userId = getUserId();
+    const userType = localStorage.getItem('type');
+    const profileLink = userType === USER_TYPE_DONOR ? `/profile` : `/profile/${userId}`;
+
     return (
       <div className="Dashboard center-block text-center">
         <PageHeader>Dashboard</PageHeader>
         <ButtonGroup vertical style={{width:'30%'}}>
-          <Button bsSize="large" bsStyle="info" onClick={()=> {this.props.history.replace(`/profile/${userId}`)}}>
+          <Button bsSize="large" bsStyle="info" onClick={()=> {this.props.history.replace(profileLink)}}>
               Profile
           </Button>
           <hr />
@@ -25,10 +23,7 @@ class Dashboard extends Component {
               Search NGOs
           </Button>
         </ButtonGroup>
-
       </div>
     );
   }
 }
-
-export default Dashboard;
