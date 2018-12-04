@@ -22,3 +22,15 @@ export function getUserId() {
 export function removeUserId() {
   localStorage.removeItem('id');
 }
+
+export function saveUserType(type) {
+  localStorage.setItem('type', type);
+}
+
+export function getUserType() {
+  localStorage.getItem('type');
+}
+
+export function removeUserType() {
+  localStorage.removeItem('type');
+}

@@ -29,7 +29,7 @@ async function insert(table, cols, values) {
 }
 
 async function modify(table, props, values, qualifier) {
-	const deltas = Array.isArray(props) ? props.map((p, i) => `${p} = '${values[i]}'`) : `${props} = '${values}'`;
+	const deltas = Array.isArray(props) ? props.map((p, i) => `${p} = '${values[i]}'`) : [`${props} = '${values}'`] ;
 	return await execute(`UPDATE ${table} SET ${deltas.join(', ')} WHERE ${qualifier}`);
 }
 

@@ -67,7 +67,7 @@ router.post('/confirm_account', async function (req, res) {
 	let users = await userRepository.getByEmailConfirmationToken(req.body.token);
 	if (users.length !== 1) return res.status(500).json({error: "Account doesn't exist"});
 
-    userRepository.confirmById(users.rows[0].id);
+    userRepository.confirmById(users[0].id);
 	return res.sendStatus(200);
 });
 
