@@ -70,8 +70,8 @@ router.get('/searchHistory', async function(req, res){
 	const donorId = req.get('Authorization');
 	const keyword = req.query.entry;
 
-	let searches = await db.get('searches', ['term'], `id = ${donorId}${
-		keyword === ""? ``: ` AND term LIKE '${keyword}'`} FETCH FIRST 10 ROWS ONLY`);
+	let searches = await db.get('searches', ['term'], `id = '${donorId}'${
+		keyword === ""? ``: ` AND term LIKE '${keyword}'`}`);
 
 	res.status(200).send(searches);
 });

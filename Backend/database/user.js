@@ -24,8 +24,18 @@ function changePassword(id, newPasswordHash) {
     return db.modify('GGUser', 'password', newPasswordHash, `id = '${id}'`);
 }
 
-function getByEmail(email) {
-    return db.get('GGUser', ['*'], `email = '${email}'`);
+async function getByEmail(email) {
+    const users = await db.get('GGUser', ['*'], `email = '${email}'`);
+    const types = await db.execute(`SELECT 
+        CASE
+            WHEN EXISTS(SELECT id FROM donor WHERE id = '${users[0].id}')
+            THEN 0
+            ELSE 1
+        END
+        FROM gguser WHERE email = '${email}'`);
+    return Object.assign({}, users[0], {
+        type: types[0].case
+    });
 }
 
 function getIpsById(id) {
