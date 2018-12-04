@@ -18,11 +18,9 @@ class Result extends Component {
 		
         return (
           <div style={ show }>
-            <h4 style={{ color:"orange", fontWeight:"900"}}>
-            Results for the period between { this.props.from } to { this.props.to }
-            </ h4>
-
-            <br />
+            <p style={{ color:"orange", fontWeight:"900", fontSize:"16px",}}>
+                Results for the period between { this.props.from } to { this.props.to }
+            </ p>
 
             <div style={{ color:"navy", width:"50%", margin: "auto"}}>
                 <div className="row">

@@ -331,6 +331,7 @@ class Profile extends Component {
               <hr /> 
               <h4>Distribution by gender of donors who donated to <span style={{color:'blue',}}>{this.props.get.success.username}</span> </h4>
               {this.renderPieChart()}
+              <br />
 
             </CardBody>
           </Card>
