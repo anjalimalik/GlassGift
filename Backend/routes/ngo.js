@@ -117,6 +117,7 @@ router.post('/visualCalendar', async function(req, res){
 					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
 
 
+
 	var averageAge = 0;
 
 	for (var i = 0; i < donations.length; i++) {
@@ -131,6 +132,7 @@ router.post('/visualCalendar', async function(req, res){
 		totalMoney: `\$${Math.floor((totalMoney[0].sum | 0)/100)}.${Math.floor((totalMoney[0].sum | 0)%100) < 10? '0' + Math.floor((totalMoney[0].sum | 0)%100): Math.floor((totalMoney[0].sum | 0)%100)}`,
 		averageDonation: `\$${Math.floor((averageDonation[0].avg | 0)/100)}.${Math.floor((averageDonation[0].avg | 0)%100) < 10 ? '0' + Math.floor((averageDonation[0].avg | 0)%100): Math.floor((averageDonation[0].avg | 0)%100)}`,
 		averageAge: averageAge,
+		uniqueDonors: donations.length,
 	});
 });
 
