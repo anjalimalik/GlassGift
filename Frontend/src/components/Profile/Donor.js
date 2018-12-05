@@ -56,9 +56,8 @@ class DonorProfile extends Component {
     }
 
     return (
-      <div>
-        <DonationTable donations={this.props.getDonations.success || []}/>
-        <div style={{ float: 'right' }}><Button bsStyle="link" onClick={this.onDownloadDonations}><FontAwesomeIcon icon="download" size="1x"/> Download donations</Button></div>
+      <div style={{margin: '0 auto', width: '90rem'}}>
+        <DonationTable donations={this.props.getDonations.success || []} onDownloadDonations={this.onDownloadDonations}/>
       </div>
     );
   }

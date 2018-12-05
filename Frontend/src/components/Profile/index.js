@@ -196,8 +196,7 @@ class Profile extends Component {
 
     return (
       <div>
-        <DonationTable donations={this.props.getDonations.success || []}/>
-        <div style={{ float: 'right' }}><Button bsStyle="link" onClick={this.onDownloadDonations}><FontAwesomeIcon icon="download" size="1x"/> Download donations</Button></div>
+        <DonationTable donations={this.props.getDonations.success || []} onDownloadDonations={this.onDownloadDonations}/>
       </div>
     );
   }
@@ -294,10 +293,7 @@ class Profile extends Component {
           </Card>
         </div>
 
-        <div style={{ width: '50%', margin: '0 auto' }} className="text-center">
-          {this.renderDonations()}
-        </div>
-
+        {this.renderDonations()}
 
         <NGODonateModal
           visibility={this.state.ngoDonateModalVis}
