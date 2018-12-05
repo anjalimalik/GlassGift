@@ -40,7 +40,7 @@ function callUpdateNGOTYTemplateApi(emailtemplate) {
     const body = {
       emailtemplate,
     };
-    axios.put('http://localhost:3000/ngo/thankyou', body, { headers: { Authorization: token }})
+    axios.put('http://localhost:3000/ngo/emailtemplate', body, { headers: { Authorization: token }})
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
