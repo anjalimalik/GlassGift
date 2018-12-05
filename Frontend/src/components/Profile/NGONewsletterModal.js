@@ -30,7 +30,6 @@ class NGONewsletterModal extends Component {
   };
 
   onCreateNewsletter() {
-    console.log("newsletter: " + this.state.newsletter);
     this.props.updateNGONewsletter(this.props.ngoId, this.state.newsletter).then(() => {
       this.props.onChangeVisibility(false);
     });
@@ -107,9 +106,9 @@ function mapStateToProps({ updateNGONewsletter, sendNGONewsletter, }) {
     updatepending: updateNGONewsletter.pending,
     updatesuccess: updateNGONewsletter.success,
     updateerror: updateNGONewsletter.error,
-    //sendpending: sendNGONewsletter.pending,
-    //sendsuccess: sendNGONewsletter.success,
-    //senderror: sendNGONewsletter.error,
+    sendpending: sendNGONewsletter.pending,
+    sendsuccess: sendNGONewsletter.success,
+    senderror: sendNGONewsletter.error,
   };
 }
 

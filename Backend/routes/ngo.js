@@ -251,6 +251,7 @@ router.post('/newsletter/send', async function(req, res) {
 	(await ngoRepository.getSubscribers(req.body["ngoId"]))
 		.map(async (id) => (await userRepository.getEmailsFromId(id))[0])
 		.forEach(async (userEmail) => await email.sendNewsletter(newsletter, userEmail));
+	return res.sendStatus(200);	
 });
 
 module.exports = router;
