@@ -38,7 +38,7 @@ function callUpdateNGONewsletterApi(id, newsletter) {
         ngoId: id,
         newsletter,
     };
-    axios.put('http://localhost:3000/ngo/newsletter', body)
+    axios.post('http://localhost:3000/ngo/newsletter', body)
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });

@@ -163,7 +163,7 @@ class Profile extends Component {
             <Button bsStyle="info" onClick={() => this.setState({ngoEditModalVis: true})}>Edit Profile</Button>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditNoticeModalVis: true})}>Edit Notice</Button>
             <Button bsStyle="info" onClick={() => this.setState({ngoEditTYTemplateModalVis: true})}>Edit Thank-you Email Template</Button>
-            <Button bsStyle="info" onClick={() => this.setState({ngoNewsletterModalVis: true})}>Create/Send Newsletter</Button>          
+            <Button bsStyle="info" onClick={() => this.setState({ngoNewsletterModalVis: true})}>Create Newsletter</Button>          
           </ButtonGroup>
         </div>
       );
@@ -227,11 +227,11 @@ class Profile extends Component {
         datasets:[{
           label:"Total amount of money donated",
           data: this.props.getMonthlyData.success,
-          backgroundColor:"rgba(75,192,192,0.4)",
-          borderColor:"rgba(75,192,192,1)",
+          backgroundColor:"#A9C3FE",
+          borderColor:"#5d8efd",
           borderWidth:1,
-          hoverBackgroundColor:"rgba(255,99,132,0.4)",
-          hoverBorderColor:"rgba(255,99,132,1)"
+          hoverBackgroundColor:"#5d8efd",
+          hoverBorderColor:"#baa9fe"
         }]
       }}
       >
@@ -262,8 +262,8 @@ class Profile extends Component {
             data:[this.props.getGenderData.success.female,
                    this.props.getGenderData.success.male, 
                    this.props.getGenderData.success.nb], 
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+            backgroundColor: ['#f3a8b3', '#77a0fd', '#dbf5a1'],
+            hoverBackgroundColor: ['#f3a8b3', '#77a0fd', '#dbf5a1']
         }]
       }}>
       </PieChart>
@@ -290,7 +290,7 @@ class Profile extends Component {
         <div className="text-center profileDiv">
         <Card className="profile">
           <CardBody>
-            <CardTitle style={{fontSize:'20px'}}>PROFILE</CardTitle>
+            <CardTitle className="headingCard">PROFILE</CardTitle>
             <CardSubtitle className="mb-2 text-muted">Non-Profit Organization</CardSubtitle>
             <hr />
             <CardText className="profileText"> <Label bsStyle="default" className="label">Email</Label>{' '}
@@ -311,7 +311,7 @@ class Profile extends Component {
         <div className="text-center profileDiv">
         <Card className="profile">
           <CardBody>
-            <CardTitle style={{fontSize:'20px'}}>NOTICE</CardTitle>
+            <CardTitle className="headingCard">NOTICE</CardTitle>
             <hr />
             <CardText className="text-warning">{this.props.getNotice.success.notice || 'No notice listed'}</CardText>
           </CardBody>
@@ -321,7 +321,7 @@ class Profile extends Component {
         <div className="text-center profileDiv">
           <Card className="profile">
             <CardBody>
-              <CardTitle style={{fontSize:'20px'}}>STATS</CardTitle>
+              <CardTitle className="headingCard">STATS</CardTitle>
               <hr />
               {this.renderLineChart()}
               <br /> <hr /> <br />

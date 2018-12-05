@@ -236,7 +236,12 @@ router.get('/newsletter', async function(req, res) {
 });
 
 router.post('/newsletter', async function(req, res) {
-	await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
+	const newsletter = await ngoRepository.getNewsletter(req.body["ngoId"]);
+	if (newsletter.length === 0) {
+		await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
+		return res.sendStatus(200);
+	}
+	await ngoRepository.updateNewsletter(req.body["ngoId"], req.body["newsletter"]);
 	return res.sendStatus(200);
 });
 

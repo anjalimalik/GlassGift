@@ -64,9 +64,16 @@ function setMaxLimit(id, limit) {
 }
 
 function createNewsletter(id, newsletter) {
+    var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
     return db.insert('newsletters',
         ['id', 'ngoId', 'newsletter', 'created'],
-        [uuidv4(), id, newsletter, `to_timestamp(${Date.now() / 1000})`]);
+        [uuidv4(), id, newsletter, date]);
+}
+
+function updateNewsletter(id, newsletter) {
+    var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    return db.modify('newsletters', ['newsletter', 'created'],
+            [newsletter, date], `ngoId = '${id}'`);
 }
 
 function getNewsletter(id) {
@@ -78,4 +85,4 @@ function getSubscribers(id) {
 }
 
 module.exports = {getLimitsById, create, searchByName, searchByCategory, searchByLocation, getIdsByEmail, edit, getById,
-setNotice, setMaxLimit, setMinLimit, createNewsletter, getSubscribers, getNewsletter};
+setNotice, setMaxLimit, setMinLimit, createNewsletter, getSubscribers, getNewsletter, updateNewsletter};
