@@ -97,10 +97,6 @@ router.get('/paymentData', async function(req, res){
 
 //line graph <- timestamp manipulation
 router.post('/visualLineGraph', async function(req, res){
-	const donorId = req.get('Authorization');
-	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
-	if(!check){ return res.status(500).send("User not found"); }
-
 	var dates = [];
 
 	var month1 = 12; var month2 = 11;
@@ -120,9 +116,6 @@ router.post('/visualLineGraph', async function(req, res){
 //calendar easy
 router.post('/visualCalendar', async function(req, res){
 	//star date, end date, type, ngoId
-	const donorId = req.get('Authorization');
-	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
-	if(!check){ return res.status(500).send("User not found"); }
 
 	var donations = await db.get('donation', ['DISTINCT donorId'], `ngoId = '${req.body.ngoId}' AND `+
 					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
