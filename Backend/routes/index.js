@@ -3,6 +3,7 @@ const router = express.Router();
 const userRepository = require("../database/user");
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
+const db = require('../database');
 const jwt = require('jsonwebtoken');
 const {sendForgotPasswordEmail, sendIPEmail} = require('../email');
 
