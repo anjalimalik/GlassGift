@@ -77,13 +77,10 @@ router.get('/', async function (req, res) {
 	return res.status(200).json(ngos[0]);
 });
 
-router.post('/paymentData', async function(req, res){
-	const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+router.get('/paymentData', async function(req, res){
+	const fileName = req.body.ngoId + '.csv';
 
-	const fileName = req.body.ngoId + donorId + '.csv';
-
-	var data = await db.get('donation', ['*'], `ngoId = '${req.body.ngoId}' ` +
-			(req.body.num > 0? `FETCH FIRST ${req.body.num} ROWS ONLY`: ''));
+	var data = await db.get('donation', ['*'], `ngoId = '${req.query.id}'`);
 
 	res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
   	res.set('Content-Type', 'text/csv');
