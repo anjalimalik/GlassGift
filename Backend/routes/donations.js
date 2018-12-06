@@ -12,7 +12,7 @@ const {sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail} = 
 
 
 router.post('/', async function (req, res) {
-    const donorId = /*jwt.verify(*/req.get('Authorization');//, 'SECRETSECRETSECRET').id;
+    const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
     const donation = req.body;
     const limits = await ngoRepository.getLimitsById(donation.ngoId);
     const ngoSearch = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`);
