@@ -38,9 +38,9 @@ class CheckoutForm extends Component {
     let token;
     if (!this.state.previous) {
       token = await this.props.stripe.createToken({ name: getUserId() }).token;
+      console.log(getUserId());
       if (!token) return;
     }
-
     this.props.donate({
       ngoId: this.props.ngoId,
       anon: this.state.anon,

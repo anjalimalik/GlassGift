@@ -15,10 +15,10 @@ import '../Login/Login.css';
 import './Search.css';
 import './Autosuggest.css';
 
-const getSuggestionValue = suggestion => suggestion.text;
+const getSuggestionValue = suggestion => suggestion.term;
 const renderSuggestion = suggestion => (
   <Button bsStyle="link">
-    {suggestion.text}
+    {suggestion.term}
   </Button>
 );
 
@@ -48,7 +48,7 @@ getSuggestions(value) {
   const inputLength = inputValue.length;
 
   return inputLength === 0 ? [] : this.props.getSearchesSuccess.filter(search =>
-    search.text.toLowerCase().slice(0, inputLength) === inputValue
+    search.term.toLowerCase().slice(0, inputLength) === inputValue
   );
 }
 
@@ -85,6 +85,7 @@ onSubmit(e) {
     suggestions: [],
     filter: 'select',
   });
+  this.props.getSearches();
 }
 
 componentDidMount() {
