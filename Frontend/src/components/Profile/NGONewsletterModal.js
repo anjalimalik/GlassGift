@@ -26,11 +26,12 @@ class NGONewsletterModal extends Component {
 
   static defaultProps = {
         ngoId: 0,
+        newsletter: '',
   };
 
   onCreateNewsletter() {
     this.props.updateNGONewsletter(this.props.ngoId, this.state.newsletter).then(() => {
-        this.props.onChangeVisibility(false)
+      this.props.onChangeVisibility(false);
     });
   }
 
@@ -100,14 +101,14 @@ NGONewsletterModal.propTypes = {
   onChangeVisibility: PropTypes.func,
 };
 
-function mapStateToProps({ updateNGONewsletter, sendNGONewsletter, getNGONewsletter }) {
+function mapStateToProps({ updateNGONewsletter, sendNGONewsletter, }) {
   return {
-    //updatepending: updateNGONewsletter.pending,
-    //updatesuccess: updateNGONewsletter.success,
-    //updateerror: updateNGONewsletter.error,
-    //sendpending: sendNGONewsletter.pending,
-    //sendsuccess: sendNGONewsletter.success,
-    //senderror: sendNGONewsletter.error,
+    updatepending: updateNGONewsletter.pending,
+    updatesuccess: updateNGONewsletter.success,
+    updateerror: updateNGONewsletter.error,
+    sendpending: sendNGONewsletter.pending,
+    sendsuccess: sendNGONewsletter.success,
+    senderror: sendNGONewsletter.error,
   };
 }
 

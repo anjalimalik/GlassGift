@@ -148,7 +148,6 @@ class DateRangeStats extends Component {
                     </Alert>
                 );
             }
-            console.log("RENDER RESULT:  " + JSON.stringify(this.props.get.success));
             return (
                 <Result visibility={this.state.resultVis} 
                     result={this.props.get.success}

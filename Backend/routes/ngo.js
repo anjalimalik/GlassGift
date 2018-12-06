@@ -33,17 +33,42 @@ router.post('/', async function (req, res) {
 
 router.put('/', async function (req, res) {
 	const changes = req.body;
-    const userId = req.get('Authorization');
+    const ngoId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+
+    console.log(ngoId);
+    console.log(changes);
+
+    let currDataNGO = await db.get('NGO', ['*'], `id = '${ngoId}'`);
+    let currDataUser = await db.get('GGUser', ['location'], `id = '${ngoId}'`);
+
+    await db.modify('NGO', ['description','calLink','category', 'minLimit', 'maxLimit'],
+    		[(changes.description === ""? currDataNGO[0].description : changes.description),
+    		(changes.calLink == ""? currDataNGO[0].calLink: changes.calLink),
+    		(changes.category | currDataNGO[0].category),
+    		(changes.minLimit | currDataNGO.minLimit),
+    		(changes.maxLimit | currDataNGO.maxLimit)], `id = '${ngoId}'`);
+
+    await db.modify('GGUser', ['location'],
+    	[(changes.location === ""? currDataUser[0].location : changes.location)], `id = '${ngoId}'`);
 
 	return res.sendStatus(200);
 });
 
 router.put('/email', async function(req, res) {
-	const ngoId = req.get('Authorization');
+	const ngoId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 
-	await db.modify('NGO', ['emailTemplate'], [req.body.emailTemplate], `id = '${ngoId}'`);
+	console.log(ngoId);
+
+	await db.modify('NGO', ['emailTemplate'], [req.body.emailtemplate], `id = '${ngoId}'`);
 
 	res.status(200).send(`Email template for ${ngoId} successfully updated.`);
+});
+
+router.get('/email', async function(req, res) {
+	const ngo = await db.get('NGO', ['emailTemplate'], `id = ${req.query.id}`);
+	if(ngos.length === 0) return res.status(500).json({error: "NGO not found!"});
+
+	res.status(200).send(ngo[0].emailtemplate);
 });
 
 router.get('/', async function (req, res) {
@@ -54,7 +79,7 @@ router.get('/', async function (req, res) {
 });
 
 router.post('/paymentData', async function(req, res){
-	const donorId = req.get('Authorization');
+	const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 
 	const fileName = req.body.ngoId + donorId + '.csv';
 
@@ -172,26 +197,27 @@ router.post('/visualPieGraph', async function(req, res){
 });
 
 router.post('/search', async function (req, res) {
+	console.log(req.body);
     switch (req.body.type) {
 		case 0:
-			return res.status(200).json(ngoRepository.searchByName(req.body.keyword));
+			let results = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
+        	['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
+            'minLimit', 'maxLimit'], `username LIKE \'%${req.body.keyword}%\'${
+            	req.body.filter === 'select'? '': ` AND category = '${req.body.filter}'`
+            }`);
+			return res.status(200).send(results);
 		case 1:
-			return res.status(200).json(ngoRepository.searchByLocation(req.body.keyword));
+			let results2 = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
+        	['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
+            'minLimit', 'maxLimit'], `location LIKE \'%${keyword}%\'${
+            	req.body.filter === 'select'? '': ` AND category = '${req.body.filter}'`
+            }`);
+			return res.status(200).send(results2);
 		case 2:
-			return res.status(200).json(ngoRepository.searchByCategory(req.body.keyword));
+			return res.status(200).send(await ngoRepository.searchByCategory(req.body.filter));
 		default:
 			return res.status(500).json({error: "Couldn't match type"});
 	}
-
-	if (req.body.filter !== 'select') {
-		const filter = parseInt(req.body.filter);
-		where += ` AND category = \'${filter}\'`;
-	}
-
-	const dbResult = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
-		['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
-			'minLimit', 'maxLimit'], where);
-	return res.status(200).json(dbResult);
 });
 
 router.get('/notice', async function (req, res) {
@@ -222,12 +248,14 @@ router.put('/notice', async function (req, res) {
 });
 
 router.post('/limit/max', async function (req, res) {
-	await ngoRepository.setMaxLimit(req.decodedToken.id, req.body.limit);
+	const ngoId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+	await ngoRepository.setMaxLimit(ngoId, req.body.limit);
 	return res.sendStatus(200);
 });
 
 router.post('/limit/min', async function (req, res) {
-	await ngoRepository.setMinLimit(req.decodedToken.id, req.body.limit);
+	const ngoId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+	await ngoRepository.setMinLimit(ngoId, req.body.limit);
 	return res.sendStatus(200);
 });
 
