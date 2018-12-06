@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userRepository = require("../database/user");
+const donorRepository = 
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
 const db = require('../database/');
@@ -74,13 +75,5 @@ router.get('/searchHistory', async function(req, res){
 
 	res.status(200).send(searches);
 });
-
-router.post('/search', async function (req, res) {
-	const userId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
-    let dbResult = await donorRepository.search(req.body.keyword);
-    await db.insert('searches', ['id', 'term'], [userId, req.body.keyword]);
-    return res.status(200).json(dbResult);
-});
-
 
 module.exports = router;
