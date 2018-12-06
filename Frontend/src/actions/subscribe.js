@@ -33,18 +33,21 @@ export function subscribeClear() {
   };
 }
 
-function callSubscribeApi(body) {
+function callSubscribeApi(id) {
   return new Promise((resolve, reject) => {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
-    axios.post('http://localhost:3000/donor/subscribe', body, { headers: { Authorization: token }})
+    const body = {
+      subscription: {donorId, ngoId},
+    }
+    axios.post('http://localhost:3000/donor/subscription', body, { headers: { Authorization: token }})
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error || 'Network Error')));
   });
 }
 
-export function subscribe(body) {
-  const request = callSubscribeApi(body);
+export function subscribe(donorId, ngoId) {
+  const request = callSubscribeApi(donorId, ngoId);
   return dispatch => {
     dispatch(subscribePending(true));
     return request

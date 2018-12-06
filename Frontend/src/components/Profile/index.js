@@ -125,8 +125,8 @@ class Profile extends Component {
     this.props.getNGONotice(this.props.match.params.id);
   }
 
-  onSubscribe() {
-    this.props.subscribe(this.state);
+  onSubscribe(id) {
+    this.props.subscribe(id, this.props.match.params.id);
   }
 
   renderAlert() {
@@ -176,7 +176,7 @@ class Profile extends Component {
         <div>
           <ButtonGroup>
             <Button bsStyle="info" onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
-            <Button bsStyle="success" onClick={ this.onSubscribe() }>Subscribe</Button>
+            <Button bsStyle="success" onClick={ this.onSubscribe(id) }>Subscribe</Button>
           </ButtonGroup>
         </div>
       );
