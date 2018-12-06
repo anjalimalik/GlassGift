@@ -33,7 +33,7 @@ export function subscribeClear() {
   };
 }
 
-function callSubscribeApi(id) {
+function callSubscribeApi(donorId, ngoId) {
   return new Promise((resolve, reject) => {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
