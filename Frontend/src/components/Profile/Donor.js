@@ -29,10 +29,8 @@ class DonorProfile extends Component {
       url: `http://localhost:3000/donor/export_transactions?id=${token}`,
       method: 'GET',
       responseType: 'blob', // important
-      headers: { Authorization: token }
     }).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      console.log(url);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'donor-transactions.csv');
