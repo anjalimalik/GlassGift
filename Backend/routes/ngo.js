@@ -55,19 +55,18 @@ router.put('/', async function (req, res) {
 });
 
 router.put('/email', async function(req, res) {
-	const ngoId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
-
+	//const ngoId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+	const ngoId = req.body.ngoId;
 	console.log(ngoId);
 
-	await db.modify('NGO', ['emailTemplate'], [req.body.emailtemplate], `id = '${ngoId}'`);
+	await db.modify('NGO', ['emailTemplate'], [req.body.emailTemplate], `id = '${ngoId}'`);
 
 	res.status(200).send(`Email template for ${ngoId} successfully updated.`);
 });
 
 router.get('/email', async function(req, res) {
-	const ngo = await db.get('NGO', ['emailTemplate'], `id = ${req.query.id}`);
-	if(ngos.length === 0) return res.status(500).json({error: "NGO not found!"});
-
+	const ngo = await db.get('NGO', ['emailTemplate'], `id = '${req.query.id}'`);
+	if(ngo.length === 0) return res.status(500).json({error: "NGO not found!"});
 	res.status(200).send(ngo[0].emailtemplate);
 });
 
