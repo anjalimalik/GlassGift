@@ -68,11 +68,9 @@ router.post('/confirm_account', async function (req, res) {
 });
 
 router.get('/searchHistory', async function(req, res){
-	const donorId = req.get('Authorization');
-	const keyword = req.query.entry;
+	const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 
-	let searches = await db.get('searches', ['term'], `id = '${donorId}'${
-		keyword === ""? ``: ` AND term LIKE '${keyword}'`}`);
+	let searches = await db.get('searches', ['term'], `id = '${donorId}'`);
 
 	res.status(200).send(searches);
 });
