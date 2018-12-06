@@ -66,6 +66,8 @@ router.post('/', async function (req, res) {
         + (donation.amount % 100 < 10 ? `0${donation.amount % 100}` : donation.amount % 100);
 
     sendDonationConfirmationEmail(donorEmail, stringAmount, ngoName, (donation.date | dt.now()), donationId);
+
+    return res.sendStatus(200);
 });
 
 router.get('/', async function (req, res) {
@@ -120,10 +122,10 @@ router.post('/email', async function (req, res) {
 });
 
 router.get('/prev', async function (req, res) {
-    const donorId = req.get('Authorization');
+    const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 
     const donor = await db.pool.query(`SELECT * FROM paymentinfo WHERE userId = '${donorId}'`);
-    if (donor.rows.length > 0) return res.sendStatus(200);
+    if (donor.rows.length > 0) return res.status(200).send(donor[0]);
     return res.sendStatus(500);
 });
 
