@@ -203,9 +203,9 @@ router.get('/notice', async function (req, res) {
 });
 
 router.put('/notice', async function (req, res) {
-	const userId = req.get('Authorization');
+	const userId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 
-	let ngoData = await db.get("GGUser", ['name'], `id = '${userId}'`);
+	let ngoData = await db.get("GGUser", ['username'], `id = '${userId}'`);
 
 	await db.pool.query(`UPDATE NGO SET notice = '${req.body.notice}' WHERE id = '${userId}'`);
 
@@ -215,7 +215,7 @@ router.put('/notice', async function (req, res) {
 
 	for (var i = 0; i < subscribers.length; i++) {
 		let donorData = await db.get("GGUser", ['email'], `id = '${donorId}'`);
-		sendNoticeUpdateEmail(donorData.email, req.body.notice, ngoData.name);
+		sendNoticeUpdateEmail(donorData.email, req.body.notice, ngoData.username);
 	}
 
 	return res.sendStatus(200);
