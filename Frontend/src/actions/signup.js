@@ -43,7 +43,7 @@ function callSignupApi(state) {
     }
     if (state.tab === SIGNUP_TAB_DONOR) {
       body.age = state.age || 0;
-      body.gender = state.gender || 'Male';
+      body.gender = state.gender || '';
       axios.post('http://localhost:3000/donor/', body)
       .then(response => resolve(response.data))
       .catch(error => {console.log(error); reject(new Error("Error signing up"))});
