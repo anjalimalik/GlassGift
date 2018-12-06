@@ -197,19 +197,18 @@ router.post('/visualPieGraph', async function(req, res){
 });
 
 router.post('/search', async function (req, res) {
-	console.log(req.body);
     switch (req.body.type) {
 		case 0:
 			let results = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
         	['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
-            'minLimit', 'maxLimit'], `username LIKE \'%${req.body.keyword}%\'${
+            'minLimit', 'maxLimit'], `LOWER(username) LIKE LOWER(\'%${req.body.keyword}%\')${
             	req.body.filter === 'select'? '': ` AND category = '${req.body.filter}'`
             }`);
 			return res.status(200).send(results);
 		case 1:
 			let results2 = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
         	['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
-            'minLimit', 'maxLimit'], `location LIKE \'%${keyword}%\'${
+            'minLimit', 'maxLimit'], `LOWER(location) LIKE LOWER(\'%${keyword}%\')${
             	req.body.filter === 'select'? '': ` AND category = '${req.body.filter}'`
             }`);
 			return res.status(200).send(results2);

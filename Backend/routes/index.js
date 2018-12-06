@@ -66,4 +66,22 @@ router.post('/confirm_account', async function (req, res) {
 	return res.sendStatus(200);
 });
 
+router.get('/searchHistory', async function(req, res){
+	const donorId = req.get('Authorization');
+	const keyword = req.query.entry;
+
+	let searches = await db.get('searches', ['term'], `id = '${donorId}'${
+		keyword === ""? ``: ` AND term LIKE '${keyword}'`}`);
+
+	res.status(200).send(searches);
+});
+
+router.post('/search', async function (req, res) {
+	const userId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+    let dbResult = await donorRepository.search(req.body.keyword);
+    await db.insert('searches', ['id', 'term'], [userId, req.body.keyword]);
+    return res.status(200).json(dbResult);
+});
+
+
 module.exports = router;
