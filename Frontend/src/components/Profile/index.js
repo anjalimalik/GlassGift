@@ -64,6 +64,7 @@ class Profile extends Component {
     console.log(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
     this.props.getNGONewsletter(this.props.match.params.id);
+    this.props.getNGOTYTemplate(this.props.match.params.id);
     this.props.getNGODonations(this.props.match.params.id);
     this.props.getLineData(this.props.match.params.id);
     this.props.getPieData(this.props.match.params.id);
@@ -375,7 +376,7 @@ class Profile extends Component {
         />
 
         <NGOEditTYTemplateModal
-          //tytemplate={this.props.getTYTemplate.success.tytemplate}
+          emailtemplate={this.props.getTYTemplate.success}
           ngoId={this.props.match.params.id}
           visibility={this.state.ngoEditTYTemplateModalVis}
           onChangeVisibility={this.onChangeNGOEditTYTemplateModalVisibility}
@@ -385,7 +386,7 @@ class Profile extends Component {
   }
 }
 
-function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGONewsletter, getNGODonations, getLineData, getPieData, }) {
+function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGONewsletter, getNGODonations, getLineData, getPieData, getNGOTYTemplate, }) {
   return {
     update: updateNGO,
     get: getNGO,
@@ -394,6 +395,7 @@ function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGONewsletter, ge
     getDonations: getNGODonations,
     getMonthlyData: getLineData,
     getGenderData: getPieData,
+    getTYTemplate: getNGOTYTemplate,
   };
 }
 
@@ -411,6 +413,8 @@ function mapDispatchToProps(dispatch) {
     subscribe,
     getNGODonations,
     getNGODonationsClear,
+    getNGOTYTemplate,
+    getNGOTYTemplateClear,
   }, dispatch);
 }
 
