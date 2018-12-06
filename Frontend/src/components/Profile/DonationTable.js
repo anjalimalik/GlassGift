@@ -23,10 +23,16 @@ export default class DonationTable extends Component {
           break;
       }
       const amnt = Number.parseInt(donation.amount, 10) / 100;
+      let donorId;
+      if (this.props.showDonorId) {
+        donorId = <td>{donation.anonymous === false ? donation.donorid : 'N/A'}</td>;
+      } else {
+        donorId = null;
+      }
       return (
         <tr key={i}>
           <td>{donation.id}</td>
-          <td>{donation.anonymous === false ? donation.donorid : 'N/A'}</td>
+          {donorId}
           <td>${`${amnt}.00`}</td>
           <td>{donation.anonymous === true ? <FontAwesomeIcon icon="check" size="1x"/> : null}</td>
           <td>{typeStr}</td>
@@ -34,6 +40,8 @@ export default class DonationTable extends Component {
         </tr>
       )
     });
+
+    let donorColum = this.props.showDonorId ? <th>Donor Id</th> : null;
 
     return (
       <div className="DonationTable text-center profileDiv">
@@ -44,7 +52,7 @@ export default class DonationTable extends Component {
               <thead>
                 <tr>
                   <th>Id</th>
-                  <th>Donor Id</th>
+                  {donorColum}
                   <th>Amount</th>
                   <th>Anonymous</th>
                   <th>Type</th>

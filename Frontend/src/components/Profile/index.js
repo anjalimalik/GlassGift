@@ -203,7 +203,7 @@ class Profile extends Component {
 
     return (
       <div>
-        <DonationTable donations={this.props.getDonations.success || []} onDownloadDonations={this.onDownloadDonations}/>
+        <DonationTable showDonorId donations={this.props.getDonations.success || []} onDownloadDonations={this.onDownloadDonations}/>
       </div>
     );
   }
