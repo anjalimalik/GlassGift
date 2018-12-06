@@ -39,7 +39,7 @@ export default class DonationTable extends Component {
     });
 
     return (
-      <div className="DonationTable text-center ProfileDiv">
+      <div className="DonationTable text-center profileDiv">
         <Card className="profile">
           <CardTitle style={{fontSize:'20px'}}>DONATIONS</CardTitle>
           <CardBody style={{marginBottom: '50px'}}>
