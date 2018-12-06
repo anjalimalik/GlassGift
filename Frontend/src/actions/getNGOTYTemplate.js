@@ -34,7 +34,7 @@ export function getNGOTYTemplateClear() {
 
 function callGetNGOTYTemplateApi(id) {
   return new Promise((resolve, reject) => {
-    axios.get(`http://localhost:3000/ngo/emailtemplate?id=${id}`)
+    axios.get(`http://localhost:3000/ngo/email?id=${id}`)
     .then(response => resolve(response.data))
     .catch(error => reject(new Error(error.response.data.error)));
   });

@@ -39,7 +39,7 @@ function callUpdateNGOApi(state) {
     if (!token) reject(new Error("No token!"));
     const body = {
       location: state.location,
-      category: state.category.value,
+      category: state.category,
       description: state.description,
       minLimit: state.minLimit,
       maxLimit: state.maxLimit,

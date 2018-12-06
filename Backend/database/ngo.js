@@ -25,7 +25,7 @@ async function edit(id, location, description, category, calendarLink, minLimit,
 function searchByName(keyword) {
     return db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
         ['NGO.id as id', 'username', 'email', 'location', 'category', 'description', 'calLink', 'notice',
-            'minLimit', 'maxLimit'], `name LIKE \'%${keyword}%\'`);
+            'minLimit', 'maxLimit'], `username LIKE \'%${keyword}%\'`);
 }
 
 function searchByLocation(keyword) {
