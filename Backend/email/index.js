@@ -155,17 +155,6 @@ async function sendNGOThankYouEmail(donorEmail, ngoEmailText, donorName, ngoName
 	});
 }
 
-async function sendNewsletter(newsletter, email) {
-    const mailOptions = {
-        from: 'glassgiftteam@gmail.com',
-        to: email,
-        subject: '[GlassGift] New Newsletter',
-        text: newsletter
-    };
-
-    transporter.sendMail(mailOptions);
-}
-
 async function sendDonationReceiptEmail(email, amount, ngoName, date) {
     const body = `Donation Receipt\nAmount: $${amount/100}\nNGO Name: ${ngoName}\nDate: ${date}\n`;
 
@@ -206,14 +195,14 @@ async function sendNoticeUpdateEmail(email, notice, ngoName){
 	});
 }
 
-async function sendNGOThankYouEmail(email, template, donorName, ngoName){
-	const body = `Dear ${donorName},\n\n${template}`;
+async function sendNewsletter(newsletter, email, ngoName){
+	let body = `${newsletter}\n\nThis email was sent on behalf of ${ngoName} by GlassGift.`; 
 
 	const mailoptions = {
 		from: 'glassgiftteam@gmail.com',
 		to: email,
-		subject: `Thank you from ${ngoName}`,
-		text: body,
+		subject: `Newsletter from ${ngoName}`,
+		text: newsletter,
 	};
 
 	transporter.sendMail(mailoptions, (err, info) => {

@@ -265,16 +265,21 @@ router.get('/newsletter', async function(req, res) {
 });
 
 router.put('/newsletter', async function(req, res) {
+	console.log(req.body);
 	await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
 	return res.sendStatus(200);
 });
 
 router.put('/newsletter/send', async function(req, res) {
 	const newsletter = await ngoRepository.getNewsletter(req.body["ngoId"]);
+	console.log(newsletter);
     let subscribers = await ngoRepository.getSubscribers(req.body["ngoId"]);
+    const ngoName = await db.get('GGUser', ['username'], `id = '${req.body.ngoId}'`);
     const emails = await userRepository.getEmailsFromId(subscribers[0].donorid);
 
-	emails.forEach(async (userEmail) => await email.sendNewsletter(newsletter[0].newsletter, userEmail.email));
+	emails.forEach(async (userEmail) => await email.sendNewsletter(newsletter[0].newsletter, userEmail.email, ngoName[0].username));
+
+	return res.sendStatus(200);
 });
 
 module.exports = router;

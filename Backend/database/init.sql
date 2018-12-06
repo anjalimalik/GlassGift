@@ -66,3 +66,10 @@ create table if not exists paymentinfo(
     userId text references gguser,
     stripeCustomerId text
 );
+
+create table if not exists newsletters(
+    id text unique primary key,
+    ngoId text references ngo,
+    newsletter text,
+    created timestamp
+);
