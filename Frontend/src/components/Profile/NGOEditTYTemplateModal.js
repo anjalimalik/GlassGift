@@ -20,7 +20,7 @@ class NGOEditTYTemplateModal extends Component {
   }
 
   onSaveChanges() {
-    this.props.updateNGOTYTemplate(this.state.emailtemplate).then(() => {
+    this.props.updateNGOTYTemplate(this.state.emailtemplate, this.props.ngoId).then(() => {
       this.props.onChangeVisibility(false)
     });
   }
@@ -75,9 +75,9 @@ NGOEditTYTemplateModal.propTypes = {
 
 function mapStateToProps({ updateNGOTYTemplate }) {
   return {
-    //pending: updateNGOTYTemplate.pending,
-    //success: updateNGOTYTemplate.success,
-    //error: updateNGOTYTemplate.error,
+    pending: updateNGOTYTemplate.pending,
+    success: updateNGOTYTemplate.success,
+    error: updateNGOTYTemplate.error,
   };
 }
 

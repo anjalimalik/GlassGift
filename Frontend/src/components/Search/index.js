@@ -7,7 +7,7 @@ import { getSearches, getSearchesClear } from '../../actions/getSearches';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Alert, Button, FormGroup, PageHeader, ButtonToolbar, ToggleButtonGroup, ToggleButton,
-  Table, FormControl, MenuItem, DropdownButton, 
+  Table, MenuItem, DropdownButton, 
 } from 'react-bootstrap';
 import Autosuggest from 'react-autosuggest';
 import { NGO_CATEGORIES } from '../../constants';

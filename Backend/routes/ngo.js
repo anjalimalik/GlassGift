@@ -38,7 +38,7 @@ router.put('/', async function (req, res) {
 });
 
 router.put('/email', async function(req, res) {
-	const ngoId = req.get('Authorization');
+	const ngoId = req.body.ngoId;
 
 	await db.modify('NGO', ['emailTemplate'], [req.body.emailTemplate], `id = '${ngoId}'`);
 

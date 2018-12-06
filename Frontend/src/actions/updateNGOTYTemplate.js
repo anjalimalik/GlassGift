@@ -33,21 +33,22 @@ export function updateNGOTYTemplateClear() {
   };
 }
 
-function callUpdateNGOTYTemplateApi(emailtemplate) {
+function callUpdateNGOTYTemplateApi(emailTemplate, ngoId) {
   return new Promise((resolve, reject) => {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
     const body = {
-      emailtemplate,
+      emailTemplate,
+      ngoId
     };
-    axios.put('http://localhost:3000/ngo/emailtemplate', body, { headers: { Authorization: token }})
+    axios.put('http://localhost:3000/ngo/email', body, { headers: { Authorization: token }})
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error)));
   });
 }
 
-export function updateNGOTYTemplate(state) {
-  const request = callUpdateNGOTYTemplateApi(state);
+export function updateNGOTYTemplate(emailTemplate, ngoId) {
+  const request = callUpdateNGOTYTemplateApi(emailTemplate, ngoId);
   return dispatch => {
     dispatch(updateNGOTYTemplatePending(true));
     return request
