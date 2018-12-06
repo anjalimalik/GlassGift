@@ -19,5 +19,5 @@ export const NGO_CATEGORIES = {
   'select': 'Filter by Category',
 };
 
-// Donor: 0
-// NGO: 1
+export const USER_TYPE_DONOR = '0';
+export const USER_TYPE_NGO = '1';

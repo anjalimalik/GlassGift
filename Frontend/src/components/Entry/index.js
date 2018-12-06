@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { Jumbotron, Button, } from 'react-bootstrap';
+import { getUserToken } from '../../utils';
 
-class Entry extends Component {
+export default class Entry extends Component {
+
+  componentWillMount() {
+    if (getUserToken())
+      this.props.history.replace('/dashboard');
+  }
+
   render() {
     return (
       <div className="Entry">
@@ -21,4 +28,3 @@ class Entry extends Component {
   }
 }
 
-export default Entry;

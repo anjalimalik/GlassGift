@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { removeUserToken, removeUserId, removeUserType, getUserToken, getUserId } from '../../../utils';
 import { LinkContainer } from 'react-router-bootstrap';
+import { removeUserToken, removeUserId, removeUserType, getUserToken, getUserId } from '../../../utils';
+import { USER_TYPE_DONOR } from '../../../constants';
 import './Header.css';
 
 
@@ -26,6 +27,22 @@ class Header extends Component {
     // TODO redirect to donor profile if user type 0
     const id = getUserId();
     if (getUserToken()) {
+      const userType = localStorage.getItem('type');
+
+      if (userType === USER_TYPE_DONOR) {
+        return (
+          <Nav pullRight className="header">
+            <LinkContainer to="/dashboard">
+              <NavItem>Dashboard</NavItem>
+            </LinkContainer>
+            <LinkContainer to={`/profile`}>
+              <NavItem>Profile</NavItem>
+            </LinkContainer>
+            <NavItem onSelect={this.onLogoutSelect}>Logout</NavItem>
+          </Nav>
+        );
+      }
+
       return (
         <Nav pullRight className="header">
           <LinkContainer to="/dashboard">

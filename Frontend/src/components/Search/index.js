@@ -80,7 +80,7 @@ onSubmit(e) {
     }
   });
   this.setState({
-    type: '',
+    type: 0,
     keyword: '',
     suggestions: [],
     filter: 'select',

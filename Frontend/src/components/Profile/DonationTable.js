@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TimeAgo from 'react-timeago';
+import './Profile.css';
 
 export default class DonationTable extends Component {
 
@@ -38,10 +39,10 @@ export default class DonationTable extends Component {
     });
 
     return (
-      <div className="DonationTable">
-        <Card>
-          <CardTitle>Donations</CardTitle>
-          <CardBody>
+      <div className="DonationTable text-center profileDiv">
+        <Card className="profile">
+          <CardTitle style={{fontSize:'20px'}}>DONATIONS</CardTitle>
+          <CardBody style={{marginBottom: '50px'}}>
             <Table striped bordered condensed hover>
               <thead>
                 <tr>
@@ -61,6 +62,7 @@ export default class DonationTable extends Component {
                 {donationRows}
               </tbody>
             </Table>
+            <div style={{ float: 'right' }}><Button bsStyle="link" onClick={this.props.onDownloadDonations}><FontAwesomeIcon icon="download" size="1x"/> Download donations</Button></div>
           </CardBody>
         </Card>
       </div>
