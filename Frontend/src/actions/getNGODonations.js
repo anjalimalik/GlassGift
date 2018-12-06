@@ -32,13 +32,13 @@ export function getNGODonationsClear() {
   };
 }
 
-// function callGetNGODonationsApi(id) {
-//   return new Promise((resolve, reject) => {
-//     axios.get(`http://localhost:3000/ngo/export_transactions?id=${id}`)
-//     .then(response => resolve(response.data))
-//     .catch(error => reject(new Error(error.response.data.error)));
-//   });
-// }
+function callGetNGODonationsApi(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`http://localhost:3000/ngo/export_transactions?id=${id}`)
+    .then(response => resolve(response.data))
+    .catch(error => reject(new Error(error.response.data.error)));
+  });
+}
 
 // export function getNGODonations(id) {
 //   const request = callGetNGODonationsApi(id);

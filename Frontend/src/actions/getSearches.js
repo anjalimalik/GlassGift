@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getUserToken } from '../utils';
 
 export const GET_SEARCHES_PENDING = 'GET_SEARCHES_PENDING';
 export const GET_SEARCHES_SUCCESS = 'GET_SEARCHES_SUCCESS';
@@ -32,17 +33,15 @@ export function getSearchesClear() {
   };
 }
 
-// function callGetSearchesApi() {
-//   return new Promise((resolve, reject) => {
-//     const body = {
-//       email,
-//       password,
-//     };
-//     axios.post('http://localhost:3000/getSearches', body)
-//     .then(response => resolve(response.data))
-//     .catch(error => reject(new Error(error.response.data.error)));
-//   })
-// }
+function callGetSearchesApi() {
+  return new Promise((resolve, reject) => {
+    const token = getUserToken();
+    if (!token) reject(new Error("No token!"));
+    axios.post('http://localhost:3000/getSearches', { headers: { Authorization: token }})
+    .then(response => resolve(response.data))
+    .catch(error => reject(new Error(error.response.data.error)));
+  })
+}
 
 // export function getSearches() {
 //   const request = callGetSearchesApi(email, password);

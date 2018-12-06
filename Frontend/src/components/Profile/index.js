@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Alert, Button, PageHeader, Label, ButtonGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
+import moment from 'moment';
 import { updateNGOClear } from '../../actions/updateNGO';
 import { getNGO, getNGOClear } from '../../actions/getNGO';
 import { getNGONotice, getNGONoticeClear } from '../../actions/getNGONotice';
@@ -25,7 +26,7 @@ import { Card, CardSubtitle, CardBody, CardTitle, CardText } from 'reactstrap';
 import LineChart from './LineChart';
 import PieChart from './PieChart';
 import DateRangeStats from './DateRangeStats';
-import moment from 'moment';
+import { getUserToken } from '../../utils';
 import './Profile.css';
 
 
@@ -76,10 +77,12 @@ class Profile extends Component {
   }
 
   onDownloadDonations() {
+    const token = getUserToken();
     axios({
       url: 'http://0.0.0.0:1338/',
       method: 'GET',
       responseType: 'blob', // important
+      headers: { Authorization: token }
     }).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       console.log(url);

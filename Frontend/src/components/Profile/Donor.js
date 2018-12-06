@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import DonationTable from './DonationTable';
 import { getDonorDonations, getDonorDonationsClear } from '../../actions/getDonorDonations';
+import { getUserToken } from '../../utils';
 import './Profile.css';
 
 
@@ -23,10 +24,12 @@ class DonorProfile extends Component {
   }
 
   onDownloadDonations() {
+    const token = getUserToken();
     axios({
       url: 'http://0.0.0.0:1338/',
       method: 'GET',
       responseType: 'blob', // important
+      headers: { Authorization: token }
     }).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       console.log(url);

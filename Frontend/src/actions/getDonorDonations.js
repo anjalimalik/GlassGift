@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getUserToken } from '../utils';
 
 export const GET_DONOR_DONATIONS_PENDING = 'GET_DONOR_DONATIONS_PENDING';
 export const GET_DONOR_DONATIONS_SUCCESS = 'GET_DONOR_DONATIONS_SUCCESS';
@@ -32,13 +33,15 @@ export function getDonorDonationsClear() {
   };
 }
 
-// function callgetDonorDonationsApi(id) {
-//   return new Promise((resolve, reject) => {
-//     axios.get(`http://localhost:3000/ngo/export_transactions?id=${id}`)
-//     .then(response => resolve(response.data))
-//     .catch(error => reject(new Error(error.response.data.error)));
-//   });
-// }
+function callgetDonorDonationsApi(id) {
+  return new Promise((resolve, reject) => {
+    const token = getUserToken();
+    if (!token) reject(new Error("No token!"));
+    axios.get(`http://localhost:3000/ngo/export_transactions?id=${id}`, { headers: { Authorization: token }})
+    .then(response => resolve(response.data))
+    .catch(error => reject(new Error(error.response.data.error)));
+  });
+}
 
 // export function getDonorDonations(id) {
 //   const request = callgetDonorDonationsApi(id);
