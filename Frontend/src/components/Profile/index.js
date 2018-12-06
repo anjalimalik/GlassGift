@@ -54,11 +54,14 @@ class Profile extends Component {
       ngoEditNoticeModalVis: false,
       ngoNewsletterModalVis: false,
       ngoEditTYTemplateModalVis: false,
+      ngoId: null
     };
   }
 
   componentDidMount() {
     this.props.getNGO(this.props.match.params.id);
+    this.setState({ngoId: this.props.match.params.id});
+    console.log(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
     this.props.getNGONewsletter(this.props.match.params.id);
     this.props.getNGODonations(this.props.match.params.id);

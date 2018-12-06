@@ -6,6 +6,7 @@ const donorRepository = require('../database/donor');
 const userRepository = require('../database/user');
 const donationRepository = require('../database/donations');
 const {sendConfirmationEmail} = require('../email');
+const jwt = require('jsonwebtoken');
 const db = require('../database/');
 
 const router = express.Router();
@@ -43,11 +44,6 @@ router.post('/payment_method', async function (req, res) {
         paymentMethod.cvv, paymentMethod.expirationDate, paymentMethod.ccNumber);
     res.sendStatus(200);
 });
-  
-router.post('/search', async function (req, res) {
-    let dbResult = await donorRepository.search(req.body.keyword);
-    return res.status(200).json(dbResult);
-});
 
 router.get('/export_transactions', async function (req, res) {
     const donations = donationRepository.getByDonor(req.query['id']);
@@ -57,28 +53,12 @@ router.get('/export_transactions', async function (req, res) {
     res.status(200).send(csv);
 });
 
-router.post('/newSearch', async function (req, res){
-	const donorId = req.get('Authorization');
-	const keyword = req.body.term;
-
-	await db.insert('searches', ['id', 'term'], [donorId, keyword]);
-
-	res.status(200).send("Search insertion successful");
-});
-
-router.get('/searchHistory', async function(req, res){
-	const donorId = req.get('Authorization');
-	const keyword = req.query.entry;
-
-	let searches = await db.get('searches', ['term'], `id = '${donorId}'${
-		keyword === ""? ``: ` AND term LIKE '${keyword}'`}`);
-
-	res.status(200).send(searches);
-});
-
 router.post('/subscribe', async function(req, res){
-	const donorId = req.get('Authorization');
+	const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 	const ngoId = req.body.ngoId;
+
+	const subscriptions = await db.get('subscriptions', ['donorId'], `ngoId = '${ngoId}'`);
+	if (subscriptions.map(a => a.donorid).includes(donorId)) return res.status(200);
 
 	await db.insert('subscriptions', ['donorId', 'ngoId'], [donorId, ngoId]);
 
