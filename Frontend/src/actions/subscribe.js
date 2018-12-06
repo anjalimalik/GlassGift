@@ -37,7 +37,7 @@ function callSubscribeApi(body) {
   return new Promise((resolve, reject) => {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
-    axios.post('http://localhost:3000/subscribe', body, { headers: { Authorization: token }})
+    axios.post('http://localhost:3000/subscription', body, { headers: { Authorization: token }})
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error || 'Network Error')));
   });

@@ -44,6 +44,10 @@ body {
   margin-right: 5%;
 }
 
+.headingCard {
+  font-size: 20px;
+}
+
 .row {
   display: flex;    
   margin: auto;
