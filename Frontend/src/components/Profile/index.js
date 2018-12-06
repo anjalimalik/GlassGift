@@ -224,6 +224,7 @@ class Profile extends Component {
       );
     }
 
+    console.log("here in component" +JSON.stringify(this.props.getMonthlyData.success));
     return (
       <LineChart title=""
       data={{
@@ -385,6 +386,7 @@ class Profile extends Component {
 }
 
 function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGONewsletter, getNGODonations, getLineData, getPieData, getNGOTYTemplate, }) {
+  console.log("here in mapstate" +JSON.stringify(getLineData));
   return {
     update: updateNGO,
     get: getNGO,

@@ -98,6 +98,7 @@ router.get('/paymentData', async function(req, res){
 //line graph <- timestamp manipulation
 router.post('/visualLineGraph', async function(req, res){
 	const donorId = req.get('Authorization');
+	console.log("here in backend route 1" +JSON.stringify(donorId));
 	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
 	if(!check){ return res.status(500).send("User not found"); }
 
@@ -114,6 +115,7 @@ router.post('/visualLineGraph', async function(req, res){
 		month1--; month2--;
 	}
 
+	console.log("here in backend route 2" +JSON.stringify(dates));
 	return res.status(200).json(dates);
 });
 

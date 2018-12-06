@@ -27,12 +27,12 @@ class CheckoutForm extends Component {
     this.renderCardInput = this.renderCardInput.bind(this);
   }
 
-  componentDidMount() {
-    const token = getUserToken();
-    axios.get('http://localhost:3000/donation/prev', { headers: { Authorization: token }})
-    .then(response => this.setState({ previous: true }))
-    .catch(error => this.setState({ previous: false }));
-  }
+  // componentDidMount() {
+  //   const token = getUserToken();
+  //   axios.get('http://localhost:3000/donation/prev', { headers: { Authorization: token }})
+  //   .then(response => this.setState({ previous: true }))
+  //   .catch(error => this.setState({ previous: false }));
+  // }
 
   async submit(ev) {
     let token;
