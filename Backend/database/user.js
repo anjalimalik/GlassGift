@@ -26,16 +26,16 @@ function changePassword(id, newPasswordHash) {
 
 async function getByEmail(email) {
     const users = await db.get('GGUser', ['*'], `email = '${email}'`);
-    const types = await db.execute(`SELECT 
+    const types = users[0] ? await db.execute(`SELECT 
         CASE
             WHEN EXISTS(SELECT id FROM donor WHERE id = '${users[0].id}')
             THEN 0
             ELSE 1
         END
-        FROM gguser WHERE email = '${email}'`);
-    return Object.assign({}, users[0], {
+        FROM gguser WHERE email = '${email}'`) : [];
+    return users[0] ? Object.assign({}, users[0], {
         type: types[0].case
-    });
+    }) : [];
 }
 
 function getIpsById(id) {
