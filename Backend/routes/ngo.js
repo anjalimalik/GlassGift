@@ -238,9 +238,10 @@ router.put('/notice', async function (req, res) {
 		['donorId'],
 		`ngoId = '${userId}'`);
 
+	console.log(subscribers);
 	for (var i = 0; i < subscribers.length; i++) {
-		let donorData = await db.get("GGUser", ['email'], `id = '${donorId}'`);
-		sendNoticeUpdateEmail(donorData.email, req.body.notice, ngoData.username);
+		let donorData = await db.get("GGUser", ['email'], `id = '${subscribers[i].donorid}'`);
+		sendNoticeUpdateEmail(donorData[0].email, req.body.notice, ngoData[0].username);
 	}
 
 	return res.sendStatus(200);

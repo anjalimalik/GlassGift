@@ -38,7 +38,7 @@ function callSubscribeApi(donorId, ngoId) {
     const token = getUserToken();
     if (!token) reject(new Error("No token!"));
     const body = {
-      subscription: {donorId, ngoId},
+      subscription: {ngoId},
     }
     axios.post('http://localhost:3000/subscription', body, { headers: { Authorization: token }})
     .then(response => resolve())
