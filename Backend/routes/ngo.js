@@ -97,22 +97,18 @@ router.get('/paymentData', async function(req, res){
 
 //line graph <- timestamp manipulation
 router.post('/visualLineGraph', async function(req, res){
-	const donorId = req.get('Authorization');
-	console.log("here in backend route 1" +JSON.stringify(donorId));
-	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
-	if(!check){ return res.status(500).send("User not found"); }
-
 	var dates = [];
 
 	var month1 = 12; var month2 = 11;
 	while(month1 > 0){
 		let sum = await db.get('donation', ['SUM(amount) AS sum'], 
-		`ngoId = '${req.body.ngoId}' AND created BETWEEN CURRENT_DATE - INTERVAL '${month1} months'` + 
-		` AND CURRENT_DATE ${month2 === 0? '':`- INTERVAL '${month2} months'`}`);
+		`ngoId = '${req.body.ngoId}' AND created BETWEEN CURRENT_TIMESTAMP - INTERVAL '${month1} months'` + 
+		` AND CURRENT_TIMESTAMP ${month2 === 0? '':`- INTERVAL '${month2} months'`}`);
 
 		//dates[`month_${month1}`] = (sum[0].sum|0);
-		dates.push(sum[0].sum|0);
-		month1--; month2--;
+		dates.push(sum[0].sum / 100 || 0);
+		month1--;
+		month2--;
 	}
 
 	console.log("here in backend route 2" +JSON.stringify(dates));
@@ -122,9 +118,6 @@ router.post('/visualLineGraph', async function(req, res){
 //calendar easy
 router.post('/visualCalendar', async function(req, res){
 	//star date, end date, type, ngoId
-	const donorId = req.get('Authorization');
-	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
-	if(!check){ return res.status(500).send("User not found"); }
 
 	var donations = await db.get('donation', ['DISTINCT donorId'], `ngoId = '${req.body.ngoId}' AND `+
 					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
