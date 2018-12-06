@@ -12,6 +12,7 @@ const {sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail} = 
 
 
 router.post('/', async function (req, res) {
+    const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
     const donation = req.body;
     const limits = await ngoRepository.getLimitsById(donation.ngoId);
     const ngoSearch = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`);
@@ -25,12 +26,6 @@ router.post('/', async function (req, res) {
         (limits.minLimit && donation.amount / 100 < limits.minLimit)) {
         return res.status(500).json({error: "Outside range"});
     }
-
-    const donorId = req.get('Authorization');
-    const donationId = uuidv4();
-
-    const authorization = req.get('Authorization');
-    if (!authorization) return res.status(500).json({error: 'No token supplied'});
 
     let emailWrapper = await userRepository.getEmailsFromId(donorId);
     console.log(emailWrapper);
