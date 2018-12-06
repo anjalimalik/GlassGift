@@ -197,6 +197,10 @@ router.post('/visualPieGraph', async function(req, res){
 });
 
 router.post('/search', async function (req, res) {
+	const userId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+	if(req.body.keyword !== ''){
+		await db.insert('searches', ['id', 'term'], [userId, req.body.keyword]);
+	}
     switch (req.body.type) {
 		case 0:
 			let results = await db.get('GGUser INNER JOIN NGO ON GGUser.id = NGO.id',
