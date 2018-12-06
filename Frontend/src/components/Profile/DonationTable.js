@@ -22,17 +22,14 @@ export default class DonationTable extends Component {
           typeStr = 'In memory of';
           break;
       }
+      const amnt = Number.parseInt(donation.amount, 10) / 100;
       return (
         <tr key={i}>
           <td>{donation.id}</td>
-          <td>{donation.donorId}</td>
-          <td>{donation.ngoId}</td>
-          <td>${donation.amount}</td>
-          <td>{donation.message}</td>
+          <td>{donation.anonymous === false ? donation.donorid : 'N/A'}</td>
+          <td>${`${amnt}.00`}</td>
           <td>{donation.anonymous === true ? <FontAwesomeIcon icon="check" size="1x"/> : null}</td>
           <td>{typeStr}</td>
-          <td>{donation.type === 1 ? donation.honoredUserId : null}</td>
-          <td>{donation.type === 2 ? donation.honoredUserName : null}</td>
           <td><TimeAgo date={donation.created}/></td>
         </tr>
       )
@@ -48,13 +45,9 @@ export default class DonationTable extends Component {
                 <tr>
                   <th>Id</th>
                   <th>Donor Id</th>
-                  <th>NGO Id</th>
                   <th>Amount</th>
-                  <th>Message</th>
                   <th>Anonymous</th>
                   <th>Type</th>
-                  <th>Honored User Id</th>
-                  <th>Honored User Name</th>
                   <th>Created</th>
                 </tr>
               </thead>

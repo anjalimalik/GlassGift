@@ -55,7 +55,7 @@ router.post('/', async function (req, res) {
     });
 
     if (charge != null) {
-        await donationRepository.create(donationId, donorId, donation.ngoId, donation.anonymity, donation.message,
+        await donationRepository.create(donationId, donorId, donation.ngoId, donation.anon, donation.message,
             donation.donationType, donation.honoredUserId, donation.honoredUserName, donation.date, donation.amount);
     }
 

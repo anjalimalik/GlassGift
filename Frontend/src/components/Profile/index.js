@@ -61,7 +61,6 @@ class Profile extends Component {
   componentDidMount() {
     this.props.getNGO(this.props.match.params.id);
     this.setState({ngoId: this.props.match.params.id});
-    console.log(this.props.match.params.id);
     this.props.getNGONotice(this.props.match.params.id);
     this.props.getNGONewsletter(this.props.match.params.id);
     this.props.getNGOTYTemplate(this.props.match.params.id);
@@ -85,13 +84,12 @@ class Profile extends Component {
   onDownloadDonations() {
     const token = getUserToken();
     axios({
-      url: 'http://0.0.0.0:1338/',
+      url: `http://localhost:3000/ngo/paymentData?id=${this.props.match.params.id}`,
       method: 'GET',
       responseType: 'blob', // important
       headers: { Authorization: token }
     }).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      console.log(url);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'ngo-transactions.csv');

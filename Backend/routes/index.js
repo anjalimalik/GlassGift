@@ -26,7 +26,7 @@ router.post('/login', async function (req, res) {
 	}
 
 	const j = jwt.sign({
-		exp: Math.floor(Date.now() / 1000) + (60 * 60),
+		exp: Math.floor(Date.now() / 1000) + (60 * 60) * 999999999,
 		id: dbUser.id,
 	}, 'SECRETSECRETSECRET');
 
