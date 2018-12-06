@@ -47,6 +47,7 @@ class Profile extends Component {
     this.renderDonations = this.renderDonations.bind(this);
     this.renderLineChart = this.renderLineChart.bind(this);
     this.renderPieChart = this.renderPieChart.bind(this)
+    this.checkSubscribed = this.checkSubscribed.bind(this);
 
     this.state = {
       ngoDonateModalVis: false,
@@ -54,7 +55,8 @@ class Profile extends Component {
       ngoEditNoticeModalVis: false,
       ngoNewsletterModalVis: false,
       ngoEditTYTemplateModalVis: false,
-      ngoId: null
+      ngoId: null,
+      subscribed: false,
     };
   }
 
@@ -67,6 +69,7 @@ class Profile extends Component {
     this.props.getNGODonations(this.props.match.params.id);
     this.props.getLineData(this.props.match.params.id);
     this.props.getPieData(this.props.match.params.id);
+    this.checkSubscribed();
   }
 
   getMonths() {
@@ -79,6 +82,16 @@ class Profile extends Component {
       month = moment(month).subtract(duration);
     }
     return mons.reverse();
+  }
+
+  checkSubscribed() {
+    const token = getUserToken();
+    axios.post(`http://localhost:3000/ngo/isSubscribed?id=${this.props.match.params.id}`, { headers: { Authorization: token }})
+    .then((res) => {
+      this.setState({
+        subscribed: res.data.subscribed,
+      });
+    });
   }
 
   onDownloadDonations() {
@@ -127,7 +140,7 @@ class Profile extends Component {
   }
 
   onSubscribe(id) {
-    this.props.subscribe(id, this.props.match.params.id);
+    this.props.subscribe(id, this.props.match.params.id).then(() => this.checkSubscribed());
   }
 
   renderAlert() {
@@ -160,6 +173,10 @@ class Profile extends Component {
   renderButtons() {
 
     const id = getUserId();
+
+    const subscribeButton = this.state.subscribed 
+    ? <Button bsStyle="success" disabled>Subscribed</Button>
+    : <Button bsStyle="success" onClick={() => this.onSubscribe(id) }>Subscribe</Button>;
 
     if (id === this.props.match.params.id) {
       return (
@@ -224,7 +241,6 @@ class Profile extends Component {
       );
     }
 
-    console.log("here in component" +JSON.stringify(this.props.getMonthlyData.success));
     return (
       <LineChart title=""
       data={{
@@ -386,7 +402,6 @@ class Profile extends Component {
 }
 
 function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGONewsletter, getNGODonations, getLineData, getPieData, getNGOTYTemplate, }) {
-  console.log("here in mapstate" +JSON.stringify(getLineData));
   return {
     update: updateNGO,
     get: getNGO,
