@@ -225,5 +225,7 @@ async function sendNGOThankYouEmail(email, template, donorName, ngoName){
 	});
 }
 
-module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail, sendReceiptEmail, sendDonationReceiptEmail, sendNoticeUpdateEmail, sendNGOThankYouEmail}
+module.exports = {sendIPEmail, sendConfirmationEmail, sendForgotPasswordEmail, sendDonationConfirmationEmail,
+	sendReceiptEmail, sendDonationReceiptEmail, sendNoticeUpdateEmail, sendNGOThankYouEmail,
+	sendNewsletter};
 
