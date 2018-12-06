@@ -374,6 +374,7 @@ class Profile extends Component {
 
         <NGOEditTYTemplateModal
           //tytemplate={this.props.getTYTemplate.success.tytemplate}
+          ngoId={this.props.match.params.id}
           visibility={this.state.ngoEditTYTemplateModalVis}
           onChangeVisibility={this.onChangeNGOEditTYTemplateModalVisibility}
         />
