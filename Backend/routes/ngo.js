@@ -41,14 +41,14 @@ router.put('/', async function (req, res) {
     let currDataNGO = await db.get('NGO', ['*'], `id = '${ngoId}'`);
     let currDataUser = await db.get('GGUser', ['location'], `id = '${ngoId}'`);
 
-    await db.modify('NGO', ['description','calLink','category', 'minLimit', 'maxLimit'], 
-    		[(changes.description === ""? currDataNGO[0].description : changes.description), 
-    		(changes.calLink == ""? currDataNGO[0].calLink: changes.calLink), 
+    await db.modify('NGO', ['description','calLink','category', 'minLimit', 'maxLimit'],
+    		[(changes.description === ""? currDataNGO[0].description : changes.description),
+    		(changes.calLink == ""? currDataNGO[0].calLink: changes.calLink),
     		(changes.category | currDataNGO[0].category),
     		(changes.minLimit | currDataNGO.minLimit),
     		(changes.maxLimit | currDataNGO.maxLimit)], `id = '${ngoId}'`);
 
-    await db.modify('GGUser', ['location'], 
+    await db.modify('GGUser', ['location'],
     	[(changes.location === ""? currDataUser[0].location : changes.location)], `id = '${ngoId}'`);
 
 	return res.sendStatus(200);
@@ -229,7 +229,7 @@ router.get('/notice', async function (req, res) {
 });
 
 router.put('/notice', async function (req, res) {
-	const userId = req.get('Authorization');
+	const userId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 
 	let ngoData = await db.get("GGUser", ['username'], `id = '${userId}'`);
 
@@ -264,23 +264,17 @@ router.get('/newsletter', async function(req, res) {
 	res.status(200).json(newsletter[0]);
 });
 
-router.post('/newsletter', async function(req, res) {
-	const newsletter = await ngoRepository.getNewsletter(req.body["ngoId"]);
-	if (newsletter.length === 0) {
-		await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
-		return res.sendStatus(200);
-	}
-	await ngoRepository.updateNewsletter(req.body["ngoId"], req.body["newsletter"]);
+router.put('/newsletter', async function(req, res) {
+	await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
 	return res.sendStatus(200);
 });
 
-router.post('/newsletter/send', async function(req, res) {
+router.put('/newsletter/send', async function(req, res) {
 	const newsletter = await ngoRepository.getNewsletter(req.body["ngoId"]);
+    let subscribers = await ngoRepository.getSubscribers(req.body["ngoId"]);
+    const emails = await userRepository.getEmailsFromId(subscribers[0].donorid);
 
-	(await ngoRepository.getSubscribers(req.body["ngoId"]))
-		.map(async (id) => (await userRepository.getEmailsFromId(id))[0])
-		.forEach(async (userEmail) => await email.sendNewsletter(newsletter, userEmail));
-	return res.sendStatus(200);	
+	emails.forEach(async (userEmail) => await email.sendNewsletter(newsletter[0].newsletter, userEmail.email));
 });
 
 module.exports = router;

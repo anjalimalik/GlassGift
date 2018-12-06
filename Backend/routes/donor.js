@@ -6,6 +6,7 @@ const donorRepository = require('../database/donor');
 const userRepository = require('../database/user');
 const donationRepository = require('../database/donations');
 const {sendConfirmationEmail} = require('../email');
+const jwt = require('jsonwebtoken');
 const db = require('../database/');
 
 const router = express.Router();
@@ -77,8 +78,11 @@ router.get('/searchHistory', async function(req, res){
 });
 
 router.post('/subscribe', async function(req, res){
-	const donorId = req.get('Authorization');
+	const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 	const ngoId = req.body.ngoId;
+
+	const subscriptions = await db.get('subscriptions', ['donorId'], `ngoId = '${ngoId}'`);
+	if (subscriptions.map(a => a.donorid).includes(donorId)) return res.status(200);
 
 	await db.insert('subscriptions', ['donorId', 'ngoId'], [donorId, ngoId]);
 
