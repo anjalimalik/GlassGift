@@ -1,13 +1,16 @@
 const express = require('express');
 const bcrypt = require("bcrypt");
 const uuidv4 = require('uuid/v4');
-const json2csv = require("json2csv");
+const json2csv = require("json2csv").parse;
 const donorRepository = require('../database/donor');
 const userRepository = require('../database/user');
 const donationRepository = require('../database/donations');
 const {sendConfirmationEmail} = require('../email');
 const jwt = require('jsonwebtoken');
 const db = require('../database/');
+
+const fields = ['id', 'donorId', 'ngoId', 'amount', 'message', 'anonymous', 'type',
+  'honoredUserId', 'honoredUserName','created'];
 
 const router = express.Router();
 
@@ -46,11 +49,19 @@ router.post('/payment_method', async function (req, res) {
 });
 
 router.get('/export_transactions', async function (req, res) {
-    const donations = donationRepository.getByDonor(req.query['id']);
-    const csv = json2csv.parse(donations);
+	const donorId = jwt.verify(req.query.id, 'SECRETSECRETSECRET').id;
+	console.log(donorId);
+    const donations = await db.get('donation', ['*'], `donorId = '${donorId}'`);
     res.setHeader('Content-disposition', 'attachment; filename=donor-transactions.csv');
     res.set('Content-Type', 'text/csv');
-    res.status(200).send(csv);
+    const opts = { fields };
+  	try{
+  		const csv =  json2csv(donations, opts);
+		res.status(200).send(csv);
+	}catch(err){
+		console.log(err);
+		res.status(500).send(err);
+	}
 });
 
 router.post('/subscribe', async function(req, res){

@@ -26,7 +26,7 @@ class DonorProfile extends Component {
   onDownloadDonations() {
     const token = getUserToken();
     axios({
-      url: 'http://0.0.0.0:1338/',
+      url: `http://localhost:3000/donor/export_transactions?id=${token}`,
       method: 'GET',
       responseType: 'blob', // important
       headers: { Authorization: token }
