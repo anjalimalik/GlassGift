@@ -236,17 +236,17 @@ router.get('/newsletter', async function(req, res) {
 	res.status(200).json(newsletter[0]);
 });
 
-router.post('/newsletter', async function(req, res) {
+router.put('/newsletter', async function(req, res) {
 	await ngoRepository.createNewsletter(req.body["ngoId"], req.body["newsletter"]);
 	return res.sendStatus(200);
 });
 
-router.post('/newsletter/send', async function(req, res) {
+router.put('/newsletter/send', async function(req, res) {
 	const newsletter = await ngoRepository.getNewsletter(req.body["ngoId"]);
+    let subscribers = await ngoRepository.getSubscribers(req.body["ngoId"]);
+    const emails = await userRepository.getEmailsFromId(subscribers[0].donorid);
 
-	(await ngoRepository.getSubscribers(req.body["ngoId"]))
-		.map(async (id) => (await userRepository.getEmailsFromId(id))[0])
-		.forEach(async (userEmail) => await email.sendNewsletter(newsletter, userEmail));
+	emails.forEach(async (userEmail) => await email.sendNewsletter(newsletter[0].newsletter, userEmail.email));
 });
 
 module.exports = router;

@@ -66,7 +66,7 @@ function setMaxLimit(id, limit) {
 function createNewsletter(id, newsletter) {
     return db.insert('newsletters',
         ['id', 'ngoId', 'newsletter', 'created'],
-        [uuidv4(), id, newsletter, `to_timestamp(${Date.now() / 1000})`]);
+        [uuidv4(), id, newsletter, 'now()']);
 }
 
 function getNewsletter(id) {
