@@ -40,7 +40,7 @@ function callSubscribeApi(donorId, ngoId) {
     const body = {
       subscription: {donorId, ngoId},
     }
-    axios.post('http://localhost:3000/donor/subscription', body, { headers: { Authorization: token }})
+    axios.post('http://localhost:3000/subscription', body, { headers: { Authorization: token }})
     .then(response => resolve())
     .catch(error => reject(new Error(error.response.data.error || 'Network Error')));
   });
