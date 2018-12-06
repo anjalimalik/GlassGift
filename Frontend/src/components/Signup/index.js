@@ -23,6 +23,7 @@ class Signup extends Component {
 
     this.onSubmit = this.onSubmit.bind(this);
     this.renderAlert = this.renderAlert.bind(this);
+    this.setGender = this.setGender.bind(this);
 
     this.state = {
       tab: SIGNUP_TAB_DEFAULT,
@@ -54,6 +55,13 @@ class Signup extends Component {
         this.props.history.push(`/sentEmail?email=${this.state.email}`);
       }
     });
+  }
+
+  setGender(g) {
+    if (g && g !== "") {
+      g[0] = g[0].toUpperCase();
+    }
+    this.setState({ gender: g });
   }
 
   renderAlert() {
@@ -120,6 +128,26 @@ class Signup extends Component {
                 placeholder="(Optional)"
                 value={this.state.location}
                 onChange={e => this.setState({ location: e.target.value })}
+              />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Age</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder=""
+                value={this.state.age}
+                onChange={e => this.setState({ age: e.target.value })}
+              />
+            </FormGroup>
+
+            <FormGroup bsSize="large">
+              <ControlLabel>Gender</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder=""
+                value={this.state.gender}
+                onChange={e => this.setGender(e.target.value)}
               />
             </FormGroup>
 
