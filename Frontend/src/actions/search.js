@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getUserToken } from '../utils';
 
 export const SEARCH_PENDING = 'SEARCH_PENDING';
 export const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
@@ -39,7 +40,9 @@ function callSearchApi(type, keyword, filter) {
       keyword,
       filter,
     };
-    axios.post('http://localhost:3000/ngo/search', body)
+    const token = getUserToken();
+    if (!token) reject(new Error("No token!"));
+    axios.post('http://localhost:3000/ngo/search', body, { headers: { Authorization: token }})
     .then(response => resolve(response.data))
     .catch(error => reject(new Error('Error searching')));
   });
