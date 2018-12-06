@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const userRepository = require("../database/user");
-const donorRepository = 
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
 const db = require('../database/');
