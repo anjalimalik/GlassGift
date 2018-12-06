@@ -12,7 +12,7 @@ const {sendDonationConfirmationEmail, sendReceiptEmail, sendNGOThankYouEmail} = 
 
 
 router.post('/', async function (req, res) {
-    const donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
+    const donorId = /*jwt.verify(*/req.get('Authorization');//, 'SECRETSECRETSECRET').id;
     const donation = req.body;
     const limits = await ngoRepository.getLimitsById(donation.ngoId);
     const ngoSearch = await db.get('GGUser', ['username'], `id = '${donation.ngoId}'`);
@@ -33,6 +33,8 @@ router.post('/', async function (req, res) {
     let donorEmail = emailWrapper[0].email;
     let nameWrapper = await db.get('GGUser', ['username'], `id = '${donorId}'`);
     let donorName = nameWrapper[0].username;
+
+    let donationId = uuidv4();
 
     let message = `Donation of $${donation.amount} from donor: ${donorId} to ngo : ${donation.ngoId}\n` +
         `Message: '${donation.message}'`;
@@ -66,8 +68,6 @@ router.post('/', async function (req, res) {
         + (donation.amount % 100 < 10 ? `0${donation.amount % 100}` : donation.amount % 100);
 
     sendDonationConfirmationEmail(donorEmail, stringAmount, ngoName, (donation.date | dt.now()), donationId);
-
-    return res.sendStatus(200);
 });
 
 router.get('/', async function (req, res) {
