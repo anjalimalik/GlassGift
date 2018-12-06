@@ -45,6 +45,8 @@ class Profile extends Component {
     this.renderAlert = this.renderAlert.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
     this.renderDonations = this.renderDonations.bind(this);
+    this.renderLineChart = this.renderLineChart.bind(this);
+    this.renderPieChart = this.renderPieChart.bind(this)
 
     this.state = {
       ngoDonateModalVis: false,
@@ -68,12 +70,12 @@ class Profile extends Component {
     var mons = [];
     var month = moment();
     var i;
-    for (i = 0; i <= 12; i++) {
+    for (i = 0; i < 12; i++) {
       var duration = moment.duration({'months' : 1});
       mons.push( moment(month).format("MMM") );
       month = moment(month).subtract(duration);
     }
-    return mons;
+    return mons.reverse();
   }
 
   onDownloadDonations() {
@@ -204,6 +206,72 @@ class Profile extends Component {
     );
   }
 
+  renderLineChart() {
+    if (this.props.getMonthlyData.pending) {
+      return (
+        <FontAwesomeIcon icon="spinner" size="6x" spin />
+      );
+    }
+    else if (this.props.getMonthlyData.error) {
+      return (
+        <Alert bsStyle="danger">
+          <p>
+            {this.props.getMonthlyData.error}
+          </p>
+        </Alert>
+      );
+    }
+
+    return (
+      <LineChart title=""
+      data={{
+        labels:this.getMonths(),
+        datasets:[{
+          label:"Total amount of money donated",
+          data: this.props.getMonthlyData.success,
+          backgroundColor:"rgba(75,192,192,0.4)",
+          borderColor:"rgba(75,192,192,1)",
+          borderWidth:1,
+          hoverBackgroundColor:"rgba(255,99,132,0.4)",
+          hoverBorderColor:"rgba(255,99,132,1)"
+        }]
+      }}
+      >
+      </LineChart>
+    );
+  }
+
+  renderPieChart() {
+    if (this.props.getGenderData.pending) {
+      return (
+        <FontAwesomeIcon icon="spinner" size="6x" spin />
+      );
+    }
+    else if (this.props.getGenderData.error) {
+      return (
+          <Alert bsStyle="danger">
+            <p>
+              {this.props.getGenderData.error}
+            </p>
+          </Alert>
+      );
+    }
+
+    return (
+      <PieChart data={{
+        labels: [ 'Female', 'Male', 'Other', ],
+        datasets:[{
+            data:[this.props.getGenderData.success.female,
+                   this.props.getGenderData.success.male, 
+                   this.props.getGenderData.success.nb], 
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }]
+      }}>
+      </PieChart>
+    );
+  }
+
   render() {
 
     // if (this.props.get.pending || this.props.getNotice.pending) {
@@ -213,32 +281,6 @@ class Profile extends Component {
     //     </div>
     //   );
     // }
-
-    /* data for graphs */
-    const lineData = {
-      labels: this.getMonths(),
-      datasets:[
-        {
-          label:'TestLegend',
-          data: this.props.getLineData.success,
-          backgroundColor: 'rgba(75,192,192,0.4)',
-          borderColor: 'rgba(75,192,192,1)',
-          borderWidth: 1,
-          hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-          hoverBorderColor: 'rgba(255,99,132,1)',
-        }
-      ]
-    };
-    const pieData = {
-      labels: [ 'Female', 'Male', 'Non-Binary', ],
-      datasets:[
-        {
-          data:[this.props.getPieData.success,], //??
-          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-          hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-        }
-      ]
-    };
 
     return (
       <div className="NGOProfile center-block text-center">
@@ -283,15 +325,16 @@ class Profile extends Component {
             <CardBody>
               <CardTitle style={{fontSize:'20px'}}>STATS</CardTitle>
               <hr />
-             
-              <LineChart data={lineData}></LineChart>
+              {this.renderLineChart()}
               <br /> <hr /> <br />
 
               <h4>Pick a Date Range to get donations statistics for <span style={{color:'blue',}}>{this.props.get.success.username}</span></h4>
               <DateRangeStats ngoId={this.props.match.params.id}> </DateRangeStats>
               <hr /> 
               <h4>Distribution by gender of donors who donated to <span style={{color:'blue',}}>{this.props.get.success.username}</span> </h4>
-              <PieChart data={pieData}></PieChart>
+              {this.renderPieChart()}
+              <br />
+
             </CardBody>
           </Card>
         </div>
@@ -322,8 +365,7 @@ class Profile extends Component {
         />
 
         <NGONewsletterModal
-          //newsletter={this.props.getNewsletter.success}
-          newsletter={""}
+          newsletter={this.props.getNewsletter.success.newsletter}
           ngoId={this.props.match.params.id}
           visibility={this.state.ngoNewsletterModalVis}
           onChangeVisibility={this.onChangeNGONewsletterModalVisibility}
@@ -346,8 +388,8 @@ function mapStateToProps({ updateNGO, getNGO, getNGONotice, getNGONewsletter, ge
     getNotice: getNGONotice,
     getNewsletter: getNGONewsletter,
     getDonations: getNGODonations,
-    getLineData: getLineData,
-    getPieData: getPieData,
+    getMonthlyData: getLineData,
+    getGenderData: getPieData,
   };
 }
 

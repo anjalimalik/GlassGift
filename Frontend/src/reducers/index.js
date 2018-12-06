@@ -14,6 +14,15 @@ import donationEmail from './donationEmail';
 import getSearches from './getSearches';
 import getNGODonations from './getNGODonations';
 import getDonorDonations from './getDonorDonations';
+import getNGONewsletter from './getNGONewsletter';
+import getNGOTYTemplate from './getNGOTYTemplate';
+import sendNGONewsletter from './sendNGONewsletter';
+import subscribe from './subscribe';
+import updateNGONewsletter from './updateNGONewsletter';
+import updateNGOTYTemplate from './updateNGOTYTemplate';
+import getPieData from './getPieData';
+import getLineData from './getLineData';
+import getCalData from './getCalData';
 
 export default combineReducers({
   login,
@@ -31,4 +40,13 @@ export default combineReducers({
   getSearches,
   getNGODonations,
   getDonorDonations,
+  getNGONewsletter,
+  getNGOTYTemplate,
+  sendNGONewsletter,
+  subscribe, 
+  updateNGONewsletter,
+  updateNGOTYTemplate,
+  getPieData,
+  getLineData, 
+  getCalData, 
 });

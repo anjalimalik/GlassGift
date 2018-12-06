@@ -13,7 +13,6 @@ export function getNGONewsletterPending(pending) {
 }
 
 export function getNGONewsletterSuccess(success) {
-    console.log("here success newsletter get" + JSON.stringify(success));
   return {
     type: GET_NGO_NEWSLETTER_SUCCESS,
     payload: success,
@@ -45,7 +44,6 @@ export function getNGONewsletter(id) {
   const request = callGetNGONewsletterApi(id);
   return dispatch => {
     dispatch(getNGONewsletterPending(true));
-    console.log("reached here");
     return request
     .then(response => dispatch(getNGONewsletterSuccess(response)))
     .catch(error => dispatch(getNGONewsletterError(error)));

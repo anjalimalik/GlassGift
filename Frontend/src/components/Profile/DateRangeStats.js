@@ -1,23 +1,70 @@
 import React from 'react';
-import {Component} from "react";
+import { Component } from "react";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Alert, } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import { Button, ButtonGroup, } from 'react-bootstrap';
 import { getCalData } from '../../actions/getCalData';
+import './Profile.css';
 
 class Result extends Component {
     render() {
         var show = {
             display: this.props.visibility ? "block" : "none",
-		};
+        };
 		
         return (
-          <div >
-            <h5 style={ show }>{ this.props.result }
-                  Results for the period between { this.props.from } to { this.props.to }
-            </ h5>
+          <div style={ show }>
+            <p style={{ color:"orange", fontWeight:"900", fontSize:"16px",}}>
+                Results for the period between { this.props.from } to { this.props.to }
+            </ p>
+
+            <div style={{ color:"navy", width:"50%", margin: "auto"}}>
+                <div className="row">
+                    <div className="column1">
+                        Number of Donations:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.numDonations || "0"}</samp>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="column1">
+                        Total Amount of Money Donated: 
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.totalMoney || "$0"}</samp>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="column1">
+                        Number of Unique Donors:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.uniqueDonors || "0"}</samp>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="column1">
+                        Average Donation Amount:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.averageDonation || "$0"}</samp>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="column1">
+                        Average Age of Donors:
+                    </div>
+                    <div className="column2">
+                        <samp>{this.props.result.averageAge || "--"}</samp>
+                    </div>
+                </div>
+                <br />
+            </div>
           </div>
         );
     }
@@ -41,7 +88,6 @@ class DateRangeStats extends Component {
             from: undefined,
             to: undefined,
             resultVis: false, 
-            resultData: {},
         };
     }
 
@@ -75,7 +121,6 @@ class DateRangeStats extends Component {
             var start = ((this.state.from).toISOString().split('T')[0]);
             var end = ((this.state.to).toISOString().split('T')[0]);
             this.props.getCalData(this.props.ngoId, start, end);
-            this.setState({resultData: this.props.getCalData.success,});
             this.onChangeResultVisibility(true);
         }
         else {
@@ -85,6 +130,33 @@ class DateRangeStats extends Component {
 
     handleResetClick() {
         this.setState(this.getInitialState());
+    }
+
+    renderResult() {
+        if (this.state.resultVis === true) {
+            if (this.props.get.pending) {
+                return (
+                <FontAwesomeIcon icon="spinner" size="6x" spin />
+                );
+            }
+            else if (this.props.get.error) {
+                return (
+                    <Alert bsStyle="danger">
+                    <p>
+                        {this.props.get.error}
+                    </p>
+                    </Alert>
+                );
+            }
+            console.log("RENDER RESULT:  " + JSON.stringify(this.props.get.success));
+            return (
+                <Result visibility={this.state.resultVis} 
+                    result={this.props.get.success}
+                    to={(this.state.to).toISOString().split('T')[0]}
+                    from={(this.state.from).toISOString().split('T')[0]}>
+                </Result> 
+            );
+        }
     }
 
     render() {
@@ -106,17 +178,7 @@ class DateRangeStats extends Component {
             </ButtonGroup>
             < br /> < br />
 
-            {(() => {
-                if (this.state.resultVis === true){
-                    return (
-                    <Result visibility={this.state.resultVis} 
-                        result={this.state.resultData}
-                        to={(this.state.to).toISOString().split('T')[0]}
-                        from={(this.state.from).toISOString().split('T')[0]}>
-                    </Result> 
-                    )
-                }
-            })()}
+            {this.renderResult()}
 
           </div>
         );
@@ -125,7 +187,7 @@ class DateRangeStats extends Component {
 
 function mapStateToProps({ getCalData }) {
     return {
-      getCalData: getCalData,
+      get: getCalData,
     };
 }
   

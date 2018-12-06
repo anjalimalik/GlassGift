@@ -79,7 +79,7 @@ router.post('/visualLineGraph', async function(req, res){
 	const check = await db.get('GGUser', ['*'], `id = '${donorId}'`);
 	if(!check){ return res.status(500).send("User not found"); }
 
-	var dates = {};
+	var dates = [];
 
 	var month1 = 12; var month2 = 11;
 	while(month1 > 0){
@@ -87,7 +87,8 @@ router.post('/visualLineGraph', async function(req, res){
 		`ngoId = '${req.body.ngoId}' AND created BETWEEN CURRENT_DATE - INTERVAL '${month1} months'` + 
 		` AND CURRENT_DATE ${month2 === 0? '':`- INTERVAL '${month2} months'`}`);
 
-		dates[`month_${month1}`] = (sum[0].sum|0);
+		//dates[`month_${month1}`] = (sum[0].sum|0);
+		dates.push(sum[0].sum|0);
 		month1--; month2--;
 	}
 
@@ -116,6 +117,7 @@ router.post('/visualCalendar', async function(req, res){
 					`created BETWEEN '${req.body.startdate} 00:00:00.0' AND '${req.body.enddate} 00:00:00.0'`);
 
 
+
 	var averageAge = 0;
 
 	for (var i = 0; i < donations.length; i++) {
@@ -127,9 +129,10 @@ router.post('/visualCalendar', async function(req, res){
 
 	return res.status(200).json({
 		numDonations: numDonations[0].count,
-		totalMoney: `\$${parseInt(totalMoney[0].sum | 0)/100}.${parseInt(totalMoney[0].sum | 0)%100 < 10? '0' + parseInt(totalMoney[0].sum | 0)%100: parseInt(totalMoney[0].sum | 0)%100} `,
-		averageDonation: `\$${parseInt(averageDonation[0].avg | 0)/100}.${parseInt(averageDonation[0].avg | 0)%100 < 10 ? '0' + parseInt(averageDonation[0].avg | 0)%100: parseInt(averageDonation[0].avg | 0)%100}`,
+		totalMoney: `\$${Math.floor((totalMoney[0].sum | 0)/100)}.${Math.floor((totalMoney[0].sum | 0)%100) < 10? '0' + Math.floor((totalMoney[0].sum | 0)%100): Math.floor((totalMoney[0].sum | 0)%100)}`,
+		averageDonation: `\$${Math.floor((averageDonation[0].avg | 0)/100)}.${Math.floor((averageDonation[0].avg | 0)%100) < 10 ? '0' + Math.floor((averageDonation[0].avg | 0)%100): Math.floor((averageDonation[0].avg | 0)%100)}`,
 		averageAge: averageAge,
+		uniqueDonors: donations.length,
 	});
 });
 
@@ -163,7 +166,7 @@ router.post('/visualPieGraph', async function(req, res){
 	return res.status(200).json({
 		male: ((totalMale + 0.00) / total),
 		female: ((totalFemale + 0.00) / total),
-		nonBinary: ((totalNB + 0.00) / total),
+		nb: ((totalNB + 0.00) / total),
 	});		
 });
 
@@ -229,7 +232,7 @@ router.post('/limit/min', async function (req, res) {
 
 router.get('/newsletter', async function(req, res) {
 	const newsletter = await ngoRepository.getNewsletter(req.query.id);
-	res.status(200).json({newsletter});
+	res.status(200).json(newsletter[0]);
 });
 
 router.post('/newsletter', async function(req, res) {

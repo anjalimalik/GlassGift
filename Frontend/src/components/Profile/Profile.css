@@ -43,3 +43,34 @@ body {
   word-break: break-all;
   margin-right: 5%;
 }
+
+.row {
+  display: flex;    
+  margin: auto;
+  cursor: pointer;
+  margin-bottom: 7px;
+}
+
+.column1 {
+  flex: 80%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.column2 {
+  flex: 20%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+@media screen and (max-width: 600px) {
+  .column {
+      width: 100%;
+  }
+}
