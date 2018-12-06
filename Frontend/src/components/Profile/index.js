@@ -179,7 +179,7 @@ class Profile extends Component {
         <div>
           <ButtonGroup>
             <Button bsStyle="info" onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
-            <Button bsStyle="success" onClick={ this.onSubscribe(id) }>Subscribe</Button>
+            <Button bsStyle="success" onClick={() => this.onSubscribe(id) }>Subscribe</Button>
           </ButtonGroup>
         </div>
       );

@@ -28,7 +28,6 @@ router.post('/', async function (req, res) {
     }
 
     let emailWrapper = await userRepository.getEmailsFromId(donorId);
-    console.log(emailWrapper);
     if (emailWrapper.length === 0) throw new Error(`User with id ${donorId} not found`);
     let donorEmail = emailWrapper[0].email;
     let nameWrapper = await db.get('GGUser', ['username'], `id = '${donorId}'`);
@@ -42,7 +41,7 @@ router.post('/', async function (req, res) {
     const token = req.body.stripeToken;
     const charge = stripe.charges.create({
         amount: donation.amount,
-        currency: donation.currency,
+        currency: 'usd',
         description: message,
         source: token,
         metadata: {
