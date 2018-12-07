@@ -110,8 +110,6 @@ router.post('/visualLineGraph', async function(req, res){
 		month1--;
 		month2--;
 	}
-
-	console.log("here in backend route 2" +JSON.stringify(dates));
 	return res.status(200).json(dates);
 });
 
