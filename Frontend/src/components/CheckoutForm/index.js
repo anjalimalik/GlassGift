@@ -21,6 +21,7 @@ class CheckoutForm extends Component {
       previous: false,
       saved: 0,
       recurring: 0,
+      honorname: '',
     }
 
     this.submit = this.submit.bind(this);

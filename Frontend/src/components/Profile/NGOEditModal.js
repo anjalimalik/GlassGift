@@ -27,8 +27,8 @@ class NGOEditModal extends Component {
       location: this.props.location || '',
       category: { value: `${this.props.category}`, label: NGO_CATEGORIES[this.props.category] },
       description: this.props.description || '',
-      minLimit: this.props.minLimit || null,
-      maxLimit: this.props.maxLimit || null,
+      minLimit: this.props.minLimit || '',
+      maxLimit: this.props.maxLimit || '',
       calLink: this.props.calendarLink || '',
     };
   }
