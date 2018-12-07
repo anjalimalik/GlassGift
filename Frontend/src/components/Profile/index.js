@@ -86,7 +86,7 @@ class Profile extends Component {
 
   checkSubscribed() {
     const token = getUserToken();
-    axios.post(`http://localhost:3000/ngo/isSubscribed?id=${this.props.match.params.id}`, { headers: { Authorization: token }})
+    axios.get(`http://localhost:3000/ngo/isSubscribed?id=${this.props.match.params.id}`, { headers: { Authorization: token }})
     .then((res) => {
       this.setState({
         subscribed: res.data.subscribed,
@@ -194,7 +194,7 @@ class Profile extends Component {
         <div>
           <ButtonGroup>
             <Button bsStyle="info" onClick={() => this.setState({ngoDonateModalVis: true})}>Donate</Button>
-            <Button bsStyle="success" onClick={() => this.onSubscribe(id) }>Subscribe</Button>
+            {subscribeButton}
           </ButtonGroup>
         </div>
       );

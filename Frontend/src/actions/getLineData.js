@@ -33,7 +33,6 @@ export function getLineDataClear() {
 }
 
 function callGetLineDataApi(id) {
-  console.log("here in action" +id);
     var body = {
         ngoId: id,
     };

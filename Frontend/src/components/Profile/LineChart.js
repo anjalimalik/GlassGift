@@ -15,7 +15,6 @@ class LineChart extends Component {
     }
 
     render(){
-        console.log("here in component");
         return (
         <div>
             <Line

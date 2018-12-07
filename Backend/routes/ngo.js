@@ -280,10 +280,10 @@ router.put('/newsletter/send', async function(req, res) {
 router.get('/isSubscribed', async function(req, res){
 	let donorId = jwt.verify(req.get('Authorization'), 'SECRETSECRETSECRET').id;
 	let ngoId = req.query.id;
-	const yes = await db.get('subscribers', ['*'], `ngoId = '${ngoId}' AND donorId = '${donorId}'`);
+	const yes = await db.get('subscriptions', ['*'], `ngoId = '${ngoId}' AND donorId = '${donorId}'`);
 
 	res.status(200).json({
-		subscribed: (yes.length > 0? 'true': 'false'),
+		subscribed: (yes.length > 0? true: false),
 	});
 });
 
