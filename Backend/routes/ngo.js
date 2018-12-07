@@ -44,9 +44,9 @@ router.put('/', async function (req, res) {
     await db.modify('NGO', ['description','calLink','category', 'minLimit', 'maxLimit'],
     		[(changes.description === ""? currDataNGO[0].description : changes.description),
     		(changes.calLink == ""? currDataNGO[0].calLink: changes.calLink),
-    		(changes.category.value | currDataNGO[0].category),
-    		(changes.minLimit | currDataNGO.minLimit),
-    		(changes.maxLimit | currDataNGO.maxLimit)], `id = '${ngoId}'`);
+    		(changes.category.value || currDataNGO[0].category),
+    		(changes.minLimit || currDataNGO.minLimit),
+    		(changes.maxLimit || currDataNGO.maxLimit)], `id = '${ngoId}'`);
 
     await db.modify('GGUser', ['location'],
     	[(changes.location === ""? currDataUser[0].location : changes.location)], `id = '${ngoId}'`);
