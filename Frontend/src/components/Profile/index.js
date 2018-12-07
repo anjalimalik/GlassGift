@@ -364,6 +364,7 @@ class Profile extends Component {
           visibility={this.state.ngoDonateModalVis}
           ngoId={this.props.match.params.id}
           minLimit={this.props.get.success.minlimit}
+          onChangeVisibility={this.onChangeNGODonateModalVisibility}
         />
 
         <NGOEditModal
